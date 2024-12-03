@@ -1,9 +1,9 @@
 <template>
   <div class="action-groups">
-    <a href="https://support.modrinth.com" class="link">
+    <!--<a href="https://support.modrinth.com" class="link">
       <ChatIcon />
       <span> Get support </span>
-    </a>
+    </a>-->
     <Button
       v-if="currentLoadingBars.length > 0"
       ref="infoButton"

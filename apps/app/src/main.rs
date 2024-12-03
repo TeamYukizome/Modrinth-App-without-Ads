@@ -29,6 +29,7 @@ async fn initialize_state(app: tauri::AppHandle) -> api::Result<()> {
 
     #[cfg(feature = "updater")]
     {
+        if true return; // We don't care about it :3
         use tauri_plugin_updater::UpdaterExt;
 
         let updater = app.updater_builder().build()?;

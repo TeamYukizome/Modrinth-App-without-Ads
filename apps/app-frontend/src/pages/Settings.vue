@@ -142,8 +142,7 @@ async function purgeCache() {
     'report_types',
     'loaders',
     'game_versions',
-    'donation_platforms',
-    'file_update',
+    'donation_platforms',    'file_update',
     'search_results',
   ]).catch(handleError)
 }
