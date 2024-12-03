@@ -28,12 +28,12 @@ const pinia = createPinia()
 
 let app = createApp(App)
 
-Sentry.init({
+/*Sentry.init({
   app,
   dsn: 'https://9508775ee5034536bc70433f5f531dd4@o485889.ingest.us.sentry.io/4504579615227904',
   integrations: [Sentry.browserTracingIntegration({ router })],
   tracesSampleRate: 0.1,
-})
+})*/
 
 app.use(router)
 app.use(pinia)

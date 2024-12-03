@@ -7,7 +7,7 @@ import { ChevronRightIcon } from '@modrinth/assets'
 import { init_ads_window, open_ads_link, record_ads_click } from '@/helpers/ads.js'
 import { listen } from '@tauri-apps/api/event'
 
-const showAd = ref(true)
+const showAd = ref(false)
 
 defineExpose({
   scroll() {
