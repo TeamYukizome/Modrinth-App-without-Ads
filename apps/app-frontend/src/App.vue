@@ -258,9 +258,7 @@ async function logOut() {
 const MIDAS_BITFLAG = 1 << 0
 const hasPlus = computed(
   () =>
-    credentials.value &&
-    credentials.value.user &&
-    (credentials.value.user.badges & MIDAS_BITFLAG) === MIDAS_BITFLAG,
+    true,
 )
 
 watch(
