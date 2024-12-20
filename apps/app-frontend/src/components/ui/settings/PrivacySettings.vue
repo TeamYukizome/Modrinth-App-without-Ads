@@ -22,7 +22,7 @@ watch(
 </script>
 
 <template>
-  <div class="flex items-center justify-between gap-4">
+  <!--<div class="flex items-center justify-between gap-4">
     <div>
       <h2 class="m-0 text-lg font-extrabold text-contrast">Personalized ads</h2>
       <p class="m-0 text-sm">
@@ -61,9 +61,10 @@ watch(
         }
       "
     />
-  </div>
+  </div>-->
 
-  <div class="mt-4 flex items-center justify-between gap-4">
+  <!--<div class="mt-4 flex items-center justify-between gap-4">-->
+  <div class="flex items-center justify-between gap-4">
     <div>
       <h2 class="m-0 text-lg font-extrabold text-contrast">Discord RPC</h2>
       <p class="m-0 text-sm">

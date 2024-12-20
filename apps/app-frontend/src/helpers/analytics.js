@@ -1,9 +1,9 @@
 import { posthog } from 'posthog-js'
 
 export const initAnalytics = () => {
-  posthog.init('phc_hm2ihMpTAoE86xIm7XzsCB8RPiTRKivViK5biiHedm', {
+  /*posthog.init('phc_hm2ihMpTAoE86xIm7XzsCB8RPiTRKivViK5biiHedm', {
     persistence: 'localStorage',
-  })
+  })*/
 }
 
 export const debugAnalytics = () => {
@@ -15,9 +15,9 @@ export const optOutAnalytics = () => {
 }
 
 export const optInAnalytics = () => {
-  posthog.opt_in_capturing()
+  //posthog.opt_in_capturing()
 }
 
 export const trackEvent = (eventName, properties) => {
-  posthog.capture(eventName, properties)
+  //posthog.capture(eventName, properties)
 }
