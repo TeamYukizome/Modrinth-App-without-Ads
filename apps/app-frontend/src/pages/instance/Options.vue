@@ -220,7 +220,7 @@
       <Slider
         v-model="memory.maximum"
         :disabled="!overrideMemorySettings"
-        :min="8"
+        :min="512"
         :max="maxMemory"
         :step="64"
         unit="mb"
@@ -897,7 +897,6 @@ async function saveGvLoaderEdits() {
 .change-versions-modal {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
   gap: 1rem;
 
   :deep(.animated-dropdown .options) {

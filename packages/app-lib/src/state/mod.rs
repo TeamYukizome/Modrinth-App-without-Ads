@@ -31,6 +31,9 @@ pub use self::minecraft_auth::*;
 mod cache;
 pub use self::cache::*;
 
+mod friends;
+pub use self::friends::*;
+
 pub mod db;
 pub mod fs_watcher;
 mod mr_auth;
@@ -60,6 +63,9 @@ pub struct State {
     /// Process manager
     pub process_manager: ProcessManager,
 
+    /// Friends socket
+    pub friends_socket: FriendsSocket,
+
     pub(crate) pool: SqlitePool,
 
     pub(crate) file_watcher: FileWatcher,
@@ -81,6 +87,16 @@ impl State {
             if let Err(e) = res {
                 tracing::error!("Error running discord RPC: {e}");
             }
+
+            let _ = state
+                .friends_socket
+                .connect(
+                    &state.pool,
+                    &state.api_semaphore,
+                    &state.process_manager,
+                )
+                .await;
+            let _ = FriendsSocket::socket_loop().await;
         });
 
         Ok(())
@@ -89,7 +105,10 @@ impl State {
     /// Get the current launcher state, waiting for initialization
     pub async fn get() -> crate::Result<Arc<Self>> {
         if !LAUNCHER_STATE.initialized() {
-            while !LAUNCHER_STATE.initialized() {}
+            tracing::error!("Attempted to get state before it is initialized - this should never happen!");
+            while !LAUNCHER_STATE.initialized() {
+                tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+            }
         }
 
         Ok(Arc::clone(
@@ -127,7 +146,11 @@ impl State {
         let discord_rpc = DiscordGuard::init()?;
 
         let file_watcher = fs_watcher::init_watcher().await?;
-        fs_watcher::watch_profiles_init(&file_watcher, &directories).await?;
+        fs_watcher::watch_profiles_init(&file_watcher, &directories).await;
+
+        let process_manager = ProcessManager::new();
+
+        let friends_socket = FriendsSocket::new();
 
         Ok(Arc::new(Self {
             directories,
@@ -135,7 +158,8 @@ impl State {
             io_semaphore,
             api_semaphore,
             discord_rpc,
-            process_manager: ProcessManager::new(),
+            process_manager,
+            friends_socket,
             pool,
             file_watcher,
         }))

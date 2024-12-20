@@ -37,7 +37,16 @@ let app = createApp(App)
 
 app.use(router)
 app.use(pinia)
-app.use(FloatingVue)
+app.use(FloatingVue, {
+  themes: {
+    'ribbit-popout': {
+      $extend: 'dropdown',
+      placement: 'bottom-end',
+      instantMove: true,
+      distance: 8,
+    },
+  },
+})
 app.use(VIntlPlugin)
 
 app.mount('#app')
