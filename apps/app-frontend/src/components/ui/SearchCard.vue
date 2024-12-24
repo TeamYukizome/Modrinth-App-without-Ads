@@ -38,7 +38,7 @@
       <div class="m-0 line-clamp-2">
         {{ project.description }}
       </div>
-      <div class="mt-auto flex items-center gap-1 no-wrap">
+      <div v-if="categories.length > 0" class="mt-auto flex items-center gap-1 no-wrap">
         <TagsIcon class="h-4 w-4 shrink-0" />
         <div
           v-for="tag in categories"
@@ -157,13 +157,13 @@ const installing = ref(false)
 async function install() {
   installing.value = true
   await installVersion(
-    props.project.project_id,
+    props.project.project_id ?? props.project.id,
     null,
     props.instance ? props.instance.path : null,
     'SearchCard',
     () => {
       installing.value = false
-      emit('install', props.project.project_id)
+      emit('install', props.project.project_id ?? props.project.id)
     },
   )
 }

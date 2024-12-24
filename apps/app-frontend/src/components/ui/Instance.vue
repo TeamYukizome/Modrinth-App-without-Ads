@@ -12,11 +12,9 @@ import { showProfileInFolder } from '@/helpers/utils.js'
 import { handleSevereError } from '@/store/error.js'
 import { trackEvent } from '@/helpers/analytics'
 import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { formatCategory } from '@modrinth/utils'
 
-dayjs.extend(duration)
 dayjs.extend(relativeTime)
 
 const props = defineProps({
@@ -169,7 +167,7 @@ onUnmounted(() => unlisten())
     >
       <div class="relative flex items-center justify-center">
         <Avatar
-          size="96px"
+          size="48px"
           :src="instance.icon_path ? convertFileSrc(instance.icon_path) : null"
           :tint-by="instance.path"
           alt="Mod card"
@@ -191,11 +189,12 @@ onUnmounted(() => unlisten())
             v-else-if="modLoading || installing"
             v-tooltip="modLoading ? 'Instance is loading...' : 'Installing...'"
             class="animate-spin w-8 h-8"
+            tabindex="-1"
           />
           <ButtonStyled v-else size="large" color="brand" circular>
             <button
               v-tooltip="'Play'"
-              class="transition-all scale-75 group-hover:scale-100 origin-bottom opacity-0 group-hover:opacity-100 card-shadow"
+              class="transition-all scale-75 group-hover:scale-100 group-focus-within:scale-100 origin-bottom opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 card-shadow"
               @click="(e) => play(e, 'InstanceCard')"
               @mousehover="checkProcess"
             >
@@ -205,24 +204,13 @@ onUnmounted(() => unlisten())
         </div>
       </div>
       <div class="flex flex-col gap-1">
-        <p class="m-0 text-lg font-bold text-contrast leading-tight line-clamp-2">
+        <p class="m-0 text-md font-bold text-contrast leading-tight line-clamp-1">
           {{ instance.name }}
         </p>
         <div class="flex items-center col-span-3 gap-1 text-secondary font-semibold mt-auto">
           <GameIcon class="shrink-0" />
           <span class="text-sm">
             {{ formatCategory(instance.loader) }} {{ instance.game_version }}
-          </span>
-        </div>
-        <div class="flex items-center col-span-3 gap-1 text-secondary font-semibold">
-          <TimerIcon class="shrink-0" />
-          <span class="text-sm line-clamp-1">
-            Played for
-            {{
-              dayjs
-                .duration(instance.recent_time_played + instance.submitted_time_played, 'seconds')
-                .humanize()
-            }}
           </span>
         </div>
       </div>
