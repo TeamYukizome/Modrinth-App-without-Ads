@@ -3,7 +3,7 @@
     "createUpdaterArtifacts": "v1Compatible"
   },
   "build": {
-    "features": []
+    "features": ["updater"]
   },
   "app": {
     "security": {
