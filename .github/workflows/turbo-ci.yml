@@ -1,12 +1,13 @@
 name: CI
 
 on:
-  push:
-    branches: ['main']
-  pull_request:
-    types: [opened, synchronize]
-  merge_group:
-    types: [checks_requested]
+  #push:
+  #  branches: ['main']
+  #pull_request:
+  #  types: [opened, synchronize]
+  #merge_group:
+  #  types: [checks_requested]
+  workflow_dispatch:
 
 jobs:
   build:
