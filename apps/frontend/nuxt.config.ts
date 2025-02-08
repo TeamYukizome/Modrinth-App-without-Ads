@@ -157,6 +157,18 @@ export default defineNuxtConfig({
         },
       };
 
+      async function fetchWithRetry(url, options, retries = 3) {
+        for (let i = 0; i < retries; i++) {
+          try {
+            return await $fetch(url, options);
+          } catch (error) {
+            if (i === retries - 1) throw error;
+            console.warn(`Retrying ${url}... (${i + 1})`);
+            await new Promise(res => setTimeout(res, 1000));
+          }
+        }
+      }
+
       const [
         categories,
         loaders,
@@ -168,15 +180,15 @@ export default defineNuxtConfig({
         homePageNotifs,
         products,
       ] = await Promise.all([
-        $fetch(`${API_URL}tag/category`, headers),
-        $fetch(`${API_URL}tag/loader`, headers),
-        $fetch(`${API_URL}tag/game_version`, headers),
-        $fetch(`${API_URL}tag/donation_platform`, headers),
-        $fetch(`${API_URL}tag/report_type`, headers),
-        $fetch(`${API_URL}projects_random?count=60`, headers),
-        $fetch(`${API_URL}search?limit=3&query=leave&index=relevance`, headers),
-        $fetch(`${API_URL}search?limit=3&query=&index=updated`, headers),
-        $fetch(`${API_URL.replace("/v2/", "/_internal/")}billing/products`, headers),
+        fetchWithRetry(`${API_URL}tag/category`, headers),
+        fetchWithRetry(`${API_URL}tag/loader`, headers),
+        fetchWithRetry(`${API_URL}tag/game_version`, headers),
+        fetchWithRetry(`${API_URL}tag/donation_platform`, headers),
+        fetchWithRetry(`${API_URL}tag/report_type`, headers),
+        fetchWithRetry(`${API_URL}projects_random?count=60`, headers),
+        fetchWithRetry(`${API_URL}search?limit=3&query=leave&index=relevance`, headers),
+        fetchWithRetry(`${API_URL}search?limit=3&query=&index=updated`, headers),
+        fetchWithRetry(`${API_URL.replace("/v2/", "/_internal/")}billing/products`, headers),
       ]);
 
       state.categories = categories;
