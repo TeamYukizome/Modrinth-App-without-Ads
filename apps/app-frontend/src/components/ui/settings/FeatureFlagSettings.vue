@@ -7,7 +7,7 @@ import { get, set } from '@/helpers/settings'
 const themeStore = useTheming()
 
 const settings = ref(await get())
-const options = ref(['project_background', 'page_path'])
+const options = ref(['project_background', 'page_path', 'worlds_tab'])
 
 function getStoreValue(key: string) {
   return themeStore.featureFlags[key] ?? false
@@ -30,14 +30,13 @@ watch(
   <div v-for="option in options" :key="option" class="mt-4 flex items-center justify-between">
     <div>
       <h2 class="m-0 text-lg font-extrabold text-contrast capitalize">
-        {{ option }}
+        {{ option.replaceAll('_', ' ') }}
       </h2>
     </div>
 
     <Toggle
       id="advanced-rendering"
       :model-value="getStoreValue(option)"
-      :checked="getStoreValue(option)"
       @update:model-value="() => setStoreValue(option, !themeStore.featureFlags[option])"
     />
   </div>

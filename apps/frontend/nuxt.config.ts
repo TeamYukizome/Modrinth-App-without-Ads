@@ -126,6 +126,7 @@ export default defineNuxtConfig({
         homePageSearch?: any[];
         homePageNotifs?: any[];
         products?: any[];
+        errors?: number[];
       } = {};
 
       try {
@@ -157,16 +158,12 @@ export default defineNuxtConfig({
         },
       };
 
-      async function fetchWithRetry(url, options, retries = 3) {
-        for (let i = 0; i < retries; i++) {
-          try {
-            return await $fetch(url, options);
-          } catch (error) {
-            if (i === retries - 1) throw error;
-            console.warn(`Retrying ${url}... (${i + 1})`);
-            await new Promise(res => setTimeout(res, 1000));
-          }
-        }
+      const caughtErrorCodes = new Set<number>();
+
+      function handleFetchError(err: any, defaultValue: any) {
+        console.error("Error generating state: ", err);
+        caughtErrorCodes.add(err.status);
+        return defaultValue;
       }
 
       const [
@@ -180,15 +177,25 @@ export default defineNuxtConfig({
         homePageNotifs,
         products,
       ] = await Promise.all([
-        fetchWithRetry(`${API_URL}tag/category`, headers),
-        fetchWithRetry(`${API_URL}tag/loader`, headers),
-        fetchWithRetry(`${API_URL}tag/game_version`, headers),
-        fetchWithRetry(`${API_URL}tag/donation_platform`, headers),
-        fetchWithRetry(`${API_URL}tag/report_type`, headers),
-        fetchWithRetry(`${API_URL}projects_random?count=60`, headers),
-        fetchWithRetry(`${API_URL}search?limit=3&query=leave&index=relevance`, headers),
-        fetchWithRetry(`${API_URL}search?limit=3&query=&index=updated`, headers),
-        fetchWithRetry(`${API_URL.replace("/v2/", "/_internal/")}billing/products`, headers),
+        $fetch(`${API_URL}tag/category`, headers).catch((err) => handleFetchError(err, [])),
+        $fetch(`${API_URL}tag/loader`, headers).catch((err) => handleFetchError(err, [])),
+        $fetch(`${API_URL}tag/game_version`, headers).catch((err) => handleFetchError(err, [])),
+        $fetch(`${API_URL}tag/donation_platform`, headers).catch((err) =>
+          handleFetchError(err, []),
+        ),
+        $fetch(`${API_URL}tag/report_type`, headers).catch((err) => handleFetchError(err, [])),
+        $fetch(`${API_URL}projects_random?count=60`, headers).catch((err) =>
+          handleFetchError(err, []),
+        ),
+        $fetch(`${API_URL}search?limit=3&query=leave&index=relevance`, headers).catch((err) =>
+          handleFetchError(err, {}),
+        ),
+        $fetch(`${API_URL}search?limit=3&query=&index=updated`, headers).catch((err) =>
+          handleFetchError(err, {}),
+        ),
+        $fetch(`${API_URL.replace("/v2/", "/_internal/")}billing/products`, headers).catch((err) =>
+          handleFetchError(err, []),
+        ),
       ]);
 
       state.categories = categories;
@@ -200,6 +207,7 @@ export default defineNuxtConfig({
       state.homePageSearch = homePageSearch;
       state.homePageNotifs = homePageNotifs;
       state.products = products;
+      state.errors = [...caughtErrorCodes];
 
       await fs.writeFile("./src/generated/state.json", JSON.stringify(state));
 

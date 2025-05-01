@@ -39,12 +39,12 @@
     "fileAssociations": [
       {
         "ext": ["mrpack"],
-        "mimeType": "application/zip+mrpack"
+        "mimeType": "application/x-modrinth-modpack+zip"
       }
     ]
   },
   "productName": "Modrinth App",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "mainBinaryName": "Modrinth App",
   "identifier": "ModrinthApp",
   "plugins": {
@@ -76,7 +76,7 @@
     ],
     "security": {
       "assetProtocol": {
-        "scope": ["$APPDATA/caches/icons/*", "$APPCONFIG/caches/icons/*", "$CONFIG/caches/icons/*"],
+        "scope": ["$APPDATA/caches/icons/*", "$APPCONFIG/caches/icons/*", "$CONFIG/caches/icons/*", "$APPDATA/profiles/*/saves/*/icon.png", "$APPCONFIG/profiles/*/saves/*/icon.png", "$CONFIG/profiles/*/saves/*/icon.png"],
         "enable": true
       },
       "capabilities": ["core", "plugins"],

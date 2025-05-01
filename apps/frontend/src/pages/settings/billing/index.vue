@@ -1,5 +1,5 @@
 <template>
-  <section class="universal-card">
+  <section class="universal-card experimental-styles-within">
     <h2>{{ formatMessage(messages.subscriptionTitle) }}</h2>
     <p>{{ formatMessage(messages.subscriptionDescription) }}</p>
     <div class="universal-card recessed">
@@ -88,67 +88,69 @@
             v-if="midasCharge && midasCharge.status === 'failed'"
             class="ml-auto flex flex-row-reverse items-center gap-2"
           >
+            <ButtonStyled v-if="midasCharge && midasCharge.status === 'failed'">
+              <button
+                @click="
+                  () => {
+                    $refs.midasPurchaseModal.show();
+                  }
+                "
+              >
+                <UpdatedIcon />
+                Update method
+              </button>
+            </ButtonStyled>
+            <ButtonStyled type="transparent" circular>
+              <OverflowMenu
+                :dropdown-id="`${baseId}-cancel-midas`"
+                :options="[
+                  {
+                    id: 'cancel',
+                    action: () => {
+                      cancelSubscriptionId = midasSubscription.id;
+                      $refs.modalCancel.show();
+                    },
+                  },
+                ]"
+              >
+                <MoreVerticalIcon />
+                <template #cancel><XIcon /> Cancel</template>
+              </OverflowMenu>
+            </ButtonStyled>
+          </div>
+          <ButtonStyled v-else-if="midasCharge && midasCharge.status !== 'cancelled'">
             <button
-              v-if="midasCharge && midasCharge.status === 'failed'"
-              class="iconified-button raised-button"
+              class="ml-auto"
               @click="
                 () => {
-                  purchaseModalStep = 0;
-                  $refs.purchaseModal.show();
+                  cancelSubscriptionId = midasSubscription.id;
+                  $refs.modalCancel.show();
                 }
               "
             >
-              <UpdatedIcon />
-              Update method
+              <XIcon /> Cancel
             </button>
-            <OverflowMenu
-              class="btn icon-only transparent"
-              :options="[
-                {
-                  id: 'cancel',
-                  action: () => {
-                    cancelSubscriptionId = midasSubscription.id;
-                    $refs.modalCancel.show();
-                  },
-                },
-              ]"
-            >
-              <MoreVerticalIcon />
-              <template #cancel><XIcon /> Cancel</template>
-            </OverflowMenu>
-          </div>
-          <button
-            v-else-if="midasCharge && midasCharge.status !== 'cancelled'"
-            class="iconified-button raised-button !ml-auto"
-            @click="
-              () => {
-                cancelSubscriptionId = midasSubscription.id;
-                $refs.modalCancel.show();
-              }
-            "
-          >
-            <XIcon /> Cancel
-          </button>
-          <button
+          </ButtonStyled>
+          <ButtonStyled
             v-else-if="midasCharge && midasCharge.status === 'cancelled'"
-            class="btn btn-purple btn-large ml-auto"
-            @click="cancelSubscription(midasSubscription.id, false)"
+            color="purple"
           >
-            <RightArrowIcon /> Resubscribe
-          </button>
-          <button
-            v-else
-            class="btn btn-purple btn-large ml-auto"
-            @click="
-              () => {
-                purchaseModalStep = 0;
-                $refs.purchaseModal.show();
-              }
-            "
-          >
-            <RightArrowIcon />
-            Subscribe
-          </button>
+            <button class="ml-auto" @click="cancelSubscription(midasSubscription.id, false)">
+              Resubscribe <RightArrowIcon />
+            </button>
+          </ButtonStyled>
+          <ButtonStyled v-else color="purple" size="large">
+            <button
+              class="ml-auto"
+              @click="
+                () => {
+                  $refs.midasPurchaseModal.show();
+                }
+              "
+            >
+              Subscribe <RightArrowIcon />
+            </button>
+          </ButtonStyled>
         </div>
       </div>
     </div>
@@ -176,8 +178,12 @@
               />
               <div v-else class="w-fit">
                 <p>
-                  A linked server couldn't be found with this subscription. It may have been deleted
-                  or suspended. Please contact Modrinth support with the following information:
+                  A linked server couldn't be found for this subscription. There are a few possible
+                  explanations for this. If you just purchased your server, this is normal. It could
+                  take up to an hour for your server to be provisioned. Otherwise, if you purchased
+                  this server a while ago, it has likely since been suspended. If this is not what
+                  you were expecting, please contact Modrinth support with the following
+                  information:
                 </p>
                 <div class="flex w-full flex-col gap-2">
                   <CopyCode
@@ -194,7 +200,10 @@
                 <div class="mt-2 flex flex-col gap-2">
                   <div class="flex items-center gap-2">
                     <CheckCircleIcon class="h-5 w-5 text-brand" />
-                    <span> {{ getPyroProduct(subscription)?.metadata?.cpu }} vCores (CPU) </span>
+                    <span>
+                      {{ getPyroProduct(subscription)?.metadata?.cpu / 2 }} Shared CPUs (Bursts up
+                      to {{ getPyroProduct(subscription)?.metadata?.cpu }} CPUs)
+                    </span>
                   </div>
                   <div class="flex items-center gap-2">
                     <CheckCircleIcon class="h-5 w-5 text-brand" />
@@ -282,12 +291,24 @@
                         getPyroCharge(subscription).status !== 'cancelled' &&
                         getPyroCharge(subscription).status !== 'failed'
                       "
-                      type="standard"
-                      @click="showPyroCancelModal(subscription.id)"
                     >
-                      <button class="text-contrast">
+                      <button @click="showCancellationSurvey(subscription)">
                         <XIcon />
                         Cancel
+                      </button>
+                    </ButtonStyled>
+                    <ButtonStyled
+                      v-if="
+                        getPyroCharge(subscription) &&
+                        getPyroCharge(subscription).status !== 'cancelled' &&
+                        getPyroCharge(subscription).status !== 'failed'
+                      "
+                      color="green"
+                      color-fill="text"
+                    >
+                      <button @click="showPyroUpgradeModal(subscription)">
+                        <ArrowBigUpDashIcon />
+                        Upgrade
                       </button>
                     </ButtonStyled>
                     <ButtonStyled
@@ -296,11 +317,11 @@
                         (getPyroCharge(subscription).status === 'cancelled' ||
                           getPyroCharge(subscription).status === 'failed')
                       "
-                      type="standard"
                       color="green"
-                      @click="resubscribePyro(subscription.id)"
                     >
-                      <button class="text-contrast">Resubscribe</button>
+                      <button @click="resubscribePyro(subscription.id)">
+                        Resubscribe <RightArrowIcon />
+                      </button>
                     </ButtonStyled>
                   </div>
                 </div>
@@ -312,7 +333,7 @@
     </div>
   </section>
 
-  <section class="universal-card">
+  <section class="universal-card experimental-styles-within">
     <ConfirmModal
       ref="modal_confirm"
       :title="formatMessage(deleteModalMessages.title)"
@@ -321,7 +342,7 @@
       @proceed="removePaymentMethod(removePaymentMethodIndex)"
     />
     <PurchaseModal
-      ref="purchaseModal"
+      ref="midasPurchaseModal"
       :product="midasProduct"
       :country="country"
       :publishable-key="config.public.stripePublishableKey"
@@ -342,6 +363,38 @@
       :payment-methods="paymentMethods"
       :return-url="`${config.public.siteUrl}/settings/billing`"
     />
+    <PurchaseModal
+      ref="pyroPurchaseModal"
+      :product="upgradeProducts"
+      :country="country"
+      custom-server
+      :existing-subscription="currentSubscription"
+      :existing-plan="currentProduct"
+      :publishable-key="config.public.stripePublishableKey"
+      :send-billing-request="
+        async (body) =>
+          await useBaseFetch(`billing/subscription/${currentSubscription.id}`, {
+            internal: true,
+            method: `PATCH`,
+            body: body,
+          })
+      "
+      :renewal-date="currentSubRenewalDate"
+      :on-error="
+        (err) =>
+          data.$notify({
+            group: 'main',
+            title: 'An error occurred',
+            type: 'error',
+            text: err.message ?? (err.data ? err.data.description : err),
+          })
+      "
+      :fetch-capacity-statuses="fetchCapacityStatuses"
+      :customer="customer"
+      :payment-methods="paymentMethods"
+      :return-url="`${config.public.siteUrl}/servers/manage`"
+      :server-name="`${auth?.user?.username}'s server`"
+    />
     <NewModal ref="addPaymentMethodModal">
       <template #title>
         <span class="text-lg font-extrabold text-contrast">
@@ -359,15 +412,19 @@
           <div id="address-element"></div>
           <div id="payment-element" class="mt-4"></div>
         </div>
-        <div v-show="loadingPaymentMethodModal === 2" class="input-group push-right mt-auto pt-4">
-          <button class="btn" @click="$refs.addPaymentMethodModal.hide()">
-            <XIcon />
-            {{ formatMessage(commonMessages.cancelButton) }}
-          </button>
-          <button class="btn btn-primary" :disabled="loadingAddMethod" @click="submit">
-            <PlusIcon />
-            {{ formatMessage(messages.paymentMethodAdd) }}
-          </button>
+        <div v-show="loadingPaymentMethodModal === 2" class="input-group mt-auto pt-4">
+          <ButtonStyled color="brand">
+            <button :disabled="loadingAddMethod" @click="submit">
+              <PlusIcon />
+              {{ formatMessage(messages.paymentMethodAdd) }}
+            </button>
+          </ButtonStyled>
+          <ButtonStyled>
+            <button @click="$refs.addPaymentMethodModal.hide()">
+              <XIcon />
+              {{ formatMessage(commonMessages.cancelButton) }}
+            </button>
+          </ButtonStyled>
         </div>
       </div>
     </NewModal>
@@ -442,6 +499,7 @@
           </div>
         </div>
         <OverflowMenu
+          :dropdown-id="`${baseId}-payment-method-overflow-${index}`"
           class="btn icon-only transparent"
           :options="
             [
@@ -493,6 +551,7 @@ import {
 } from "@modrinth/ui";
 import {
   PlusIcon,
+  ArrowBigUpDashIcon,
   XIcon,
   CardIcon,
   MoreVerticalIcon,
@@ -514,6 +573,10 @@ import { products } from "~/generated/state.json";
 definePageMeta({
   middleware: "auth",
 });
+
+const app = useNuxtApp();
+const auth = await useAuth();
+const baseId = useId();
 
 useHead({
   script: [
@@ -704,7 +767,7 @@ const pyroSubscriptions = computed(() => {
   });
 });
 
-const purchaseModal = ref();
+const midasPurchaseModal = ref();
 const country = useUserCountry();
 const price = computed(() =>
   midasProduct.value?.prices?.find((x) => x.currency_code === getCurrency(country.value)),
@@ -887,14 +950,77 @@ const getProductPrice = (product, interval) => {
 
 const modalCancel = ref(null);
 
-const showPyroCancelModal = (subscriptionId) => {
-  cancelSubscriptionId.value = subscriptionId;
-  if (modalCancel.value) {
-    modalCancel.value.show();
-  } else {
-    console.error("modalCancel ref is undefined");
+const pyroPurchaseModal = ref();
+const currentSubscription = ref(null);
+const currentProduct = ref(null);
+const upgradeProducts = ref([]);
+upgradeProducts.value.metadata = { type: "pyro" };
+
+const currentSubRenewalDate = ref();
+
+const showPyroUpgradeModal = async (subscription) => {
+  currentSubscription.value = subscription;
+  currentSubRenewalDate.value = getPyroCharge(subscription).due;
+  currentProduct.value = getPyroProduct(subscription);
+  upgradeProducts.value = products.filter(
+    (p) =>
+      p.metadata.type === "pyro" &&
+      (!currentProduct.value || p.metadata.ram > currentProduct.value.metadata.ram),
+  );
+  upgradeProducts.value.metadata = { type: "pyro" };
+
+  await nextTick();
+
+  if (!currentProduct.value) {
+    console.error("Could not find product for current subscription");
+    data.$notify({
+      group: "main",
+      title: "An error occurred",
+      text: "Could not find product for current subscription",
+      type: "error",
+    });
+    return;
   }
+
+  if (!pyroPurchaseModal.value) {
+    console.error("pyroPurchaseModal ref is undefined");
+    return;
+  }
+
+  pyroPurchaseModal.value.show();
 };
+
+async function fetchCapacityStatuses(serverId, product) {
+  if (product) {
+    try {
+      return {
+        custom: await usePyroFetch(`servers/${serverId}/upgrade-stock`, {
+          method: "POST",
+          body: {
+            cpu: product.metadata.cpu,
+            memory_mb: product.metadata.ram,
+            swap_mb: product.metadata.swap,
+            storage_mb: product.metadata.storage,
+          },
+        }),
+      };
+    } catch (error) {
+      console.error("Error checking server capacities:", error);
+      app.$notify({
+        group: "main",
+        title: "Error checking server capacities",
+        text: error,
+        type: "error",
+      });
+      return {
+        custom: { available: 0 },
+        small: { available: 0 },
+        medium: { available: 0 },
+        large: { available: 0 },
+      };
+    }
+  }
+}
 
 const resubscribePyro = async (subscriptionId) => {
   try {
@@ -926,4 +1052,66 @@ const refresh = async () => {
     refreshServers(),
   ]);
 };
+
+function showCancellationSurvey(subscription) {
+  if (!subscription) {
+    console.warn("No survey notice to open");
+    return;
+  }
+
+  const product = getPyroProduct(subscription);
+  const priceObj = product?.prices?.find((x) => x.id === subscription.price_id);
+  const price = priceObj?.prices?.intervals?.[subscription.interval];
+  const currency = priceObj?.currency_code;
+
+  const popupOptions = {
+    layout: "modal",
+    width: 700,
+    autoClose: 2000,
+    hideTitle: true,
+    hiddenFields: {
+      username: auth.value?.user?.username,
+      user_id: auth.value?.user?.id,
+      user_email: auth.value?.user?.email,
+      subscription_id: subscription.id,
+      price_id: subscription.price_id,
+      interval: subscription.interval,
+      started: subscription.created,
+      plan_ram: product?.metadata.ram / 1024,
+      plan_cpu: product?.metadata.cpu,
+      price: price ? `${price / 100}` : "unknown",
+      currency: currency ?? "unknown",
+    },
+    onOpen: () => console.log(`Opened cancellation survey for: ${subscription.id}`),
+    onClose: () => console.log(`Closed cancellation survey for: ${subscription.id}`),
+    onSubmit: (payload) => {
+      console.log("Form submitted, cancelling server.", payload);
+      cancelSubscription(subscription.id, true);
+    },
+  };
+
+  const formId = "mOr7lM";
+
+  try {
+    if (window.Tally?.openPopup) {
+      console.log(
+        `Opening Tally popup for servers subscription ${subscription.id} (form ID: ${formId})`,
+      );
+      window.Tally.openPopup(formId, popupOptions);
+    } else {
+      console.warn("Tally script not yet loaded");
+    }
+  } catch (e) {
+    console.error("Error opening Tally popup:", e);
+  }
+}
+
+useHead({
+  script: [
+    {
+      src: "https://tally.so/widgets/embed.js",
+      defer: true,
+    },
+  ],
+});
 </script>

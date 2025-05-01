@@ -1,8 +1,8 @@
 use crate::database::models::legacy_loader_fields::MinecraftGameVersion;
 use crate::database::redis::RedisPool;
-use crate::models::ids::base62_impl::to_base62;
 use crate::models::projects::ProjectId;
 use crate::routes::ApiError;
+use ariadne::ids::base62_impl::to_base62;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::PgPool;
@@ -71,7 +71,7 @@ async fn get_webhook_metadata(
                     url: format!(
                         "{}/organization/{}",
                         dotenvy::var("SITE_URL").unwrap_or_default(),
-                        organization.slug
+                        to_base62(organization.id.0 as u64)
                     ),
                     icon_url: organization.icon_url,
                 });
@@ -97,7 +97,7 @@ async fn get_webhook_metadata(
                         url: format!(
                             "{}/user/{}",
                             dotenvy::var("SITE_URL").unwrap_or_default(),
-                            user.username
+                            to_base62(user.id.0 as u64)
                         ),
                         name: user.username,
                         icon_url: user.avatar_url,
@@ -145,11 +145,7 @@ async fn get_webhook_metadata(
                 "{}/{}/{}",
                 dotenvy::var("SITE_URL").unwrap_or_default(),
                 project_type,
-                project
-                    .inner
-                    .slug
-                    .clone()
-                    .unwrap_or_else(|| to_base62(project.inner.id.0 as u64))
+                to_base62(project.inner.id.0 as u64)
             ),
             project_title: project.inner.name,
             project_summary: project.inner.summary,

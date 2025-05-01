@@ -8,11 +8,35 @@
   "button.copy-id": {
     "defaultMessage": "Copy ID"
   },
+  "button.copy-permalink": {
+    "defaultMessage": "Copy permanent link"
+  },
   "button.create-a-project": {
     "defaultMessage": "Create a project"
   },
+  "button.download": {
+    "defaultMessage": "Download"
+  },
+  "button.downloading": {
+    "defaultMessage": "Downloading"
+  },
   "button.edit": {
     "defaultMessage": "Edit"
+  },
+  "button.open-folder": {
+    "defaultMessage": "Open folder"
+  },
+  "button.play": {
+    "defaultMessage": "Play"
+  },
+  "button.refresh": {
+    "defaultMessage": "Refresh"
+  },
+  "button.remove": {
+    "defaultMessage": "Remove"
+  },
+  "button.remove-image": {
+    "defaultMessage": "Remove image"
   },
   "button.report": {
     "defaultMessage": "Report"
@@ -29,8 +53,26 @@
   "button.sign-out": {
     "defaultMessage": "Sign out"
   },
+  "button.stop": {
+    "defaultMessage": "Stop"
+  },
   "button.upload-image": {
     "defaultMessage": "Upload image"
+  },
+  "changelog.justNow": {
+    "defaultMessage": "Just now"
+  },
+  "changelog.product.api": {
+    "defaultMessage": "API"
+  },
+  "changelog.product.app": {
+    "defaultMessage": "App"
+  },
+  "changelog.product.servers": {
+    "defaultMessage": "Servers"
+  },
+  "changelog.product.web": {
+    "defaultMessage": "Website"
   },
   "collection.label.private": {
     "defaultMessage": "Private"
@@ -43,6 +85,21 @@
   },
   "input.view.list": {
     "defaultMessage": "Rows view"
+  },
+  "instance.worlds.game_mode.adventure": {
+    "defaultMessage": "Adventure mode"
+  },
+  "instance.worlds.game_mode.creative": {
+    "defaultMessage": "Creative mode"
+  },
+  "instance.worlds.game_mode.spectator": {
+    "defaultMessage": "Spectator mode"
+  },
+  "instance.worlds.game_mode.survival": {
+    "defaultMessage": "Survival mode"
+  },
+  "instance.worlds.game_mode.unknown": {
+    "defaultMessage": "Unknown game mode"
   },
   "label.changes-saved": {
     "defaultMessage": "Changes saved"
@@ -68,6 +125,9 @@
   "label.followed-projects": {
     "defaultMessage": "Followed projects"
   },
+  "label.loading": {
+    "defaultMessage": "Loading..."
+  },
   "label.moderation": {
     "defaultMessage": "Moderation"
   },
@@ -76,6 +136,9 @@
   },
   "label.password": {
     "defaultMessage": "Password"
+  },
+  "label.played": {
+    "defaultMessage": "Played {time}"
   },
   "label.public": {
     "defaultMessage": "Public"
@@ -86,11 +149,17 @@
   "label.scopes": {
     "defaultMessage": "Scopes"
   },
+  "label.server": {
+    "defaultMessage": "Server"
+  },
   "label.servers": {
     "defaultMessage": "Servers"
   },
   "label.settings": {
     "defaultMessage": "Settings"
+  },
+  "label.singleplayer": {
+    "defaultMessage": "Singleplayer"
   },
   "label.title": {
     "defaultMessage": "Title"
@@ -388,6 +457,33 @@
   },
   "search.filter_type.shader_loader": {
     "defaultMessage": "Loader"
+  },
+  "servers.notice.dismiss": {
+    "defaultMessage": "Dismiss"
+  },
+  "servers.notice.dismissable": {
+    "defaultMessage": "Dismissable"
+  },
+  "servers.notice.heading.attention": {
+    "defaultMessage": "Attention"
+  },
+  "servers.notice.heading.info": {
+    "defaultMessage": "Info"
+  },
+  "servers.notice.level.critical.name": {
+    "defaultMessage": "Critical"
+  },
+  "servers.notice.level.info.name": {
+    "defaultMessage": "Info"
+  },
+  "servers.notice.level.survey.name": {
+    "defaultMessage": "Survey"
+  },
+  "servers.notice.level.warn.name": {
+    "defaultMessage": "Warning"
+  },
+  "servers.notice.undismissable": {
+    "defaultMessage": "Undismissable"
   },
   "settings.account.title": {
     "defaultMessage": "Account and security"

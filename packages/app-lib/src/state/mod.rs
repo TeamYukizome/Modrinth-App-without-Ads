@@ -34,6 +34,9 @@ pub use self::cache::*;
 mod friends;
 pub use self::friends::*;
 
+mod tunnel;
+pub use self::tunnel::*;
+
 pub mod db;
 pub mod fs_watcher;
 mod mr_auth;
@@ -41,6 +44,8 @@ mod mr_auth;
 pub use self::mr_auth::*;
 
 mod legacy_converter;
+
+pub mod server_join_log;
 
 // Global state
 // RwLock on state only has concurrent reads, except for config dir change which takes control of the State

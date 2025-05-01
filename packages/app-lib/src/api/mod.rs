@@ -12,6 +12,7 @@ pub mod process;
 pub mod profile;
 pub mod settings;
 pub mod tags;
+pub mod worlds;
 
 pub mod data {
     pub use crate::state::{
@@ -19,8 +20,9 @@ pub mod data {
         Hooks, JavaVersion, LinkedData, MemorySettings, ModLoader,
         ModrinthCredentials, Organization, ProcessMetadata, ProfileFile,
         Project, ProjectType, SearchResult, SearchResults, Settings,
-        TeamMember, Theme, User, UserFriend, UserStatus, Version, WindowSize,
+        TeamMember, Theme, User, UserFriend, Version, WindowSize,
     };
+    pub use ariadne::users::UserStatus;
 }
 
 pub mod prelude {

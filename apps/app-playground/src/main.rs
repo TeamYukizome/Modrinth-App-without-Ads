@@ -4,8 +4,7 @@
 )]
 
 use theseus::prelude::*;
-
-use theseus::profile::create::profile_create;
+use theseus::worlds::get_recent_worlds;
 
 // A simple Rust implementation of the authentication run
 // 1) call the authenticate_begin_flow() function to get the URL to open (like you would in the frontend)
@@ -41,54 +40,16 @@ async fn main() -> theseus::Result<()> {
     // Initialize state
     State::init().await?;
 
-    if minecraft_auth::users().await?.is_empty() {
-        println!("No users found, authenticating.");
-        authenticate_run().await?; // could take credentials from here direct, but also deposited in state users
+    let worlds = get_recent_worlds(4).await?;
+    for world in worlds {
+        println!(
+            "World: {:?}/{:?} played at {:?}: {:#?}",
+            world.profile,
+            world.world.name,
+            world.world.last_played,
+            world.world.details
+        );
     }
-    //
-    // st.settings
-    //     .write()
-    //     .await
-    //     .java_globals
-    //     .insert(JAVA_8_KEY.to_string(), check_jre(path).await?.unwrap());
-    // Clear profiles
-    println!("Clearing profiles.");
-    {
-        let h = profile::list().await?;
-        for profile in h.into_iter() {
-            profile::remove(&profile.path).await?;
-        }
-    }
-
-    println!("Creating/adding profile.");
-
-    let name = "Example".to_string();
-    let game_version = "1.16.1".to_string();
-    let modloader = ModLoader::Forge;
-    let loader_version = "stable".to_string();
-
-    let profile_path = profile_create(
-        name,
-        game_version,
-        modloader,
-        Some(loader_version),
-        None,
-        None,
-        None,
-    )
-    .await?;
-
-    println!("running");
-    // Run a profile, running minecraft and store the RwLock to the process
-    let process = profile::run(&profile_path).await?;
-
-    println!("Minecraft UUID: {}", process.uuid);
-
-    println!("All running process UUID {:?}", process::get_all().await?);
-
-    // hold the lock to the process until it ends
-    println!("Waiting for process to end...");
-    process::wait_for(process.uuid).await?;
 
     Ok(())
 }
