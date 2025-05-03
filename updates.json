@@ -1,36 +1,36 @@
 {
-    "version": "0.9.4",
+    "version": "0.9.5",
     "notes": "A new version of the Modrinth App has been released!",
-    "pub_date": "2025-04-27T01:39:42.081459400Z",
+    "pub_date": "2025-05-02T01:08:54.897717400Z",
     "platforms": {
       "windows-x86_64": {
         "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SGhscDJ4UncwcE1TSDF4SnRNUklSa1hTZ2FPNHFQaGMxbTZWekZpUWNRajNTSTJZbGkxSmlpQkVVSUZJNjY3QWxiZkVBYXpta3pEak1jaVB5R1p5TUE0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzQ2MTAwODcxCWZpbGU6TW9kcmludGggQXBwXzAuOS40X3g2NC1zZXR1cC5uc2lzLnppcAoxV1RnTmRYbm9EZEgzekU4RHhkTWl1TGxXWFEzZ2Y1cVZSL25PUmJ5WUlBTXNkczJNY3V3L0FOSWVLY3RvZG9uMEw5SGxvS1JpS09pd05yNlVxQjBCUT09Cg==",
-        "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.6/Modrinth.App_0.9.4_x64-setup.nsis.zip",
+        "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.7/Modrinth.App_0.9.5_x64-setup.nsis.zip",
         "install_urls": [
-          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.6/Modrinth.App_0.9.4_x64-setup.exe"
+          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.7/Modrinth.App_0.9.5_x64-setup.exe"
         ]
       },
       "darwin-x86_64": {
-        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SHVwZno1K0czZG8zdWticzk3MUJtUlQ3ekI0QjJ0MDE4OXlHSWdxa2JYQmZYVUZRVG5mdExUNlF4Z29hdTFoSHNvNGRVL2wxNGtRKzRzUzNhakxvd2dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzQ2MTAwNjcyCWZpbGU6TW9kcmludGggQXBwLmFwcC50YXIuZ3oKQlYwdWQzenFOWWNXMFFkYXkrM2dKenZPeFJxKzMzSkZDQUJld2syTlM0R3Z1d3RHSWNqQWYzYzBPZGN6RVhpWTVhcUJvMkRJQndDdUJIVEVGQmxXQnc9PQo=",
-        "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.6/Modrinth.App.app.tar.gz",
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SGtnejhFdEpYSGh6WDlTWS8xNDBPZVVCMnNRYjFOTDFubDF6dmtZWU5NK2pWTjlDZW5ZYmRCdm8zWm9GdVhuRlRjWTI3RURpK29Xa3NVMGVJd2EwWXcwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzQ2MjgzMjA4CWZpbGU6TW9kcmludGggQXBwLmFwcC50YXIuZ3oKa2FTQzBIajdYT3dWRDcyQ2h5dTBCYmRLV2ZKcldZblFmNThlZG9zYUxOOUx1SHR5OHJ1U2M2RWNxU2h6dnNhbEJ0bEFicStWOTg5elBQMkVNVVkwQkE9PQo=",
+        "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.7/Modrinth.App.app.tar.gz",
         "install_urls": [
-          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.6/Modrinth.App_0.9.4_universal.dmg"
+          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.7/Modrinth.App_0.9.5_universal.dmg"
         ]
       },
       "linux-x86_64": {
-        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SHV0Zkk2SEJXWDNxZ24xZ3A5eGVsbGVZbjlUSHRKbGEwTlk1OS9kVUVxSzRFcDd4TitaU1p5SlllbGlVMXVid2hwa1NCUmtzanA0MjVHRFU0L3VnMmcwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzQ2MTAwNTE3CWZpbGU6TW9kcmludGggQXBwXzAuOS40X2FtZDY0LkFwcEltYWdlLnRhci5nego5Tmw1aTg0WVk0NzcvbXVWN2dEbWcxZzcvTVd0dmtxVVBYYTZKRXUzS2pFYVlVNDhYMWJUWU95WUFZVnlnUm5QNGlnTjhqZ2UzZjZDWEsrenZCR1ZDUT09Cg==",
-        "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.6/Modrinth.App_0.9.4_amd64.AppImage.tar.gz",
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SHFkRmNkOS9MM1pqK2ZtdUlKRVZsd2ZWUGxGc2JsbFEvd1ZwUVd4UFZPalhGYkJ0ZjdSWWpMYkRkU3ArSThlQVhSVlByb1FZdUkzcU11R2pFaitmdkEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzQ2MjgyOTkyCWZpbGU6TW9kcmludGggQXBwXzAuOS41X2FtZDY0LkFwcEltYWdlLnRhci5negpuTVlXNStFeTUrTDJ2VTYzQTRLcVErWlA1L1RtdGxoeHBrdDVwUmgvNU14STN2QjAzZ3R4Nkk5M1hXR0ZPL3g5dThDcEY3bEpmSGVxSHpXNC94N3hDQT09Cg==",
+        "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.7/Modrinth.App_0.9.5_amd64.AppImage.tar.gz",
         "install_urls": [
-          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.6/Modrinth.App_0.9.4_amd64.deb",
-          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.6/Modrinth.App_0.9.4_amd64.AppImage",
-          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.6/Modrinth.App-0.9.4-1.x86_64.rpm"
+          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.7/Modrinth.App_0.9.5_amd64.deb",
+          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.7/Modrinth.App_0.9.5_amd64.AppImage",
+          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.7/Modrinth.App-0.9.5-1.x86_64.rpm"
         ]
       },
       "darwin-aarch64": {
-        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SHVwZno1K0czZG8zdWticzk3MUJtUlQ3ekI0QjJ0MDE4OXlHSWdxa2JYQmZYVUZRVG5mdExUNlF4Z29hdTFoSHNvNGRVL2wxNGtRKzRzUzNhakxvd2dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzQ2MTAwNjcyCWZpbGU6TW9kcmludGggQXBwLmFwcC50YXIuZ3oKQlYwdWQzenFOWWNXMFFkYXkrM2dKenZPeFJxKzMzSkZDQUJld2syTlM0R3Z1d3RHSWNqQWYzYzBPZGN6RVhpWTVhcUJvMkRJQndDdUJIVEVGQmxXQnc9PQo=",
-        "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.6/Modrinth.App.app.tar.gz",
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SGtnejhFdEpYSGh6WDlTWS8xNDBPZVVCMnNRYjFOTDFubDF6dmtZWU5NK2pWTjlDZW5ZYmRCdm8zWm9GdVhuRlRjWTI3RURpK29Xa3NVMGVJd2EwWXcwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzQ2MjgzMjA4CWZpbGU6TW9kcmludGggQXBwLmFwcC50YXIuZ3oKa2FTQzBIajdYT3dWRDcyQ2h5dTBCYmRLV2ZKcldZblFmNThlZG9zYUxOOUx1SHR5OHJ1U2M2RWNxU2h6dnNhbEJ0bEFicStWOTg5elBQMkVNVVkwQkE9PQo=",
+        "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.7/Modrinth.App.app.tar.gz",
         "install_urls": [
-          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.6/Modrinth.App_0.9.4_universal.dmg"
+          "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.7/Modrinth.App_0.9.5_universal.dmg"
         ]
       }
     }
