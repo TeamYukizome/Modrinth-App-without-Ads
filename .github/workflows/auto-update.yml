@@ -20,4 +20,4 @@ jobs:
       - name: Run auto-update script
         run: cd MWAUpdater && go run .
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
