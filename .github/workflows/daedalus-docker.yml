@@ -1,21 +1,22 @@
 name: daedalus-docker-build
 
 on:
-  push:
-    branches:
-      - '**'
-    paths:
-      - .github/workflows/daedalus-docker.yml
-      - 'apps/daedalus_client/**'
-      - 'packages/daedalus/**'
-  pull_request:
-    types: [opened, synchronize]
-    paths:
-      - .github/workflows/daedalus-docker.yml
-      - 'apps/daedalus_client/**'
-      - 'packages/daedalus/**'
-  merge_group:
-    types: [checks_requested]
+#  push:
+#    branches:
+#      - '**'
+#    paths:
+#      - .github/workflows/daedalus-docker.yml
+#      - 'apps/daedalus_client/**'
+#      - 'packages/daedalus/**'
+#  pull_request:
+#    types: [opened, synchronize]
+#    paths:
+#      - .github/workflows/daedalus-docker.yml
+#      - 'apps/daedalus_client/**'
+#      - 'packages/daedalus/**'
+#  merge_group:
+#    types: [checks_requested]
+  workflow_dispatch:
 
 jobs:
   docker:
