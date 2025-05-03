@@ -16,6 +16,8 @@ jobs:
 
       - name: Clone MWAUpdater
         run: git clone https://github.com/TeamYukizome/MWAUpdater.git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Run auto-update script
         run: cd MWAUpdater && go run .
