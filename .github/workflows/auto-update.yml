@@ -17,7 +17,18 @@ jobs:
       - name: Clone MWAUpdater
         run: git clone https://github.com/TeamYukizome/MWAUpdater.git
 
-      - name: Run auto-update script
-        run: cd MWAUpdater && go run .
+      - name: Run auto-update script (output to root)
+        run: |
+          cd MWAUpdater
+          go run . 
+          cp updates.json ../updates.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit and push updates.json to this repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add updates.json
+          git commit -m "Update updates.json" || echo "No changes to commit"
+          git push
