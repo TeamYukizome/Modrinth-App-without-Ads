@@ -1,21 +1,21 @@
 name: 'Modrinth App build'
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - 'v*'
-    paths:
-      - .github/workflows/theseus-release.yml
-      - 'apps/app/**'
-      - 'apps/app-frontend/**'
-      - 'apps/labrinth/src/common/**'
-      - 'apps/labrinth/Cargo.toml'
-      - 'packages/app-lib/**'
-      - 'packages/app-macros/**'
-      - 'packages/assets/**'
-      - 'packages/ui/**'
-      - 'packages/utils/**'
+  # push:
+  #   branches:
+  #     - main
+  #   tags:
+  #     - 'v*'
+  #   paths:
+  #     - .github/workflows/theseus-release.yml
+  #     - 'apps/app/**'
+  #     - 'apps/app-frontend/**'
+  #     - 'apps/labrinth/src/common/**'
+  #     - 'apps/labrinth/Cargo.toml'
+  #     - 'packages/app-lib/**'
+  #     - 'packages/app-macros/**'
+  #     - 'packages/assets/**'
+  #     - 'packages/ui/**'
+  #     - 'packages/utils/**'
   workflow_dispatch:
 
 jobs:

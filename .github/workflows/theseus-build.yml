@@ -1,19 +1,19 @@
-name: Modrinth App build
+name: Modrinth App build (don't use this for now)
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - 'v*'
-    paths:
-      - .github/workflows/theseus-build.yml
-      - 'apps/app/**'
-      - 'apps/app-frontend/**'
-      - 'packages/app-lib/**'
-      - 'packages/app-macros/**'
-      - 'packages/assets/**'
-      - 'packages/ui/**'
-      - 'packages/utils/**'
+  # push:
+  #   branches:
+  #     - main
+  #   tags:
+  #     - 'v*'
+  #   paths:
+  #     - .github/workflows/theseus-build.yml
+  #     - 'apps/app/**'
+  #     - 'apps/app-frontend/**'
+  #     - 'packages/app-lib/**'
+  #     - 'packages/app-macros/**'
+  #     - 'packages/assets/**'
+  #     - 'packages/ui/**'
+  #     - 'packages/utils/**'
   workflow_dispatch:
     inputs:
       sign-windows-binaries:
