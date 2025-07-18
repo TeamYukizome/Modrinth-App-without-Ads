@@ -13,6 +13,10 @@ Welcome to the Modrinth App, without ads. This repo contains ![Lines](https://im
 
 Please consider supporting the official creators Modrinth if possible!
 
+## ⚠️ Warning!
+
+Migrating to this version of Modrinth from the offical one can cause problems like [migrations errors](https://support.modrinth.com/en/articles/9946941-migration-error-during-initialization), please make a backup of your app.db file which is located in your AppData/Application Support folder
+
 ## Contributing
 
 We welcome contributions! Just create a pull-reqeust.
