@@ -12,7 +12,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '>=1.23.2'
+          go-version: '1.25.1'
 
       - name: Clone MWAUpdater
         run: git clone https://github.com/TeamYukizome/MWAUpdater.git
