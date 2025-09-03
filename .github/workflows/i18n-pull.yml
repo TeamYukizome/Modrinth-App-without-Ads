@@ -1,8 +1,8 @@
 name: Crowdin (pull)
 
 on:
-  schedule:
-    - cron: '0 7 * * MON' # every monday at 7 am
+  # schedule:
+  #   - cron: '0 7 * * MON' # every monday at 7 am
   workflow_dispatch:
 
 concurrency:
