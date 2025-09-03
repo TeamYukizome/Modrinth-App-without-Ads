@@ -1,5 +1,6 @@
 //! Minecraft CLI argument logic
-use crate::launcher::parse_rules;
+use crate::launcher::quick_play_version::QuickPlayServerVersion;
+use crate::launcher::{QuickPlayVersion, parse_rules};
 use crate::profile::QuickPlayType;
 use crate::state::Credentials;
 use crate::{
@@ -13,8 +14,9 @@ use daedalus::{
     modded::SidedDataEntry,
 };
 use dunce::canonicalize;
-use hashlink::LinkedHashSet;
+use itertools::Itertools;
 use std::io::{BufRead, BufReader};
+use std::net::SocketAddr;
 use std::{collections::HashMap, path::Path};
 use uuid::Uuid;
 
@@ -28,18 +30,30 @@ pub fn get_class_paths(
     java_arch: &str,
     minecraft_updated: bool,
 ) -> crate::Result<String> {
-    let mut cps = libraries
+    launcher_class_path
         .iter()
-        .filter_map(|library| {
-            if let Some(rules) = &library.rules {
-                if !parse_rules(
+        .map(|path| {
+            Ok(canonicalize(path)
+                .map_err(|_| {
+                    crate::ErrorKind::LauncherError(format!(
+                        "Specified class path {} does not exist",
+                        path.to_string_lossy()
+                    ))
+                    .as_error()
+                })?
+                .to_string_lossy()
+                .to_string())
+        })
+        .chain(libraries.iter().filter_map(|library| {
+            if let Some(rules) = &library.rules
+                && !parse_rules(
                     rules,
                     java_arch,
                     &QuickPlayType::None,
                     minecraft_updated,
-                ) {
-                    return None;
-                }
+                )
+            {
+                return None;
             }
 
             if !library.include_in_classpath {
@@ -47,28 +61,10 @@ pub fn get_class_paths(
             }
 
             Some(get_lib_path(libraries_path, &library.name, false))
+        }))
+        .process_results(|iter| {
+            iter.unique().join(classpath_separator(java_arch))
         })
-        .collect::<Result<LinkedHashSet<_>, _>>()?;
-
-    for launcher_path in launcher_class_path {
-        cps.insert(
-            canonicalize(launcher_path)
-                .map_err(|_| {
-                    crate::ErrorKind::LauncherError(format!(
-                        "Specified class path {} does not exist",
-                        launcher_path.to_string_lossy()
-                    ))
-                    .as_error()
-                })?
-                .to_string_lossy()
-                .to_string(),
-        );
-    }
-
-    Ok(cps
-        .into_iter()
-        .collect::<Vec<_>>()
-        .join(classpath_separator(java_arch)))
 }
 
 pub fn get_class_paths_jar<T: AsRef<str>>(
@@ -115,12 +111,15 @@ pub fn get_jvm_arguments(
     libraries_path: &Path,
     log_configs_path: &Path,
     class_paths: &str,
+    agent_path: &Path,
     version_name: &str,
     memory: MemorySettings,
     custom_args: Vec<String>,
     java_arch: &str,
     quick_play_type: &QuickPlayType,
+    quick_play_version: QuickPlayVersion,
     log_config: Option<&LoggingConfiguration>,
+    ipc_addr: SocketAddr,
 ) -> crate::Result<Vec<String>> {
     let mut parsed_arguments = Vec::new();
 
@@ -155,13 +154,50 @@ pub fn get_jvm_arguments(
         parsed_arguments.push("-cp".to_string());
         parsed_arguments.push(class_paths.to_string());
     }
+
     parsed_arguments.push(format!("-Xmx{}M", memory.maximum));
+
     if let Some(LoggingConfiguration::Log4j2Xml { argument, file }) = log_config
     {
         let full_path = log_configs_path.join(&file.id);
         let full_path = full_path.to_string_lossy();
         parsed_arguments.push(argument.replace("${path}", &full_path));
     }
+
+    parsed_arguments.push(format!(
+        "-javaagent:{}",
+        canonicalize(agent_path)
+            .map_err(|_| {
+                crate::ErrorKind::LauncherError(format!(
+                    "Specified Java Agent path {} does not exist",
+                    libraries_path.to_string_lossy()
+                ))
+                .as_error()
+            })?
+            .to_string_lossy()
+    ));
+
+    parsed_arguments
+        .push(format!("-Dmodrinth.internal.ipc.host={}", ipc_addr.ip()));
+    parsed_arguments
+        .push(format!("-Dmodrinth.internal.ipc.port={}", ipc_addr.port()));
+
+    parsed_arguments.push(format!(
+        "-Dmodrinth.internal.quickPlay.serverVersion={}",
+        serde_json::to_value(quick_play_version.server)?
+            .as_str()
+            .unwrap()
+    ));
+    if let QuickPlayType::Server(server) = quick_play_type
+        && quick_play_version.server == QuickPlayServerVersion::Injected
+    {
+        let (host, port) = server.require_resolved()?;
+        parsed_arguments.extend_from_slice(&[
+            format!("-Dmodrinth.internal.quickPlay.host={host}"),
+            format!("-Dmodrinth.internal.quickPlay.port={port}"),
+        ]);
+    }
+
     for arg in custom_args {
         if !arg.is_empty() {
             parsed_arguments.push(arg);
@@ -225,13 +261,13 @@ pub async fn get_minecraft_arguments(
     resolution: WindowSize,
     java_arch: &str,
     quick_play_type: &QuickPlayType,
+    quick_play_version: QuickPlayVersion,
 ) -> crate::Result<Vec<String>> {
     let access_token = credentials.access_token.clone();
     let profile = credentials.maybe_online_profile().await;
+    let mut parsed_arguments = Vec::new();
 
     if let Some(arguments) = arguments {
-        let mut parsed_arguments = Vec::new();
-
         parse_arguments(
             arguments,
             &mut parsed_arguments,
@@ -253,10 +289,7 @@ pub async fn get_minecraft_arguments(
             java_arch,
             quick_play_type,
         )?;
-
-        Ok(parsed_arguments)
     } else if let Some(legacy_arguments) = legacy_arguments {
-        let mut parsed_arguments = Vec::new();
         for x in legacy_arguments.split(' ') {
             parsed_arguments.push(parse_minecraft_argument(
                 &x.replace(' ', TEMPORARY_REPLACE_CHAR),
@@ -272,10 +305,21 @@ pub async fn get_minecraft_arguments(
                 quick_play_type,
             )?);
         }
-        Ok(parsed_arguments)
-    } else {
-        Ok(Vec::new())
     }
+
+    if let QuickPlayType::Server(server) = quick_play_type
+        && quick_play_version.server == QuickPlayServerVersion::BuiltinLegacy
+    {
+        let (host, port) = server.require_resolved()?;
+        parsed_arguments.extend_from_slice(&[
+            "--server".to_string(),
+            host.to_string(),
+            "--port".to_string(),
+            port.to_string(),
+        ]);
+    }
+
+    Ok(parsed_arguments)
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -354,9 +398,9 @@ fn parse_minecraft_argument(
         )
         .replace(
             "${quickPlayMultiplayer}",
-            match quick_play_type {
-                QuickPlayType::Server(address) => address,
-                _ => "",
+            &match quick_play_type {
+                QuickPlayType::Server(address) => address.to_string(),
+                _ => "".to_string(),
             },
         ))
 }
@@ -461,10 +505,10 @@ pub async fn get_processor_main_class(
             let mut line = line.map_err(IOError::from)?;
             line.retain(|c| !c.is_whitespace());
 
-            if line.starts_with("Main-Class:") {
-                if let Some(class) = line.split(':').nth(1) {
-                    return Ok(Some(class.to_string()));
-                }
+            if line.starts_with("Main-Class:")
+                && let Some(class) = line.split(':').nth(1)
+            {
+                return Ok(Some(class.to_string()));
             }
         }
 

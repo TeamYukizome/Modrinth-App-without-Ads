@@ -1,6 +1,6 @@
 //! Functions for fetching information from the Internet
 use super::io::{self, IOError};
-use crate::config::{MODRINTH_API_URL, MODRINTH_API_URL_V3};
+use crate::ErrorKind;
 use crate::event::LoadingBarId;
 use crate::event::emit::emit_loading;
 use bytes::Bytes;
@@ -84,8 +84,8 @@ pub async fn fetch_advanced(
         .as_ref()
         .is_none_or(|x| &*x.0.to_lowercase() != "authorization")
         && (url.starts_with("https://cdn.modrinth.com")
-            || url.starts_with(MODRINTH_API_URL)
-            || url.starts_with(MODRINTH_API_URL_V3))
+            || url.starts_with(env!("MODRINTH_API_URL"))
+            || url.starts_with(env!("MODRINTH_API_URL_V3")))
     {
         crate::state::ModrinthCredentials::get_active(exec).await?
     } else {
@@ -109,32 +109,31 @@ pub async fn fetch_advanced(
 
         let result = req.send().await;
         match result {
-            Ok(x) => {
-                if x.status().is_server_error() {
-                    if attempt <= FETCH_ATTEMPTS {
-                        continue;
-                    } else {
-                        return Err(crate::Error::from(
-                            crate::ErrorKind::OtherError(
-                                "Server error when fetching content"
-                                    .to_string(),
-                            ),
-                        ));
+            Ok(resp) => {
+                if resp.status().is_server_error() && attempt <= FETCH_ATTEMPTS
+                {
+                    continue;
+                }
+                if resp.status().is_client_error()
+                    || resp.status().is_server_error()
+                {
+                    let backup_error = resp.error_for_status_ref().unwrap_err();
+                    if let Ok(error) = resp.json().await {
+                        return Err(ErrorKind::LabrinthError(error).into());
                     }
+                    return Err(backup_error.into());
                 }
 
                 let bytes = if let Some((bar, total)) = &loading_bar {
-                    let length = x.content_length();
+                    let length = resp.content_length();
                     if let Some(total_size) = length {
                         use futures::StreamExt;
-                        let mut stream = x.bytes_stream();
+                        let mut stream = resp.bytes_stream();
                         let mut bytes = Vec::new();
                         while let Some(item) = stream.next().await {
-                            let chunk = item.or(Err(
-                                crate::error::ErrorKind::NoValueFor(
-                                    "fetch bytes".to_string(),
-                                ),
-                            ))?;
+                            let chunk = item.or(Err(ErrorKind::NoValueFor(
+                                "fetch bytes".to_string(),
+                            )))?;
                             bytes.append(&mut chunk.to_vec());
                             emit_loading(
                                 bar,
@@ -146,10 +145,10 @@ pub async fn fetch_advanced(
 
                         Ok(bytes::Bytes::from(bytes))
                     } else {
-                        x.bytes().await
+                        resp.bytes().await
                     }
                 } else {
-                    x.bytes().await
+                    resp.bytes().await
                 };
 
                 if let Ok(bytes) = bytes {
@@ -159,7 +158,7 @@ pub async fn fetch_advanced(
                             if attempt <= FETCH_ATTEMPTS {
                                 continue;
                             } else {
-                                return Err(crate::ErrorKind::HashError(
+                                return Err(ErrorKind::HashError(
                                     sha1.to_string(),
                                     hash,
                                 )
@@ -195,10 +194,9 @@ pub async fn fetch_mirrors(
     exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
 ) -> crate::Result<Bytes> {
     if mirrors.is_empty() {
-        return Err(crate::ErrorKind::InputError(
-            "No mirrors provided!".to_string(),
-        )
-        .into());
+        return Err(
+            ErrorKind::InputError("No mirrors provided!".to_string()).into()
+        );
     }
 
     for (index, mirror) in mirrors.iter().enumerate() {
@@ -255,7 +253,7 @@ where
 }
 
 #[tracing::instrument(skip(bytes, semaphore))]
-pub async fn write<'a>(
+pub async fn write(
     path: &Path,
     bytes: &[u8],
     semaphore: &IoSemaphore,
@@ -277,8 +275,8 @@ pub async fn write<'a>(
 }
 
 pub async fn copy(
-    src: impl AsRef<std::path::Path>,
-    dest: impl AsRef<std::path::Path>,
+    src: impl AsRef<Path>,
+    dest: impl AsRef<Path>,
     semaphore: &IoSemaphore,
 ) -> crate::Result<()> {
     let src: &Path = src.as_ref();

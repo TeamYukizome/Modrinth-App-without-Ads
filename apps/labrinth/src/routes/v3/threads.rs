@@ -289,36 +289,33 @@ pub async fn thread_get(
     .await?
     .1;
 
-    if let Some(mut data) = thread_data {
-        if is_authorized_thread(&data, &user, &pool).await? {
-            let authors = &mut data.members;
+    if let Some(mut data) = thread_data
+        && is_authorized_thread(&data, &user, &pool).await?
+    {
+        let authors = &mut data.members;
 
-            authors.append(
-                &mut data
-                    .messages
-                    .iter()
-                    .filter_map(|x| {
-                        if x.hide_identity && !user.role.is_mod() {
-                            None
-                        } else {
-                            x.author_id
-                        }
-                    })
-                    .collect::<Vec<_>>(),
-            );
+        authors.append(
+            &mut data
+                .messages
+                .iter()
+                .filter_map(|x| {
+                    if x.hide_identity && !user.role.is_mod() {
+                        None
+                    } else {
+                        x.author_id
+                    }
+                })
+                .collect::<Vec<_>>(),
+        );
 
-            let users: Vec<User> = database::models::DBUser::get_many_ids(
-                authors, &**pool, &redis,
-            )
-            .await?
-            .into_iter()
-            .map(From::from)
-            .collect();
+        let users: Vec<User> =
+            database::models::DBUser::get_many_ids(authors, &**pool, &redis)
+                .await?
+                .into_iter()
+                .map(From::from)
+                .collect();
 
-            return Ok(
-                HttpResponse::Ok().json(Thread::from(data, users, &user))
-            );
-        }
+        return Ok(HttpResponse::Ok().json(Thread::from(data, users, &user)));
     }
     Err(ApiError::NotFound)
 }
@@ -385,6 +382,8 @@ pub async fn thread_send_message(
 
     let string: database::models::DBThreadId = info.into_inner().0.into();
 
+    let is_private: bool;
+
     if let MessageBody::Text {
         body,
         replying_to,
@@ -424,6 +423,8 @@ pub async fn thread_send_message(
                 ));
             }
         }
+
+        is_private = *private;
     } else {
         return Err(ApiError::InvalidInput(
             "You may only send text messages through this route!".to_string(),
@@ -454,33 +455,33 @@ pub async fn thread_send_message(
             )
             .await?;
 
-            if let Some(project) = project {
-                if project.inner.status != ProjectStatus::Processing
-                    && user.role.is_mod()
-                {
-                    let members =
-                        database::models::DBTeamMember::get_from_team_full(
-                            project.inner.team_id,
-                            &**pool,
-                            &redis,
-                        )
-                        .await?;
-
-                    NotificationBuilder {
-                        body: NotificationBody::ModeratorMessage {
-                            thread_id: thread.id.into(),
-                            message_id: id.into(),
-                            project_id: Some(project.inner.id.into()),
-                            report_id: None,
-                        },
-                    }
-                    .insert_many(
-                        members.into_iter().map(|x| x.user_id).collect(),
-                        &mut transaction,
+            if let Some(project) = project
+                && project.inner.status != ProjectStatus::Processing
+                && user.role.is_mod()
+                && !is_private
+            {
+                let members =
+                    database::models::DBTeamMember::get_from_team_full(
+                        project.inner.team_id,
+                        &**pool,
                         &redis,
                     )
                     .await?;
+
+                NotificationBuilder {
+                    body: NotificationBody::ModeratorMessage {
+                        thread_id: thread.id.into(),
+                        message_id: id.into(),
+                        project_id: Some(project.inner.id.into()),
+                        report_id: None,
+                    },
                 }
+                .insert_many(
+                    members.into_iter().map(|x| x.user_id).collect(),
+                    &mut transaction,
+                    &redis,
+                )
+                .await?;
             }
         } else if let Some(report_id) = thread.report_id {
             let report = database::models::report_item::DBReport::get(
@@ -495,7 +496,7 @@ pub async fn thread_send_message(
                     ));
                 }
 
-                if user.id != report.reporter.into() {
+                if user.id != report.reporter.into() && !is_private {
                     NotificationBuilder {
                         body: NotificationBody::ModeratorMessage {
                             thread_id: thread.id.into(),

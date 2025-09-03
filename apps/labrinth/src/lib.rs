@@ -16,7 +16,6 @@ use util::cors::default_cors;
 
 use crate::background_task::update_versions;
 use crate::queue::moderation::AutomatedModerationQueue;
-use crate::queue::payouts::insert_bank_balances;
 use crate::util::env::{parse_strings_from_var, parse_var};
 use crate::util::ratelimit::{AsyncRateLimiter, GCRAParameters};
 use sync::friends::handle_pubsub;
@@ -71,7 +70,7 @@ pub fn app_setup(
     enable_background_tasks: bool,
 ) -> LabrinthConfig {
     info!(
-        "Starting Labrinth on {}",
+        "Starting labrinth on {}",
         dotenvy::var("BIND_ADDR").unwrap()
     );
 
@@ -252,24 +251,6 @@ pub fn app_setup(
             .to_string(),
     };
 
-    let payouts_queue = web::Data::new(PayoutsQueue::new());
-
-    let payouts_queue_ref = payouts_queue.clone();
-    let pool_ref = pool.clone();
-    scheduler.run(Duration::from_secs(60 * 60 * 6), move || {
-        let payouts_queue_ref = payouts_queue_ref.clone();
-        let pool_ref = pool_ref.clone();
-        async move {
-            info!("Started updating bank balances");
-            let result =
-                insert_bank_balances(&payouts_queue_ref, &pool_ref).await;
-            if let Err(e) = result {
-                warn!("Bank balance update failed: {:?}", e);
-            }
-            info!("Done updating bank balances");
-        }
-    });
-
     let active_sockets = web::Data::new(ActiveSockets::default());
 
     {
@@ -292,7 +273,7 @@ pub fn app_setup(
         ip_salt,
         search_config,
         session_queue,
-        payouts_queue,
+        payouts_queue: web::Data::new(PayoutsQueue::new()),
         analytics_queue,
         active_sockets,
         automated_moderation_queue,
@@ -500,6 +481,13 @@ pub fn check_env_vars() -> bool {
     failed |= check_var::<String>("BREX_API_KEY");
 
     failed |= check_var::<String>("DELPHI_URL");
+
+    failed |= check_var::<String>("AVALARA_1099_API_URL");
+    failed |= check_var::<String>("AVALARA_1099_API_KEY");
+    failed |= check_var::<String>("AVALARA_1099_API_TEAM_ID");
+    failed |= check_var::<String>("AVALARA_1099_COMPANY_ID");
+
+    failed |= check_var::<String>("COMPLIANCE_PAYOUT_THRESHOLD");
 
     failed |= check_var::<String>("ARCHON_URL");
 

@@ -191,6 +191,11 @@ fn main() {
         .plugin(
             tauri_plugin_window_state::Builder::default()
                 .with_filename("app-window-state.json")
+                // Use *only* POSITION and SIZE state flags, because saving VISIBLE causes the `visible: false` to not take effect
+                .with_state_flags(
+                    tauri_plugin_window_state::StateFlags::POSITION
+                        | tauri_plugin_window_state::StateFlags::SIZE,
+                )
                 .build(),
         )
         .setup(|app| {
@@ -233,10 +238,10 @@ fn main() {
             });
 
             #[cfg(not(target_os = "linux"))]
-            if let Some(window) = app.get_window("main") {
-                if let Err(e) = window.set_shadow(true) {
-                    tracing::warn!("Failed to set window shadow: {e}");
-                }
+            if let Some(window) = app.get_window("main")
+                && let Err(e) = window.set_shadow(true)
+            {
+                tracing::warn!("Failed to set window shadow: {e}");
             }
 
             Ok(())

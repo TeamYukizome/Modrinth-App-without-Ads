@@ -3,7 +3,16 @@ use std::sync::Arc;
 
 use crate::{profile, util};
 use data_url::DataUrlError;
+use derive_more::Display;
+use serde::{Deserialize, Serialize};
 use tracing_error::InstrumentError;
+
+#[derive(Serialize, Deserialize, Debug, Display)]
+#[display("{description}")]
+pub struct LabrinthError {
+    pub error: String,
+    pub description: String,
+}
 
 #[derive(thiserror::Error, Debug)]
 pub enum ErrorKind {
@@ -55,6 +64,9 @@ pub enum ErrorKind {
 
     #[error("Error fetching URL: {0}")]
     FetchError(#[from] reqwest::Error),
+
+    #[error("{0}")]
+    LabrinthError(LabrinthError),
 
     #[error("Websocket error: {0}")]
     WSError(#[from] async_tungstenite::tungstenite::Error),
@@ -151,6 +163,9 @@ pub enum ErrorKind {
         "A skin texture must have a dimension of either 64x64 or 64x32 pixels"
     )]
     InvalidSkinTexture,
+
+    #[error("RPC error: {0}")]
+    RpcError(String),
 }
 
 #[derive(Debug)]
