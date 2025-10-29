@@ -1,4 +1,4 @@
-name: 'Modrinth App build'
+name: Modrinth App release
 on:
   # push:
   #   branches:
