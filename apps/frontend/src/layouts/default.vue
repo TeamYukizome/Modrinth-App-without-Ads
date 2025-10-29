@@ -27,6 +27,93 @@
 		</div>
 	</div>
 	<div ref="main_page" class="layout" :class="{ 'expanded-mobile-nav': isBrowseMenuOpen }">
+		<PagewideBanner v-if="isRussia && !flags.hideRussiaCensorshipBanner" variant="error">
+			<template #title>
+				<div class="flex flex-col gap-1 text-contrast">
+					<span lang="ru">К сожалению, Modrinth скоро станет недоступен в России</span>
+					<span class="text-sm font-medium opacity-50" lang="en">
+						Modrinth will soon be unavailable in Russia
+					</span>
+				</div>
+			</template>
+			<template #description>
+				<p class="m-0" lang="ru">
+					Российское правительство потребовало от нас заблокировать некоторые проекты на Modrinth,
+					но мы решили отказать им в цензуре.
+				</p>
+				<p class="-mt-2 mb-0 text-sm opacity-50" lang="en">
+					The Russian government has asked us to censor certain topics on Modrinth and we have
+					decided to refuse to comply with their requests.
+				</p>
+
+				<p class="m-0 font-semibold" lang="ru">
+					Пожалуйста, найдите какой-нибудь надёжный VPN или прокси, чтобы не потерять доступ к
+					Modrinth.
+				</p>
+				<p class="-mt-2 mb-0 text-sm opacity-50" lang="en">
+					Please seek a reputable VPN or proxy of some kind to continue to access Modrinth in
+					Russia.
+				</p>
+			</template>
+			<template #actions>
+				<div class="mt-2 flex w-fit gap-2">
+					<ButtonStyled color="brand">
+						<nuxt-link to="/news/article/standing-by-our-values-russian">
+							<BookTextIcon /> Прочесть наше полное заявление
+							<span class="text-xs font-medium">(Перевод на русский)</span>
+						</nuxt-link>
+					</ButtonStyled>
+					<ButtonStyled>
+						<nuxt-link to="/news/article/standing-by-our-values">
+							<BookTextIcon /> Read our full statement
+							<span class="text-xs font-medium">(English)</span>
+						</nuxt-link>
+					</ButtonStyled>
+				</div>
+			</template>
+			<template #actions_right>
+				<ButtonStyled circular type="transparent">
+					<button
+						v-tooltip="formatMessage(commonMessages.closeButton)"
+						@click="hideRussiaCensorshipBanner"
+					>
+						<XIcon :aria-label="formatMessage(commonMessages.closeButton)" />
+					</button>
+				</ButtonStyled>
+			</template>
+		</PagewideBanner>
+		<PagewideBanner v-if="showTinMismatchBanner" variant="error">
+			<template #title>
+				<span>{{ formatMessage(tinMismatchBannerMessages.title) }}</span>
+			</template>
+			<template #description>
+				<span>{{ formatMessage(tinMismatchBannerMessages.description) }}</span>
+			</template>
+			<template #actions>
+				<div class="flex w-fit flex-row">
+					<ButtonStyled color="red">
+						<nuxt-link to="https://support.modrinth.com" target="_blank" rel="noopener">
+							<MessageIcon /> {{ formatMessage(tinMismatchBannerMessages.action) }}
+						</nuxt-link>
+					</ButtonStyled>
+				</div>
+			</template>
+		</PagewideBanner>
+		<PagewideBanner v-if="showTaxComplianceBanner" variant="warning">
+			<template #title>
+				<span>{{ formatMessage(taxBannerMessages.title) }}</span>
+			</template>
+			<template #description>
+				<span>{{ formatMessage(taxBannerMessages.description) }}</span>
+			</template>
+			<template #actions>
+				<ButtonStyled color="orange">
+					<button @click="openTaxForm">
+						<FileTextIcon /> {{ formatMessage(taxBannerMessages.action) }}
+					</button>
+				</ButtonStyled>
+			</template>
+		</PagewideBanner>
 		<PagewideBanner
 			v-if="auth.user && !auth.user.email_verified && route.path !== '/auth/verify-email'"
 			variant="warning"
@@ -93,7 +180,12 @@
 				{{ formatMessage(stagingBannerMessages.description) }}
 			</template>
 			<template #actions_right>
-				<Button transparent icon-only aria-label="Close" @click="hideStagingBanner">
+				<Button
+					transparent
+					icon-only
+					:aria-label="formatMessage(commonMessages.closeButton)"
+					@click="hideStagingBanner"
+				>
 					<XIcon aria-hidden="true" />
 				</Button>
 			</template>
@@ -111,11 +203,17 @@
 				}}
 			</template>
 		</PagewideBanner>
+
+		<CreatorTaxFormModal
+			ref="taxFormModalRef"
+			close-button-text="Close"
+			:emit-success-on-close="false"
+		/>
 		<header
 			class="experimental-styles-within desktop-only relative z-[5] mx-auto grid max-w-[1280px] grid-cols-[1fr_auto] items-center gap-2 px-6 py-4 lg:grid-cols-[auto_1fr_auto]"
 		>
 			<div>
-				<NuxtLink to="/" aria-label="Modrinth home page">
+				<NuxtLink to="/" :aria-label="formatMessage(messages.modrinthHomePage)">
 					<TextLogo aria-hidden="true" class="h-7 w-auto text-contrast" />
 				</NuxtLink>
 			</div>
@@ -130,7 +228,10 @@
 							route.name === 'search-mods' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/mods"> <BoxIcon aria-hidden="true" /> Mods </nuxt-link>
+						<nuxt-link to="/mods">
+							<BoxIcon aria-hidden="true" />
+							{{ formatMessage(commonProjectTypeCategoryMessages.mod) }}
+						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled
 						type="transparent"
@@ -142,7 +243,8 @@
 						"
 					>
 						<nuxt-link to="/resourcepacks">
-							<PaintbrushIcon aria-hidden="true" /> Resource Packs
+							<PaintbrushIcon aria-hidden="true" />
+							{{ formatMessage(commonProjectTypeCategoryMessages.resourcepack) }}
 						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled
@@ -152,7 +254,10 @@
 							route.name === 'search-datapacks' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/datapacks"> <BracesIcon aria-hidden="true" /> Data Packs </nuxt-link>
+						<nuxt-link to="/datapacks">
+							<BracesIcon aria-hidden="true" />
+							{{ formatMessage(commonProjectTypeCategoryMessages.datapack) }}
+						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled
 						type="transparent"
@@ -161,7 +266,10 @@
 							route.name === 'search-modpacks' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/modpacks"> <PackageOpenIcon aria-hidden="true" /> Modpacks </nuxt-link>
+						<nuxt-link to="/modpacks">
+							<PackageOpenIcon aria-hidden="true" />
+							{{ formatMessage(commonProjectTypeCategoryMessages.modpack) }}
+						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled
 						type="transparent"
@@ -170,7 +278,10 @@
 							route.name === 'search-shaders' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/shaders"> <GlassesIcon aria-hidden="true" /> Shaders </nuxt-link>
+						<nuxt-link to="/shaders">
+							<GlassesIcon aria-hidden="true" />
+							{{ formatMessage(commonProjectTypeCategoryMessages.shader) }}
+						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled
 						type="transparent"
@@ -179,7 +290,10 @@
 							route.name === 'search-plugins' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/plugins"> <PlugIcon aria-hidden="true" /> Plugins </nuxt-link>
+						<nuxt-link to="/plugins">
+							<PlugIcon aria-hidden="true" />
+							{{ formatMessage(commonProjectTypeCategoryMessages.plugin) }}
+						</nuxt-link>
 					</ButtonStyled>
 				</template>
 				<template v-else>
@@ -244,18 +358,36 @@
 								aria-hidden="true"
 							/>
 							<CompassIcon v-else aria-hidden="true" />
-							<span class="hidden md:contents">Discover content</span>
-							<span class="contents md:hidden">Discover</span>
+							<span class="hidden md:contents">{{
+								formatMessage(navMenuMessages.discoverContent)
+							}}</span>
+							<span class="contents md:hidden">{{ formatMessage(navMenuMessages.discover) }}</span>
 							<DropdownIcon aria-hidden="true" class="h-5 w-5 text-secondary" />
 
-							<template #mods> <BoxIcon aria-hidden="true" /> Mods </template>
-							<template #resourcepacks>
-								<PaintbrushIcon aria-hidden="true" /> Resource Packs
+							<template #mods>
+								<BoxIcon aria-hidden="true" />
+								{{ formatMessage(commonProjectTypeCategoryMessages.mod) }}
 							</template>
-							<template #datapacks> <BracesIcon aria-hidden="true" /> Data Packs </template>
-							<template #plugins> <PlugIcon aria-hidden="true" /> Plugins </template>
-							<template #shaders> <GlassesIcon aria-hidden="true" /> Shaders </template>
-							<template #modpacks> <PackageOpenIcon aria-hidden="true" /> Modpacks </template>
+							<template #resourcepacks>
+								<PaintbrushIcon aria-hidden="true" />
+								{{ formatMessage(commonProjectTypeCategoryMessages.resourcepack) }}
+							</template>
+							<template #datapacks>
+								<BracesIcon aria-hidden="true" />
+								{{ formatMessage(commonProjectTypeCategoryMessages.datapack) }}
+							</template>
+							<template #plugins>
+								<PlugIcon aria-hidden="true" />
+								{{ formatMessage(commonProjectTypeCategoryMessages.plugin) }}
+							</template>
+							<template #shaders>
+								<GlassesIcon aria-hidden="true" />
+								{{ formatMessage(commonProjectTypeCategoryMessages.shader) }}
+							</template>
+							<template #modpacks>
+								<PackageOpenIcon aria-hidden="true" />
+								{{ formatMessage(commonProjectTypeCategoryMessages.modpack) }}
+							</template>
 						</TeleportOverflowMenu>
 					</ButtonStyled>
 					<ButtonStyled
@@ -270,14 +402,18 @@
 					>
 						<nuxt-link to="/servers">
 							<ServerIcon aria-hidden="true" />
-							Host a server
+							{{ formatMessage(navMenuMessages.hostAServer) }}
 						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled type="transparent" :highlighted="route.name === 'app'">
 						<nuxt-link to="/app">
 							<DownloadIcon aria-hidden="true" />
-							<span class="hidden md:contents">Get Modrinth App</span>
-							<span class="contents md:hidden">Modrinth App</span>
+							<span class="hidden md:contents">{{
+								formatMessage(navMenuMessages.getModrinthApp)
+							}}</span>
+							<span class="contents md:hidden">{{
+								formatMessage(navMenuMessages.modrinthApp)
+							}}</span>
 						</nuxt-link>
 					</ButtonStyled>
 				</template>
@@ -290,7 +426,7 @@
 						position="bottom"
 						direction="left"
 						:dropdown-id="`${basePopoutId}-staff`"
-						aria-label="Create new..."
+						:aria-label="formatMessage(messages.createNew)"
 						:options="[
 							{
 								id: 'review-projects',
@@ -325,17 +461,32 @@
 								link: '/admin/servers/notices',
 								shown: isAdmin(auth.user),
 							},
+							{
+								id: 'servers-nodes',
+								color: 'primary',
+								link: '/admin/servers/nodes',
+								shown: isAdmin(auth.user),
+							},
 						]"
 					>
 						<ModrinthIcon aria-hidden="true" />
 						<DropdownIcon aria-hidden="true" class="h-5 w-5 text-secondary" />
-						<template #review-projects> <ScaleIcon aria-hidden="true" /> Review projects </template>
-						<template #review-reports> <ReportIcon aria-hidden="true" /> Reports </template>
-						<template #user-lookup> <UserIcon aria-hidden="true" /> Lookup by email </template>
-						<template #file-lookup> <FileIcon aria-hidden="true" /> File lookup </template>
-						<template #servers-notices>
-							<IssuesIcon aria-hidden="true" /> Manage server notices
+						<template #review-projects>
+							<ScaleIcon aria-hidden="true" /> {{ formatMessage(messages.reviewProjects) }}
 						</template>
+						<template #review-reports>
+							<ReportIcon aria-hidden="true" /> {{ formatMessage(messages.reports) }}
+						</template>
+						<template #user-lookup>
+							<UserIcon aria-hidden="true" /> {{ formatMessage(messages.lookupByEmail) }}
+						</template>
+						<template #file-lookup>
+							<FileIcon aria-hidden="true" /> {{ formatMessage(messages.fileLookup) }}
+						</template>
+						<template #servers-notices>
+							<IssuesIcon aria-hidden="true" /> {{ formatMessage(messages.manageServerNotices) }}
+						</template>
+						<template #servers-nodes> <ServerIcon aria-hidden="true" /> Server Nodes </template>
 					</OverflowMenu>
 				</ButtonStyled>
 				<ButtonStyled type="transparent">
@@ -345,7 +496,7 @@
 						position="bottom"
 						direction="left"
 						:dropdown-id="`${basePopoutId}-create`"
-						aria-label="Create new..."
+						:aria-label="formatMessage(messages.createNew)"
 						:options="[
 							{
 								id: 'new-project',
@@ -364,13 +515,15 @@
 					>
 						<PlusIcon aria-hidden="true" />
 						<DropdownIcon aria-hidden="true" class="h-5 w-5 text-secondary" />
-						<template #new-project> <BoxIcon aria-hidden="true" /> New project </template>
+						<template #new-project>
+							<BoxIcon aria-hidden="true" /> {{ formatMessage(messages.newProject) }}
+						</template>
 						<!-- <template #import-project> <BoxImportIcon /> Import project </template>-->
 						<template #new-collection>
-							<CollectionIcon aria-hidden="true" /> New collection
+							<CollectionIcon aria-hidden="true" /> {{ formatMessage(messages.newCollection) }}
 						</template>
 						<template #new-organization>
-							<OrganizationIcon aria-hidden="true" /> New organization
+							<OrganizationIcon aria-hidden="true" /> {{ formatMessage(messages.newOrganization) }}
 						</template>
 					</OverflowMenu>
 				</ButtonStyled>
@@ -382,34 +535,57 @@
 				>
 					<Avatar :src="auth.user.avatar_url" aria-hidden="true" circle />
 					<DropdownIcon class="h-5 w-5 text-secondary" />
-					<template #profile> <UserIcon aria-hidden="true" /> Profile </template>
-					<template #notifications> <BellIcon aria-hidden="true" /> Notifications </template>
-					<template #saved> <BookmarkIcon aria-hidden="true" /> Saved projects </template>
-					<template #servers> <ServerIcon aria-hidden="true" /> My servers </template>
+					<template #profile>
+						<UserIcon aria-hidden="true" /> {{ formatMessage(messages.profile) }}
+					</template>
+					<template #notifications>
+						<BellIcon aria-hidden="true" /> {{ formatMessage(commonMessages.notificationsLabel) }}
+					</template>
+					<template #saved>
+						<BookmarkIcon aria-hidden="true" /> {{ formatMessage(messages.savedProjects) }}
+					</template>
+					<template #servers>
+						<ServerIcon aria-hidden="true" /> {{ formatMessage(commonMessages.serversLabel) }}
+					</template>
 					<template #plus>
-						<ArrowBigUpDashIcon aria-hidden="true" /> Upgrade to Modrinth+
+						<ArrowBigUpDashIcon aria-hidden="true" />
+						{{ formatMessage(messages.upgradeToModrinthPlus) }}
 					</template>
-					<template #settings> <SettingsIcon aria-hidden="true" /> Settings </template>
-					<template #flags> <ReportIcon aria-hidden="true" /> Feature flags </template>
-					<template #projects> <BoxIcon aria-hidden="true" /> Projects </template>
+					<template #settings>
+						<SettingsIcon aria-hidden="true" /> {{ formatMessage(commonMessages.settingsLabel) }}
+					</template>
+					<template #flags>
+						<ReportIcon aria-hidden="true" /> {{ formatMessage(messages.featureFlags) }}
+					</template>
+					<template #projects>
+						<BoxIcon aria-hidden="true" /> {{ formatMessage(messages.projects) }}
+					</template>
 					<template #organizations>
-						<OrganizationIcon aria-hidden="true" /> Organizations
+						<OrganizationIcon aria-hidden="true" /> {{ formatMessage(messages.organizations) }}
 					</template>
-					<template #revenue> <CurrencyIcon aria-hidden="true" /> Revenue </template>
-					<template #analytics> <ChartIcon aria-hidden="true" /> Analytics </template>
-					<template #moderation> <ScaleIcon aria-hidden="true" /> Moderation </template>
-					<template #sign-out> <LogOutIcon aria-hidden="true" /> Sign out </template>
+					<template #revenue>
+						<CurrencyIcon aria-hidden="true" /> {{ formatMessage(messages.revenue) }}
+					</template>
+					<template #analytics>
+						<ChartIcon aria-hidden="true" /> {{ formatMessage(messages.analytics) }}
+					</template>
+					<template #moderation>
+						<ScaleIcon aria-hidden="true" /> {{ formatMessage(commonMessages.moderationLabel) }}
+					</template>
+					<template #sign-out>
+						<LogOutIcon aria-hidden="true" /> {{ formatMessage(commonMessages.signOutButton) }}
+					</template>
 				</OverflowMenu>
 				<template v-else>
 					<ButtonStyled color="brand">
 						<nuxt-link to="/auth/sign-in">
 							<LogInIcon aria-hidden="true" />
-							Sign in
+							{{ formatMessage(commonMessages.signInButton) }}
 						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled circular>
-						<nuxt-link v-tooltip="'Settings'" to="/settings">
-							<SettingsIcon aria-label="Settings" />
+						<nuxt-link :v-tooltip="formatMessage(commonMessages.settingsLabel)" to="/settings">
+							<SettingsIcon :aria-label="formatMessage(commonMessages.settingsLabel)" />
 						</nuxt-link>
 					</ButtonStyled>
 				</template>
@@ -489,7 +665,7 @@
 						</NuxtLink>
 						<NuxtLink v-if="flags.developerMode" class="iconified-button" to="/flags">
 							<ReportIcon aria-hidden="true" />
-							Feature flags
+							{{ formatMessage(messages.featureFlags) }}
 						</NuxtLink>
 					</template>
 					<NuxtLink class="iconified-button" to="/settings">
@@ -510,7 +686,7 @@
 					to="/"
 					class="tab button-animation"
 					:title="formatMessage(navMenuMessages.home)"
-					aria-label="Home"
+					:aria-label="formatMessage(navMenuMessages.home)"
 				>
 					<HomeIcon aria-hidden="true" />
 				</NuxtLink>
@@ -518,7 +694,7 @@
 					class="tab button-animation"
 					:class="{ 'router-link-exact-active': isBrowseMenuOpen }"
 					:title="formatMessage(navMenuMessages.search)"
-					aria-label="Search"
+					:aria-label="formatMessage(navMenuMessages.search)"
 					@click="toggleBrowseMenu()"
 				>
 					<template v-if="auth.user">
@@ -533,7 +709,7 @@
 					<NuxtLink
 						to="/dashboard/notifications"
 						class="tab button-animation"
-						aria-label="Notifications"
+						:aria-label="formatMessage(commonMessages.notificationsLabel)"
 						:class="{
 							'no-active': isMobileMenuOpen || isBrowseMenuOpen,
 						}"
@@ -550,7 +726,7 @@
 					<NuxtLink
 						to="/dashboard"
 						class="tab button-animation"
-						aria-label="Dashboard"
+						:aria-label="formatMessage(commonMessages.dashboardLabel)"
 						:title="formatMessage(commonMessages.dashboardLabel)"
 					>
 						<ChartIcon aria-hidden="true" />
@@ -580,7 +756,7 @@
 			</div>
 		</header>
 		<main class="min-h-[calc(100vh-4.5rem-310.59px)]">
-			<ModalCreation v-if="auth.user" ref="modal_creation" />
+			<ProjectCreateModal v-if="auth.user" ref="modal_creation" />
 			<CollectionCreateModal ref="modal_collection_creation" />
 			<OrganizationCreateModal ref="modal_organization_creation" />
 			<slot id="main" />
@@ -595,7 +771,7 @@
 					<div
 						class="flex flex-col items-center gap-3 md:items-start"
 						role="region"
-						aria-label="Modrinth information"
+						:aria-label="formatMessage(messages.modrinthInformation)"
 					>
 						<TextLogo
 							aria-hidden="true"
@@ -678,6 +854,7 @@ import {
 	BellIcon,
 	BlueskyIcon,
 	BookmarkIcon,
+	BookTextIcon,
 	BoxIcon,
 	BracesIcon,
 	ChartIcon,
@@ -688,6 +865,7 @@ import {
 	DownloadIcon,
 	DropdownIcon,
 	FileIcon,
+	FileTextIcon,
 	GithubIcon,
 	GlassesIcon,
 	HamburgerIcon,
@@ -697,6 +875,7 @@ import {
 	LogInIcon,
 	LogOutIcon,
 	MastodonIcon,
+	MessageIcon,
 	ModrinthIcon,
 	MoonIcon,
 	OrganizationIcon,
@@ -719,6 +898,7 @@ import {
 	Button,
 	ButtonStyled,
 	commonMessages,
+	commonProjectTypeCategoryMessages,
 	injectNotificationManager,
 	OverflowMenu,
 	PagewideBanner,
@@ -727,12 +907,15 @@ import { isAdmin, isStaff } from '@modrinth/utils'
 import { IntlFormatted } from '@vintl/vintl/components'
 
 import TextLogo from '~/components/brand/TextLogo.vue'
-import CollectionCreateModal from '~/components/ui/CollectionCreateModal.vue'
-import ModalCreation from '~/components/ui/ModalCreation.vue'
-import OrganizationCreateModal from '~/components/ui/OrganizationCreateModal.vue'
+import CollectionCreateModal from '~/components/ui/create/CollectionCreateModal.vue'
+import OrganizationCreateModal from '~/components/ui/create/OrganizationCreateModal.vue'
+import ProjectCreateModal from '~/components/ui/create/ProjectCreateModal.vue'
+import CreatorTaxFormModal from '~/components/ui/dashboard/CreatorTaxFormModal.vue'
 import TeleportOverflowMenu from '~/components/ui/servers/TeleportOverflowMenu.vue'
 import { errors as generatedStateErrors } from '~/generated/state.json'
 import { getProjectTypeMessage } from '~/utils/i18n-project-type.ts'
+
+const country = useUserCountry()
 
 const { formatMessage } = useVIntl()
 
@@ -748,6 +931,67 @@ const config = useRuntimeConfig()
 const route = useNativeRoute()
 const router = useNativeRouter()
 const link = config.public.siteUrl + route.path.replace(/\/+$/, '')
+
+const { data: payoutBalance } = await useAsyncData('payout/balance', () =>
+	useBaseFetch('payout/balance', { apiVersion: 3 }),
+)
+
+const showTaxComplianceBanner = computed(() => {
+	if (flags.value.testTaxForm && auth.value.user) return true
+	const bal = payoutBalance.value
+	if (!bal) return false
+	const thresholdMet = (bal.withdrawn_ytd ?? 0) >= 600
+	const status = bal.form_completion_status ?? 'unknown'
+	const isComplete = status === 'complete'
+	const isTinMismatch = status === 'tin-mismatch'
+	return !!auth.value.user && thresholdMet && !isComplete && !isTinMismatch
+})
+
+const showTinMismatchBanner = computed(() => {
+	const bal = payoutBalance.value
+	if (!bal) return false
+	const status = bal.form_completion_status ?? 'unknown'
+	return !!auth.value.user && status === 'tin-mismatch'
+})
+
+const taxBannerMessages = defineMessages({
+	title: {
+		id: 'layout.banner.tax.title',
+		defaultMessage: 'Tax form required',
+	},
+	description: {
+		id: 'layout.banner.tax.description',
+		defaultMessage:
+			"You've already withdrawn over $600 from Modrinth this year. To comply with tax regulations, you need to complete a tax form. Your withdrawals are paused until this form is submitted.",
+	},
+	action: {
+		id: 'layout.banner.tax.action',
+		defaultMessage: 'Complete tax form',
+	},
+})
+
+const tinMismatchBannerMessages = defineMessages({
+	title: {
+		id: 'layout.banner.tin-mismatch.title',
+		defaultMessage: 'Tax form failed',
+	},
+	description: {
+		id: 'layout.banner.tin-mismatch.description',
+		defaultMessage:
+			"Your withdrawals are temporarily locked because your TIN or SSN didn't match IRS records. Please contact support to reset and resubmit your tax form.",
+	},
+	action: {
+		id: 'layout.banner.tin-mismatch.action',
+		defaultMessage: 'Contact support',
+	},
+})
+
+const taxFormModalRef = ref(null)
+function openTaxForm(e) {
+	if (taxFormModalRef.value && taxFormModalRef.value.startTaxForm) {
+		taxFormModalRef.value.startTaxForm(e)
+	}
+}
 
 const basePopoutId = useId()
 async function handleResendEmailVerification() {
@@ -848,6 +1092,26 @@ const navMenuMessages = defineMessages({
 		id: 'layout.nav.search',
 		defaultMessage: 'Search',
 	},
+	discoverContent: {
+		id: 'layout.nav.discover-content',
+		defaultMessage: 'Discover content',
+	},
+	discover: {
+		id: 'layout.nav.discover',
+		defaultMessage: 'Discover',
+	},
+	hostAServer: {
+		id: 'layout.nav.host-a-server',
+		defaultMessage: 'Host a server',
+	},
+	getModrinthApp: {
+		id: 'layout.nav.get-modrinth-app',
+		defaultMessage: 'Get Modrinth App',
+	},
+	modrinthApp: {
+		id: 'layout.nav.modrinth-app',
+		defaultMessage: 'Modrinth App',
+	},
 })
 
 const messages = defineMessages({
@@ -859,13 +1123,85 @@ const messages = defineMessages({
 		id: 'layout.avatar.alt',
 		defaultMessage: 'Your avatar',
 	},
-	getModrinthApp: {
-		id: 'layout.action.get-modrinth-app',
-		defaultMessage: 'Get Modrinth App',
-	},
 	changeTheme: {
 		id: 'layout.action.change-theme',
 		defaultMessage: 'Change theme',
+	},
+	modrinthHomePage: {
+		id: 'layout.nav.modrinth-home-page',
+		defaultMessage: 'Modrinth home page',
+	},
+	modrinthInformation: {
+		id: 'layout.footer.modrinth-information',
+		defaultMessage: 'Modrinth information',
+	},
+	createNew: {
+		id: 'layout.action.create-new',
+		defaultMessage: 'Create new...',
+	},
+	reviewProjects: {
+		id: 'layout.action.review-projects',
+		defaultMessage: 'Review projects',
+	},
+	reports: {
+		id: 'layout.action.reports',
+		defaultMessage: 'Reports',
+	},
+	lookupByEmail: {
+		id: 'layout.action.lookup-by-email',
+		defaultMessage: 'Lookup by email',
+	},
+	fileLookup: {
+		id: 'layout.action.file-lookup',
+		defaultMessage: 'File lookup',
+	},
+	manageServerNotices: {
+		id: 'layout.action.manage-server-notices',
+		defaultMessage: 'Manage server notices',
+	},
+	newProject: {
+		id: 'layout.action.new-project',
+		defaultMessage: 'New project',
+	},
+	newCollection: {
+		id: 'layout.action.new-collection',
+		defaultMessage: 'New collection',
+	},
+	newOrganization: {
+		id: 'layout.action.new-organization',
+		defaultMessage: 'New organization',
+	},
+	profile: {
+		id: 'layout.nav.profile',
+		defaultMessage: 'Profile',
+	},
+	savedProjects: {
+		id: 'layout.nav.saved-projects',
+		defaultMessage: 'Saved projects',
+	},
+	upgradeToModrinthPlus: {
+		id: 'layout.nav.upgrade-to-modrinth-plus',
+		defaultMessage: 'Upgrade to Modrinth+',
+	},
+	featureFlags: {
+		id: 'layout.nav.feature-flags',
+		defaultMessage: 'Feature flags',
+	},
+	projects: {
+		id: 'layout.nav.projects',
+		defaultMessage: 'Projects',
+	},
+	organizations: {
+		id: 'layout.nav.organizations',
+		defaultMessage: 'Organizations',
+	},
+	revenue: {
+		id: 'layout.nav.revenue',
+		defaultMessage: 'Revenue',
+	},
+	analytics: {
+		id: 'layout.nav.analytics',
+		defaultMessage: 'Analytics',
 	},
 })
 
@@ -1033,6 +1369,8 @@ const isDiscoveringSubpage = computed(
 	() => route.name && route.name.startsWith('type-id') && !route.query.sid,
 )
 
+const isRussia = computed(() => country.value === 'ru')
+
 const rCount = ref(0)
 
 const randomProjects = ref([])
@@ -1169,6 +1507,11 @@ const { cycle: changeTheme } = useTheme()
 
 function hideStagingBanner() {
 	cosmetics.value.hideStagingBanner = true
+}
+
+function hideRussiaCensorshipBanner() {
+	flags.value.hideRussiaCensorshipBanner = true
+	saveFeatureFlags()
 }
 
 const socialLinks = [
@@ -1438,6 +1781,7 @@ const footerLinks = [
 			@media screen and (min-width: 354px) {
 				grid-template-columns: repeat(2, 1fr);
 			}
+
 			@media screen and (min-width: 674px) {
 				grid-template-columns: repeat(3, 1fr);
 			}
@@ -1632,10 +1976,12 @@ const footerLinks = [
 			width: 25rem;
 			height: 25rem;
 		}
+
 		.animation-ring-2 {
 			width: 50rem;
 			height: 50rem;
 		}
+
 		.animation-ring-3 {
 			width: 100rem;
 			height: 100rem;
@@ -1664,15 +2010,19 @@ const footerLinks = [
 	0% {
 		rotate: 0deg;
 	}
+
 	25% {
 		rotate: calc(1deg * (var(--_r-count) - 20));
 	}
+
 	50% {
 		rotate: 0deg;
 	}
+
 	75% {
 		rotate: calc(-1deg * (var(--_r-count) - 20));
 	}
+
 	100% {
 		rotate: 0deg;
 	}
@@ -1682,15 +2032,19 @@ const footerLinks = [
 	0% {
 		translate: 0;
 	}
+
 	25% {
 		translate: calc(2px * (var(--_r-count) - 20));
 	}
+
 	50% {
 		translate: 0;
 	}
+
 	75% {
 		translate: calc(-2px * (var(--_r-count) - 20));
 	}
+
 	100% {
 		translate: 0;
 	}
@@ -1700,15 +2054,19 @@ const footerLinks = [
 	0% {
 		transform: translateY(0);
 	}
+
 	25% {
 		transform: translateY(calc(2px * (var(--_r-count) - 20)));
 	}
+
 	50% {
 		transform: translateY(0);
 	}
+
 	75% {
 		transform: translateY(calc(-2px * (var(--_r-count) - 20)));
 	}
+
 	100% {
 		transform: translateY(0);
 	}

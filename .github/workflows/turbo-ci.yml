@@ -12,13 +12,18 @@ on:
 jobs:
   build:
     name: Lint and Test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     env:
       # Ensure pnpm output is colored in GitHub Actions logs
       FORCE_COLOR: 3
       # Make cargo nextest successfully ignore projects without tests
       NEXTEST_NO_TESTS: pass
+      # Fail on warnings in CI
+      # (but don't do this in the root `Cargo.toml`,
+      # since we don't want warnings to become errors
+      # while developing)
+      RUSTFLAGS: -Dwarnings
 
     steps:
       - name: 📥 Check out code

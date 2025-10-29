@@ -10,6 +10,7 @@ use crate::queue::payouts::PayoutsQueue;
 use crate::queue::session::AuthQueue;
 use crate::routes::ApiError;
 use crate::util::avalara1099;
+use crate::util::error::Context;
 use actix_web::{HttpRequest, HttpResponse, delete, get, post, web};
 use chrono::{DateTime, Duration, Utc};
 use hex::ToHex;
@@ -21,6 +22,7 @@ use serde_json::json;
 use sha2::Sha256;
 use sqlx::PgPool;
 use std::collections::HashMap;
+use tokio_stream::StreamExt;
 use tracing::error;
 
 const COMPLIANCE_CHECK_DEBOUNCE: chrono::Duration =
@@ -31,7 +33,18 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         web::scope("payout")
             .service(paypal_webhook)
             .service(tremendous_webhook)
-            .service(user_payouts)
+            // we use `route` instead of `service` because `user_payouts` uses the logic of `transaction_history`
+            .route(
+                "",
+                web::get().to(
+                    #[expect(
+                        deprecated,
+                        reason = "v3 backwards compatibility"
+                    )]
+                    user_payouts,
+                ),
+            )
+            .route("history", web::get().to(transaction_history))
             .service(create_payout)
             .service(cancel_payout)
             .service(payment_methods)
@@ -73,7 +86,18 @@ pub async fn post_compliance_form(
             .await?;
 
     let mut compliance = match maybe_compliance {
-        Some(c) => c,
+        Some(c) => {
+            if c.signed.is_some()
+                && c.form_type.is_some_and(|f| f.requires_domestic_tin_match())
+                && !c.tin_matched
+            {
+                return Err(ApiError::InvalidInput(
+                    "Your TIN/SSN did not match the IRS records. Please contact support https://support.modrinth.com".to_owned(),
+                ));
+            }
+
+            c
+        }
         None => users_compliance::UserCompliance {
             id: 0,
             user_id,
@@ -84,7 +108,8 @@ pub async fn post_compliance_form(
             reference_id: String::new(),
             e_delivery_consented: false,
             tin_matched: false,
-            form_type: body.0.form_type,
+            form_type: Some(body.0.form_type),
+            requires_manual_review: false,
         },
     };
 
@@ -108,10 +133,10 @@ pub async fn post_compliance_form(
             compliance.e_delivery_consented = false;
             compliance.tin_matched = false;
             compliance.signed = None;
-            compliance.form_type = body.0.form_type;
+            compliance.form_type = Some(body.0.form_type);
             compliance.last_checked = Utc::now() - COMPLIANCE_CHECK_DEBOUNCE;
 
-            compliance.upsert(&mut *txn).await?;
+            compliance.upsert_partial(&mut *txn).await?;
             txn.commit().await?;
 
             Ok(HttpResponse::Ok().json(toplevel))
@@ -399,41 +424,50 @@ pub async fn tremendous_webhook(
     Ok(HttpResponse::NoContent().finish())
 }
 
-#[get("")]
+#[deprecated = "use `transaction_history` instead"]
 pub async fn user_payouts(
     req: HttpRequest,
     pool: web::Data<PgPool>,
     redis: web::Data<RedisPool>,
     session_queue: web::Data<AuthQueue>,
-) -> Result<HttpResponse, ApiError> {
-    let user = get_user_from_headers(
+) -> Result<web::Json<Vec<crate::models::payouts::Payout>>, ApiError> {
+    let (_, user) = get_user_from_headers(
         &req,
         &**pool,
         &redis,
         &session_queue,
         Scopes::PAYOUTS_READ,
     )
-    .await?
-    .1;
-
-    let payout_ids =
-        crate::database::models::payout_item::DBPayout::get_all_for_user(
-            user.id.into(),
-            &**pool,
-        )
-        .await?;
-    let payouts = crate::database::models::payout_item::DBPayout::get_many(
-        &payout_ids,
-        &**pool,
-    )
     .await?;
 
-    Ok(HttpResponse::Ok().json(
-        payouts
-            .into_iter()
-            .map(crate::models::payouts::Payout::from)
-            .collect::<Vec<_>>(),
-    ))
+    let items = transaction_history(req, pool, redis, session_queue)
+        .await?
+        .0
+        .into_iter()
+        .filter_map(|txn_item| match txn_item {
+            TransactionItem::Withdrawal {
+                id,
+                status,
+                created,
+                amount,
+                fee,
+                method_type,
+                method_address,
+            } => Some(crate::models::payouts::Payout {
+                id,
+                user_id: user.id,
+                status,
+                created,
+                amount,
+                fee,
+                method: method_type,
+                method_address,
+                platform_id: None,
+            }),
+            TransactionItem::PayoutAvailable { .. } => None,
+        })
+        .collect::<Vec<_>>();
+    Ok(web::Json(items))
 }
 
 #[derive(Deserialize)]
@@ -489,6 +523,8 @@ pub async fn create_payout(
         ));
     }
 
+    let requires_manual_review;
+
     if let Some(threshold) = tax_compliance_payout_threshold() {
         let maybe_compliance = update_compliance_status(&pool, user.id).await?;
 
@@ -501,9 +537,14 @@ pub async fn create_payout(
                     let tin = model.tin_matched;
                     let signed = model.signed.is_some();
 
+                    requires_manual_review = Some(model.requires_manual_review);
+
                     (tin, signed, true, compliance_api_check_failed)
                 }
-                None => (false, false, false, false),
+                None => {
+                    requires_manual_review = None;
+                    (false, false, false, false)
+                }
             };
 
         if !(tin_matched && signed)
@@ -526,6 +567,22 @@ pub async fn create_payout(
                 _ => "Tax compliance form is required to withdraw more!",
             }.to_owned()));
         }
+    } else {
+        requires_manual_review = None;
+    }
+
+    let requires_manual_review = if let Some(r) = requires_manual_review {
+        r
+    } else {
+        users_compliance::UserCompliance::get_by_user_id(&**pool, user.id)
+            .await?
+            .is_some_and(|x| x.requires_manual_review)
+    };
+
+    if requires_manual_review {
+        return Err(ApiError::InvalidInput(
+            "More information is required to proceed. Please contact support (https://support.modrinth.com, support@modrinth.com)".to_string(),
+        ));
     }
 
     let payout_method = payouts_queue
@@ -774,6 +831,110 @@ pub async fn create_payout(
     Ok(HttpResponse::NoContent().finish())
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum TransactionItem {
+    Withdrawal {
+        id: PayoutId,
+        status: PayoutStatus,
+        created: DateTime<Utc>,
+        amount: Decimal,
+        fee: Option<Decimal>,
+        method_type: Option<PayoutMethodType>,
+        method_address: Option<String>,
+    },
+    PayoutAvailable {
+        created: DateTime<Utc>,
+        payout_source: PayoutSource,
+        amount: Decimal,
+    },
+}
+
+impl TransactionItem {
+    pub fn created(&self) -> DateTime<Utc> {
+        match self {
+            Self::Withdrawal { created, .. } => *created,
+            Self::PayoutAvailable { created, .. } => *created,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+#[non_exhaustive]
+pub enum PayoutSource {
+    CreatorRewards,
+    Affilites,
+}
+
+pub async fn transaction_history(
+    req: HttpRequest,
+    pool: web::Data<PgPool>,
+    redis: web::Data<RedisPool>,
+    session_queue: web::Data<AuthQueue>,
+) -> Result<web::Json<Vec<TransactionItem>>, ApiError> {
+    let (_, user) = get_user_from_headers(
+        &req,
+        &**pool,
+        &redis,
+        &session_queue,
+        Scopes::PAYOUTS_READ,
+    )
+    .await?;
+
+    let payout_ids =
+        crate::database::models::payout_item::DBPayout::get_all_for_user(
+            user.id.into(),
+            &**pool,
+        )
+        .await?;
+    let payouts = crate::database::models::payout_item::DBPayout::get_many(
+        &payout_ids,
+        &**pool,
+    )
+    .await?;
+    let withdrawals =
+        payouts
+            .into_iter()
+            .map(|payout| TransactionItem::Withdrawal {
+                id: payout.id.into(),
+                status: payout.status,
+                created: payout.created,
+                amount: payout.amount,
+                fee: payout.fee,
+                method_type: payout.method,
+                method_address: payout.method_address,
+            });
+
+    let mut payouts_available = sqlx::query!(
+        "SELECT created, amount
+        FROM payouts_values
+        WHERE user_id = $1
+        AND NOW() >= date_available",
+        DBUserId::from(user.id) as DBUserId
+    )
+    .fetch(&**pool)
+    .map(|record| {
+        let record = record
+            .wrap_internal_err("failed to fetch available payout record")?;
+        Ok(TransactionItem::PayoutAvailable {
+            created: record.created,
+            payout_source: PayoutSource::CreatorRewards,
+            amount: record.amount,
+        })
+    })
+    .collect::<Result<Vec<_>, ApiError>>()
+    .await
+    .wrap_internal_err("failed to fetch available payouts")?;
+
+    let mut txn_items = Vec::new();
+    txn_items.extend(withdrawals);
+    txn_items.append(&mut payouts_available);
+    txn_items.sort_by_key(|item| item.created());
+
+    Ok(web::Json(txn_items))
+}
+
 #[delete("{id}")]
 pub async fn cancel_payout(
     info: web::Path<(PayoutId,)>,
@@ -953,13 +1114,18 @@ pub async fn get_balance(
         form_completion_status = Some(
             update_compliance_status(&pool, user.id.into())
                 .await?
+                .filter(|x| x.model.form_type.is_some())
                 .map_or(FormCompletionStatus::Unrequested, |compliance| {
-                    requested_form_type = Some(compliance.model.form_type);
+                    requested_form_type = compliance.model.form_type;
 
                     if compliance.compliance_api_check_failed {
                         FormCompletionStatus::Unknown
                     } else if compliance.model.signed.is_some() {
-                        if compliance.model.tin_matched {
+                        if compliance.model.tin_matched
+                            || compliance.model.form_type.is_some_and(|x| {
+                                !x.requires_domestic_tin_match()
+                            })
+                        {
                             FormCompletionStatus::Complete
                         } else {
                             FormCompletionStatus::TinMismatch
@@ -1060,6 +1226,7 @@ async fn update_compliance_status(
     if (compliance.signed.is_some() && compliance.tin_matched)
         || Utc::now().signed_duration_since(compliance.last_checked)
             < COMPLIANCE_CHECK_DEBOUNCE
+        || compliance.form_type.is_none()
     {
         Ok(Some(ComplianceCheck {
             model: compliance,
@@ -1082,14 +1249,15 @@ async fn update_compliance_status(
             Ok(Some(avalara1099::DataWrapper {
                 data: avalara1099::Data { attributes, .. },
             })) => {
-                // It's unclear what timezone the DateTime is in (as it returns a naive RFC-3339 timestamp)
-                // so we can just say it was signed now
                 compliance.signed =
                     (&attributes.entry_status == "signed").then(Utc::now);
                 compliance.e_delivery_consented =
                     attributes.e_delivery_consented_at.is_some();
 
-                if compliance.form_type.requires_domestic_tin_match() {
+                if compliance
+                    .form_type
+                    .is_some_and(|x| x.requires_domestic_tin_match())
+                {
                     compliance.tin_matched = attributes
                         .tin_match_status
                         .as_ref()

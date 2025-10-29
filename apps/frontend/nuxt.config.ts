@@ -1,6 +1,7 @@
 import { pathToFileURL } from 'node:url'
 
 import { match as matchLocale } from '@formatjs/intl-localematcher'
+import serverSidedVue from '@vitejs/plugin-vue'
 import { consola } from 'consola'
 import { promises as fs } from 'fs'
 import { globIterate } from 'glob'
@@ -111,6 +112,23 @@ export default defineNuxtConfig({
 		],
 	},
 	hooks: {
+		async 'nitro:config'(nitroConfig) {
+			const emailTemplates = Object.keys(
+				await import('./src/templates/emails/index.ts').then((m) => m.default),
+			)
+			const docTemplates = Object.keys(
+				await import('./src/templates/docs/index.ts').then((m) => m.default),
+			)
+
+			nitroConfig.prerender = nitroConfig.prerender || {}
+			nitroConfig.prerender.routes = nitroConfig.prerender.routes || []
+			for (const template of emailTemplates) {
+				nitroConfig.prerender.routes.push(`/_internal/templates/email/${template}`)
+			}
+			for (const template of docTemplates) {
+				nitroConfig.prerender.routes.push(`/_internal/templates/doc/${template}`)
+			}
+		},
 		async 'build:before'() {
 			// 30 minutes
 			const TTL = 30 * 60 * 1000
@@ -435,6 +453,10 @@ export default defineNuxtConfig({
 	},
 	nitro: {
 		moduleSideEffects: ['@vintl/compact-number/locale-data'],
+		rollupConfig: {
+			// @ts-expect-error it's not infinite.
+			plugins: [serverSidedVue()],
+		},
 	},
 	devtools: {
 		enabled: true,
@@ -451,6 +473,23 @@ export default defineNuxtConfig({
 			headers: {
 				'Accept-CH': 'Sec-CH-Prefers-Color-Scheme',
 				'Critical-CH': 'Sec-CH-Prefers-Color-Scheme',
+			},
+		},
+		'/email/**': {
+			redirect: '/_internal/templates/email/**',
+		},
+		'/_internal/templates/email/**': {
+			prerender: true,
+			headers: {
+				'Content-Type': 'text/html',
+				'Cache-Control': 'public, max-age=3600',
+			},
+		},
+		'/_internal/templates/doc/**': {
+			prerender: true,
+			headers: {
+				'Content-Type': 'text/html',
+				'Cache-Control': 'public, max-age=3600',
 			},
 		},
 	},

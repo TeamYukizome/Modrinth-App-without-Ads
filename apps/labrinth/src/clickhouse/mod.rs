@@ -27,6 +27,7 @@ pub async fn init_client_with_database(
             .with_url(dotenvy::var("CLICKHOUSE_URL").unwrap())
             .with_user(dotenvy::var("CLICKHOUSE_USER").unwrap())
             .with_password(dotenvy::var("CLICKHOUSE_PASSWORD").unwrap())
+            .with_validation(false)
     };
 
     client
@@ -48,6 +49,13 @@ pub async fn init_client_with_database(
         "MergeTree()"
     };
 
+    // For the Clickhouse database on the staging environment, set a TTL to avoid accumulating too much data
+    let ttl = if database == "staging_analytics" {
+        "TTL toDateTime(recorded) + INTERVAL 1 DAY"
+    } else {
+        ""
+    };
+
     client
         .query(&format!(
             "
@@ -67,6 +75,7 @@ pub async fn init_client_with_database(
                 headers Array(Tuple(String, String))
             )
             ENGINE = {engine}
+            {ttl}
             PRIMARY KEY (project_id, recorded, ip)
             SETTINGS index_granularity = 8192
             "
@@ -93,6 +102,7 @@ pub async fn init_client_with_database(
                 headers Array(Tuple(String, String))
             )
             ENGINE = {engine}
+            {ttl}
             PRIMARY KEY (project_id, recorded, ip)
             SETTINGS index_granularity = 8192
             "
@@ -117,6 +127,7 @@ pub async fn init_client_with_database(
                 parent UInt64
             )
             ENGINE = {engine}
+            {ttl}
             PRIMARY KEY (project_id, recorded, user_id)
             SETTINGS index_granularity = 8192
             "

@@ -68,23 +68,27 @@
 				</div>
 			</div>
 			<div class="input-group mt-4">
-				<span :class="{ 'disabled-cursor-wrapper': userBalance.available < minWithdraw }">
+				<ButtonStyled color="brand">
 					<nuxt-link
-						:aria-disabled="userBalance.available < minWithdraw ? 'true' : 'false'"
-						:class="{ 'disabled-link': userBalance.available < minWithdraw }"
-						:disabled="userBalance.available < minWithdraw ? 'true' : 'false'"
-						:tabindex="userBalance.available < minWithdraw ? -1 : undefined"
-						class="iconified-button brand-button"
+						v-if="!(userBalance.available < minWithdraw || blockedByTax)"
 						to="/dashboard/revenue/withdraw"
 					>
 						<TransferIcon /> Withdraw
 					</nuxt-link>
-				</span>
-				<NuxtLink class="iconified-button" to="/dashboard/revenue/transfers">
-					<HistoryIcon />
-					View transfer history
-				</NuxtLink>
+					<button v-else class="disabled"><TransferIcon /> Withdraw</button>
+				</ButtonStyled>
+				<ButtonStyled>
+					<NuxtLink to="/dashboard/revenue/transfers">
+						<HistoryIcon />
+						View transfer history
+					</NuxtLink>
+				</ButtonStyled>
 			</div>
+			<p v-if="blockedByTax" class="text-sm font-bold text-orange">
+				You have withdrawn over $600 this year. To continue withdrawing, you must complete a tax
+				form.
+			</p>
+
 			<p class="text-sm text-secondary">
 				By uploading projects to Modrinth and withdrawing money from your account, you agree to the
 				<nuxt-link class="text-link" to="/legal/cmp">Rewards Program Terms</nuxt-link>. For more
@@ -101,10 +105,12 @@
 					email
 					{{ auth.user.payout_data.paypal_address }}
 				</p>
-				<button class="btn mt-4" @click="handleRemoveAuthProvider('paypal')">
-					<XIcon />
-					Disconnect account
-				</button>
+				<ButtonStyled>
+					<button class="mt-4" @click="handleRemoveAuthProvider('paypal')">
+						<XIcon />
+						Disconnect account
+					</button>
+				</ButtonStyled>
 			</template>
 			<template v-else>
 				<p>Connect your PayPal account to enable withdrawing to your PayPal balance.</p>
@@ -126,15 +132,16 @@
 				id="venmo"
 				v-model="auth.user.payout_data.venmo_handle"
 				autocomplete="off"
-				class="mt-4"
 				name="search"
 				placeholder="@example"
 				type="search"
 			/>
-			<button class="btn btn-secondary" @click="updateVenmo">
-				<SaveIcon />
-				Save information
-			</button>
+			<ButtonStyled color="brand">
+				<button class="mt-4" @click="updateVenmo">
+					<SaveIcon />
+					Save information
+				</button>
+			</ButtonStyled>
 		</section>
 	</div>
 </template>
@@ -148,7 +155,7 @@ import {
 	UnknownIcon,
 	XIcon,
 } from '@modrinth/assets'
-import { injectNotificationManager } from '@modrinth/ui'
+import { ButtonStyled, injectNotificationManager } from '@modrinth/ui'
 import { formatDate } from '@modrinth/utils'
 import dayjs from 'dayjs'
 import { computed } from 'vue'
@@ -159,9 +166,25 @@ const { addNotification, handleError } = injectNotificationManager()
 const auth = await useAuth()
 const minWithdraw = ref(0.01)
 
-const { data: userBalance } = await useAsyncData(`payout/balance`, () =>
-	useBaseFetch(`payout/balance`, { apiVersion: 3 }),
-)
+const { data: userBalance } = await useAsyncData(`payout/balance`, async () => {
+	const response = await useBaseFetch(`payout/balance`, { apiVersion: 3 })
+	return {
+		...response,
+		available: parseFloat(response.available),
+		withdrawn_lifetime: parseFloat(response.withdrawn_lifetime),
+		withdrawn_ytd: parseFloat(response.withdrawn_ytd),
+		pending: parseFloat(response.pending),
+		dates: Object.fromEntries(
+			Object.entries(response.dates).map(([date, value]) => [date, parseFloat(value)]),
+		),
+	}
+})
+
+const blockedByTax = computed(() => {
+	const status = userBalance.value?.form_completion_status ?? 'unknown'
+	const thresholdMet = (userBalance.value?.withdrawn_ytd ?? 0) >= 600
+	return thresholdMet && status !== 'complete'
+})
 
 const deadlineEnding = computed(() => {
 	let deadline = dayjs().subtract(2, 'month').endOf('month').add(60, 'days')
@@ -225,14 +248,6 @@ async function updateVenmo() {
 strong {
 	color: var(--color-text-dark);
 	font-weight: 500;
-}
-
-.disabled-cursor-wrapper {
-	cursor: not-allowed;
-}
-
-.disabled-link {
-	pointer-events: none;
 }
 
 .grid-display {

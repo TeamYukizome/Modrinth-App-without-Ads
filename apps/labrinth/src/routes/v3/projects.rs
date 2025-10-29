@@ -434,7 +434,7 @@ pub async fn project_edit(
         if user.role.is_mod()
             && let Ok(webhook_url) = dotenvy::var("MODERATION_SLACK_WEBHOOK")
         {
-            crate::util::webhook::send_slack_webhook(
+            crate::util::webhook::send_slack_project_webhook(
                     project_item.inner.id.into(),
                     &pool,
                     &redis,
@@ -474,6 +474,22 @@ pub async fn project_edit(
                     project_id: project_item.inner.id.into(),
                     old_status: project_item.inner.status,
                     new_status: *status,
+                },
+            }
+            .insert_many(notified_members.clone(), &mut transaction, &redis)
+            .await?;
+
+            NotificationBuilder {
+                body: if status.is_approved() {
+                    NotificationBody::ProjectStatusApproved {
+                        project_id: project_item.inner.id.into(),
+                    }
+                } else {
+                    NotificationBody::ProjectStatusNeutral {
+                        project_id: project_item.inner.id.into(),
+                        old_status: project_item.inner.status,
+                        new_status: *status,
+                    }
                 },
             }
             .insert_many(notified_members, &mut transaction, &redis)

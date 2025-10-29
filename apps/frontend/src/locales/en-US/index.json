@@ -1,6 +1,201 @@
 {
+  "action.cancel": {
+    "message": "Cancel"
+  },
+  "action.continue": {
+    "message": "Continue"
+  },
   "admin.billing.error.not-found": {
     "message": "User not found"
+  },
+  "app-marketing.download.description": {
+    "message": "Our desktop app is available across all platforms, choose your desired version."
+  },
+  "app-marketing.download.download-appimage": {
+    "message": "Download the AppImage"
+  },
+  "app-marketing.download.download-beta": {
+    "message": "Download the beta"
+  },
+  "app-marketing.download.download-deb": {
+    "message": "Download the DEB"
+  },
+  "app-marketing.download.download-rpm": {
+    "message": "Download the RPM"
+  },
+  "app-marketing.download.linux": {
+    "message": "Linux"
+  },
+  "app-marketing.download.linux-disclaimer": {
+    "message": "The Linux versions of Modrinth App are <issues-link>known to have issues</issues-link> on certain systems and configurations. If Modrinth App is unstable on your system, we encourage you to try other apps like <prism-link>Prism Launcher</prism-link> to easily install Modrinth content."
+  },
+  "app-marketing.download.mac": {
+    "message": "Mac"
+  },
+  "app-marketing.download.options-title": {
+    "message": "Download options"
+  },
+  "app-marketing.download.terms": {
+    "message": "By downloading Modrinth App you agree to our <terms-link>Terms</terms-link> and <privacy-link>Privacy Policy</privacy-link>."
+  },
+  "app-marketing.download.third-party-packages": {
+    "message": "Third-party packages"
+  },
+  "app-marketing.download.title": {
+    "message": "Download Modrinth App (Beta)"
+  },
+  "app-marketing.download.windows": {
+    "message": "Windows"
+  },
+  "app-marketing.features.follow.description": {
+    "message": "Save content you love and receive updates with one click."
+  },
+  "app-marketing.features.follow.title": {
+    "message": "Follow projects"
+  },
+  "app-marketing.features.importing.description": {
+    "message": "Import all your favorite profiles from the launcher you were using before, and get started with Modrinth App in seconds!"
+  },
+  "app-marketing.features.importing.gdlauncher-alt": {
+    "message": "GDLauncher"
+  },
+  "app-marketing.features.importing.multimc-alt": {
+    "message": "MultiMC"
+  },
+  "app-marketing.features.importing.title": {
+    "message": "Profile importing"
+  },
+  "app-marketing.features.mod-management.actions": {
+    "message": "Actions"
+  },
+  "app-marketing.features.mod-management.byAuthor": {
+    "message": "by {author}"
+  },
+  "app-marketing.features.mod-management.description": {
+    "message": "Modrinth makes it easy to manage all your mods in one place. You can install, uninstall, and update mods with a single click."
+  },
+  "app-marketing.features.mod-management.installed-mods": {
+    "message": "Installed mods"
+  },
+  "app-marketing.features.mod-management.name": {
+    "message": "Name"
+  },
+  "app-marketing.features.mod-management.search-mods": {
+    "message": "Search mods"
+  },
+  "app-marketing.features.mod-management.title": {
+    "message": "Mod management"
+  },
+  "app-marketing.features.mod-management.version": {
+    "message": "Version"
+  },
+  "app-marketing.features.offline.description": {
+    "message": "Play your mods, whether you are connected to the internet, or not."
+  },
+  "app-marketing.features.offline.title": {
+    "message": "Offline mode"
+  },
+  "app-marketing.features.open-source.description": {
+    "message": "Modrinth's launcher is fully open source. You can view the source code on our <github-link>GitHub</github-link>!"
+  },
+  "app-marketing.features.open-source.title": {
+    "message": "Open source"
+  },
+  "app-marketing.features.performance.activity-monitor": {
+    "message": "Activity monitor"
+  },
+  "app-marketing.features.performance.cpu-percent": {
+    "message": "% CPU"
+  },
+  "app-marketing.features.performance.description": {
+    "message": "Modrinth App performs better than many of the leading mod managers, using just 150mb of RAM!"
+  },
+  "app-marketing.features.performance.discord": {
+    "message": "Discord"
+  },
+  "app-marketing.features.performance.good-performance": {
+    "message": "Good performance"
+  },
+  "app-marketing.features.performance.google-chrome": {
+    "message": "Google Chrome"
+  },
+  "app-marketing.features.performance.infinite-mb": {
+    "message": "∞ MB"
+  },
+  "app-marketing.features.performance.infinite-times-infinite-mb": {
+    "message": "∞ * ∞ MB"
+  },
+  "app-marketing.features.performance.less-than-150mb": {
+    "message": "< 150 MB"
+  },
+  "app-marketing.features.performance.modrinth-app": {
+    "message": "Modrinth App"
+  },
+  "app-marketing.features.performance.one-billion-percent": {
+    "message": "1 billion %"
+  },
+  "app-marketing.features.performance.process-name": {
+    "message": "Process name"
+  },
+  "app-marketing.features.performance.ram": {
+    "message": "RAM"
+  },
+  "app-marketing.features.performance.small": {
+    "message": "Small"
+  },
+  "app-marketing.features.performance.title": {
+    "message": "Performant"
+  },
+  "app-marketing.features.play.description": {
+    "message": "Use Modrinth App to download and play with your favorite mods and modpacks."
+  },
+  "app-marketing.features.play.title": {
+    "message": "Play with your favorite mods"
+  },
+  "app-marketing.features.sharing.description": {
+    "message": "Build, share, and play modpacks with any of the thousands of mods and modpacks hosted here on Modrinth."
+  },
+  "app-marketing.features.sharing.modpack": {
+    "message": "Modpack"
+  },
+  "app-marketing.features.sharing.share-button": {
+    "message": "Share"
+  },
+  "app-marketing.features.sharing.title": {
+    "message": "Share modpacks"
+  },
+  "app-marketing.features.unlike-any-launcher": {
+    "message": "Unlike any launcher"
+  },
+  "app-marketing.features.website.description": {
+    "message": "Modrinth App is fully integrated with the website, so you can access all your favorite projects from the app!"
+  },
+  "app-marketing.features.website.title": {
+    "message": "Website integration"
+  },
+  "app-marketing.features.youve-used-before": {
+    "message": "you've used before"
+  },
+  "app-marketing.hero.app-screenshot-alt": {
+    "message": "Screenshot of Modrinth App with a Cobblemon instance opened to the 'Content' page."
+  },
+  "app-marketing.hero.description": {
+    "message": "Modrinth App is a unique, open source launcher that allows you to play your favorite mods, and keep them up to date, all in one neat little package."
+  },
+  "app-marketing.hero.download-button": {
+    "message": "Download Modrinth App"
+  },
+  "app-marketing.hero.download-modrinth-app": {
+    "message": "Download Modrinth App"
+  },
+  "app-marketing.hero.download-modrinth-app-for-os": {
+    "message": "Download Modrinth App for {os}"
+  },
+  "app-marketing.hero.minecraft-screenshot-alt": {
+    "message": "Screenshot of the Cobblemon instance's main menu screen."
+  },
+  "app-marketing.hero.more-download-options": {
+    "message": "More Download Options"
   },
   "auth.authorize.action.authorize": {
     "message": "Authorize"
@@ -159,7 +354,7 @@
     "message": "Subscribe to updates about Modrinth"
   },
   "auth.welcome.description": {
-    "message": "You’re now part of the awesome community of creators & explorers already building, downloading, and staying up-to-date with awazing mods."
+    "message": "You’re now part of the awesome community of creators & explorers already building, downloading, and staying up-to-date with amazing mods."
   },
   "auth.welcome.label.tos": {
     "message": "By creating an account, you have agreed to Modrinth's <terms-link>Terms</terms-link> and <privacy-policy-link>Privacy Policy</privacy-policy-link>."
@@ -224,6 +419,153 @@
   "collection.title": {
     "message": "{name} - Collection"
   },
+  "common.no": {
+    "message": "No"
+  },
+  "common.yes": {
+    "message": "Yes"
+  },
+  "create.collection.cancel": {
+    "message": "Cancel"
+  },
+  "create.collection.collection-info": {
+    "message": "Your new collection will be created as a public collection with {count, plural, =0 {no projects} one {# project} other {# projects}}."
+  },
+  "create.collection.create-collection": {
+    "message": "Create collection"
+  },
+  "create.collection.error-title": {
+    "message": "An error occurred"
+  },
+  "create.collection.name-label": {
+    "message": "Name"
+  },
+  "create.collection.name-placeholder": {
+    "message": "Enter collection name..."
+  },
+  "create.collection.summary-description": {
+    "message": "A sentence or two that describes your collection."
+  },
+  "create.collection.summary-label": {
+    "message": "Summary"
+  },
+  "create.collection.summary-placeholder": {
+    "message": "This is a collection of..."
+  },
+  "create.collection.title": {
+    "message": "Creating a collection"
+  },
+  "create.limit-alert.approaching-limit": {
+    "message": "Approaching {type} limit ({current}/{max})"
+  },
+  "create.limit-alert.approaching-limit-description": {
+    "message": "You're about to hit the {type} limit, please contact support if you need more than {max} {typePlural}."
+  },
+  "create.limit-alert.contact-support": {
+    "message": "Contact support"
+  },
+  "create.limit-alert.limit-reached": {
+    "message": "{type} limit reached"
+  },
+  "create.limit-alert.limit-reached-description": {
+    "message": "You've reached your {type} limit of {max}. Please contact support to increase your limit."
+  },
+  "create.limit-alert.type-collection": {
+    "message": "collection"
+  },
+  "create.limit-alert.type-organization": {
+    "message": "organization"
+  },
+  "create.limit-alert.type-plural-collection": {
+    "message": "collections"
+  },
+  "create.limit-alert.type-plural-organization": {
+    "message": "organizations"
+  },
+  "create.limit-alert.type-plural-project": {
+    "message": "projects"
+  },
+  "create.limit-alert.type-project": {
+    "message": "project"
+  },
+  "create.organization.cancel": {
+    "message": "Cancel"
+  },
+  "create.organization.create-organization": {
+    "message": "Create organization"
+  },
+  "create.organization.error-title": {
+    "message": "An error occurred"
+  },
+  "create.organization.name-label": {
+    "message": "Name"
+  },
+  "create.organization.name-placeholder": {
+    "message": "Enter organization name..."
+  },
+  "create.organization.ownership-info": {
+    "message": "You will be the owner of this organization, but you can invite other members and transfer ownership at any time."
+  },
+  "create.organization.summary-description": {
+    "message": "A sentence or two that describes your organization."
+  },
+  "create.organization.summary-label": {
+    "message": "Summary"
+  },
+  "create.organization.summary-placeholder": {
+    "message": "An organization for..."
+  },
+  "create.organization.title": {
+    "message": "Creating an organization"
+  },
+  "create.organization.url-label": {
+    "message": "URL"
+  },
+  "create.project.cancel": {
+    "message": "Cancel"
+  },
+  "create.project.create-project": {
+    "message": "Create project"
+  },
+  "create.project.error-title": {
+    "message": "An error occurred"
+  },
+  "create.project.name-label": {
+    "message": "Name"
+  },
+  "create.project.name-placeholder": {
+    "message": "Enter project name..."
+  },
+  "create.project.summary-description": {
+    "message": "A sentence or two that describes your project."
+  },
+  "create.project.summary-label": {
+    "message": "Summary"
+  },
+  "create.project.summary-placeholder": {
+    "message": "This project adds..."
+  },
+  "create.project.title": {
+    "message": "Creating a project"
+  },
+  "create.project.url-label": {
+    "message": "URL"
+  },
+  "create.project.visibility-description": {
+    "message": "The visibility of your project after it has been approved."
+  },
+  "create.project.visibility-label": {
+    "message": "Visibility"
+  },
+  "create.project.visibility-private": {
+    "message": "Private"
+  },
+  "create.project.visibility-public": {
+    "message": "Public"
+  },
+  "create.project.visibility-unlisted": {
+    "message": "Unlisted"
+  },
   "dashboard.collections.button.create-new": {
     "message": "Create new"
   },
@@ -235,6 +577,42 @@
   },
   "dashboard.collections.long-title": {
     "message": "Your collections"
+  },
+  "dashboard.creator-tax-form-modal.confirmation.download-button": {
+    "message": "Download {formType}"
+  },
+  "dashboard.creator-tax-form-modal.confirmation.success": {
+    "message": "Your {formType} tax form has been submitted successfully!"
+  },
+  "dashboard.creator-tax-form-modal.confirmation.support-text": {
+    "message": "You can freely withdraw now. If you have questions or need to update your details <support-link>contact support</support-link>."
+  },
+  "dashboard.creator-tax-form-modal.confirmation.title": {
+    "message": "You're all set! 🎉"
+  },
+  "dashboard.creator-tax-form-modal.entity.description": {
+    "message": "A foreign entity means a business entity organized outside the United States (such as a non-US corporation, partnership, or LLC)."
+  },
+  "dashboard.creator-tax-form-modal.entity.foreign-entity": {
+    "message": "Foreign entity"
+  },
+  "dashboard.creator-tax-form-modal.entity.private-individual": {
+    "message": "Private individual"
+  },
+  "dashboard.creator-tax-form-modal.entity.question": {
+    "message": "Are you a private individual or part of a foreign entity?"
+  },
+  "dashboard.creator-tax-form-modal.header": {
+    "message": "Tax form"
+  },
+  "dashboard.creator-tax-form-modal.security.description": {
+    "message": "Modrinth uses third-party provider Track1099 to securely collect and store your tax forms. <security-link>Learn more here.</security-link>"
+  },
+  "dashboard.creator-tax-form-modal.security.header": {
+    "message": "Security practices"
+  },
+  "dashboard.creator-tax-form-modal.us-citizen.question": {
+    "message": "Are you a US citizen?"
   },
   "error.collection.404.list_item.1": {
     "message": "You may have mistyped the collection's URL."
@@ -256,6 +634,12 @@
   },
   "error.generic.404.title": {
     "message": "Page not found"
+  },
+  "error.generic.451.subtitle": {
+    "message": "This page has been blocked for legal reasons, such as government censorship or ongoing legal proceedings."
+  },
+  "error.generic.451.title": {
+    "message": "Content unavailable for legal reasons"
   },
   "error.generic.default.list_item.1": {
     "message": "Check if Modrinth is down on our <status-link>Status page</status-link>."
@@ -378,7 +762,7 @@
     "message": "Failed to load random projects :("
   },
   "landing.feature.follow.description": {
-    "message": "Get notified every time your favorite projects update and stay in the loop"
+    "message": "Get notified every time your favorite projects update and stay in the loop."
   },
   "landing.feature.follow.heading": {
     "message": "Follow projects you love"
@@ -396,7 +780,7 @@
     "message": "Find what you want, quickly and easily"
   },
   "landing.heading.the-place-for-minecraft": {
-    "message": "The place for Minecraft <content></content>"
+    "message": "The place for Minecraft {content}"
   },
   "landing.heading.the-place-for-minecraft.data-packs": {
     "message": "data packs"
@@ -453,7 +837,7 @@
     "message": "Sort by"
   },
   "landing.section.for-creators.description": {
-    "message": "Give an online home to your creations and reach a massive audience of dedicated players"
+    "message": "Give an online home to your creations and reach a massive audience of dedicated players."
   },
   "landing.section.for-creators.label": {
     "message": "For Creators"
@@ -476,8 +860,32 @@
   "layout.action.change-theme": {
     "message": "Change theme"
   },
-  "layout.action.get-modrinth-app": {
-    "message": "Get Modrinth App"
+  "layout.action.create-new": {
+    "message": "Create new..."
+  },
+  "layout.action.file-lookup": {
+    "message": "File lookup"
+  },
+  "layout.action.lookup-by-email": {
+    "message": "Lookup by email"
+  },
+  "layout.action.manage-server-notices": {
+    "message": "Manage server notices"
+  },
+  "layout.action.new-collection": {
+    "message": "New collection"
+  },
+  "layout.action.new-organization": {
+    "message": "New organization"
+  },
+  "layout.action.new-project": {
+    "message": "New project"
+  },
+  "layout.action.reports": {
+    "message": "Reports"
+  },
+  "layout.action.review-projects": {
+    "message": "Review projects"
   },
   "layout.avatar.alt": {
     "message": "Your avatar"
@@ -511,6 +919,24 @@
   },
   "layout.banner.subscription-payment-failed.title": {
     "message": "Billing action required."
+  },
+  "layout.banner.tax.action": {
+    "message": "Complete tax form"
+  },
+  "layout.banner.tax.description": {
+    "message": "You've already withdrawn over $600 from Modrinth this year. To comply with tax regulations, you need to complete a tax form. Your withdrawals are paused until this form is submitted."
+  },
+  "layout.banner.tax.title": {
+    "message": "Tax form required"
+  },
+  "layout.banner.tin-mismatch.action": {
+    "message": "Contact support"
+  },
+  "layout.banner.tin-mismatch.description": {
+    "message": "Your withdrawals are temporarily locked because your TIN or SSN didn't match IRS records. Please contact support to reset and resubmit your tax form."
+  },
+  "layout.banner.tin-mismatch.title": {
+    "message": "Tax form failed"
   },
   "layout.banner.verify-email.action": {
     "message": "Re-send verification email"
@@ -556,6 +982,9 @@
   },
   "layout.footer.legal.terms-of-use": {
     "message": "Terms of Use"
+  },
+  "layout.footer.modrinth-information": {
+    "message": "Modrinth information"
   },
   "layout.footer.open-source": {
     "message": "Modrinth is <github-link>open source</github-link>."
@@ -611,11 +1040,53 @@
   "layout.meta.og-description": {
     "message": "Discover and publish Minecraft content!"
   },
+  "layout.nav.analytics": {
+    "message": "Analytics"
+  },
+  "layout.nav.discover": {
+    "message": "Discover"
+  },
+  "layout.nav.discover-content": {
+    "message": "Discover content"
+  },
+  "layout.nav.feature-flags": {
+    "message": "Feature flags"
+  },
+  "layout.nav.get-modrinth-app": {
+    "message": "Get Modrinth App"
+  },
   "layout.nav.home": {
     "message": "Home"
   },
+  "layout.nav.host-a-server": {
+    "message": "Host a server"
+  },
+  "layout.nav.modrinth-app": {
+    "message": "Modrinth App"
+  },
+  "layout.nav.modrinth-home-page": {
+    "message": "Modrinth home page"
+  },
+  "layout.nav.organizations": {
+    "message": "Organizations"
+  },
+  "layout.nav.profile": {
+    "message": "Profile"
+  },
+  "layout.nav.projects": {
+    "message": "Projects"
+  },
+  "layout.nav.revenue": {
+    "message": "Revenue"
+  },
+  "layout.nav.saved-projects": {
+    "message": "Saved projects"
+  },
   "layout.nav.search": {
     "message": "Search"
+  },
+  "layout.nav.upgrade-to-modrinth-plus": {
+    "message": "Upgrade to Modrinth+"
   },
   "moderation.filter.by": {
     "message": "Filter by"
@@ -641,8 +1112,17 @@
   "moderation.technical.search.placeholder": {
     "message": "Search tech reviews..."
   },
+  "profile.bio.fallback.creator": {
+    "message": "A Modrinth creator."
+  },
+  "profile.bio.fallback.user": {
+    "message": "A Modrinth user."
+  },
   "profile.button.billing": {
     "message": "Manage user billing"
+  },
+  "profile.button.edit-role": {
+    "message": "Edit role"
   },
   "profile.button.info": {
     "message": "View user details"
@@ -650,17 +1130,47 @@
   "profile.button.manage-projects": {
     "message": "Manage projects"
   },
+  "profile.details.label.auth-providers": {
+    "message": "Auth providers"
+  },
+  "profile.details.label.email": {
+    "message": "Email"
+  },
+  "profile.details.label.has-password": {
+    "message": "Has password"
+  },
+  "profile.details.label.has-totp": {
+    "message": "Has TOTP"
+  },
+  "profile.details.label.payment-methods": {
+    "message": "Payment methods"
+  },
+  "profile.details.tooltip.email-not-verified": {
+    "message": "Email not verified"
+  },
+  "profile.details.tooltip.email-verified": {
+    "message": "Email verified"
+  },
   "profile.error.not-found": {
     "message": "User not found"
-  },
-  "profile.joined-at": {
-    "message": "Joined <date>{ago}</date>"
   },
   "profile.label.badges": {
     "message": "Badges"
   },
+  "profile.label.collection": {
+    "message": "Collection"
+  },
   "profile.label.details": {
     "message": "Details"
+  },
+  "profile.label.downloads": {
+    "message": "{count} {count, plural, one {download} other {downloads}}"
+  },
+  "profile.label.joined": {
+    "message": "Joined"
+  },
+  "profile.label.no": {
+    "message": "No"
   },
   "profile.label.no-collections": {
     "message": "This user has no collections!"
@@ -677,17 +1187,20 @@
   "profile.label.organizations": {
     "message": "Organizations"
   },
+  "profile.label.projects": {
+    "message": "{count} {count, plural, one {project} other {projects}}"
+  },
+  "profile.label.saving": {
+    "message": "Saving..."
+  },
+  "profile.label.yes": {
+    "message": "Yes"
+  },
   "profile.meta.description": {
     "message": "Download {username}'s projects on Modrinth"
   },
   "profile.meta.description-with-bio": {
     "message": "{bio} - Download {username}'s projects on Modrinth"
-  },
-  "profile.stats.downloads": {
-    "message": "{count, plural, one {<stat>{count}</stat> project download} other {<stat>{count}</stat> project downloads}}"
-  },
-  "profile.stats.projects": {
-    "message": "{count, plural, one {<stat>{count}</stat> project} other {<stat>{count}</stat> projects}}"
   },
   "profile.stats.projects-followers": {
     "message": "{count, plural, one {<stat>{count}</stat> project follower} other {<stat>{count}</stat> project followers}}"
@@ -717,7 +1230,7 @@
     "message": "Invitation to join project"
   },
   "project-member-header.invitation-with-role": {
-    "message": "You've been invited be a member of this project with the role of '{role}'."
+    "message": "You've been invited to be a member of this project with the role of ''{role}''."
   },
   "project-member-header.success": {
     "message": "Success"
@@ -744,6 +1257,9 @@
     "message": "You must complete the required steps in the publishing checklist!"
   },
   "project-moderation-nags.submit-for-review": {
+    "message": "Submit for review"
+  },
+  "project-moderation-nags.submit-for-review-button": {
     "message": "Submit for review"
   },
   "project-moderation-nags.submit-for-review-desc": {
@@ -839,11 +1355,8 @@
   "project.actions.servers-promo.description": {
     "message": "Modrinth Servers is the easiest way to play with your friends without hassle!"
   },
-  "project.actions.servers-promo.monthly": {
-    "message": " / month"
-  },
   "project.actions.servers-promo.pricing": {
-    "message": "Starting at $5{monthly}"
+    "message": "Starting at {price}<small> / month</small>"
   },
   "project.actions.servers-promo.title": {
     "message": "Create a server"
@@ -1415,9 +1928,6 @@
   "servers.backup.restore.in-progress.tooltip": {
     "message": "Backup restore in progress"
   },
-  "servers.backups.item.already-preparing": {
-    "message": "Already preparing backup for download"
-  },
   "servers.backups.item.automated": {
     "message": "Automated"
   },
@@ -1427,9 +1937,6 @@
   "servers.backups.item.failed-to-create-backup": {
     "message": "Failed to create backup"
   },
-  "servers.backups.item.failed-to-prepare-backup": {
-    "message": "Failed to prepare download"
-  },
   "servers.backups.item.failed-to-restore-backup": {
     "message": "Failed to restore from backup"
   },
@@ -1438,15 +1945,6 @@
   },
   "servers.backups.item.locked": {
     "message": "Locked"
-  },
-  "servers.backups.item.prepare-download": {
-    "message": "Prepare download"
-  },
-  "servers.backups.item.prepare-download-again": {
-    "message": "Try preparing again"
-  },
-  "servers.backups.item.preparing-download": {
-    "message": "Preparing download..."
   },
   "servers.backups.item.queued-for-backup": {
     "message": "Queued for backup"
@@ -1720,6 +2218,9 @@
   },
   "settings.language.languages.search.no-results": {
     "message": "No languages match your search."
+  },
+  "settings.language.warning": {
+    "message": "Changing the site language may cause some content to appear in English if a translation is not available. The site is not yet fully translated, so some content may remain in English for certain languages. We are still working on improving our localization system, so occasionally content may appear broken."
   },
   "settings.pats.action.create": {
     "message": "Create a PAT"

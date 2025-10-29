@@ -1,4 +1,5 @@
 pub mod actix;
+pub mod anrok;
 pub mod archon;
 pub mod avalara1099;
 pub mod bitflag;
@@ -6,7 +7,9 @@ pub mod captcha;
 pub mod cors;
 pub mod date;
 pub mod env;
+pub mod error;
 pub mod ext;
+pub mod gotenberg;
 pub mod guards;
 pub mod img;
 pub mod ip;

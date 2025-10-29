@@ -1,19 +1,23 @@
 name: docker-build
 
 on:
-#  push:
-#    branches:
-#      - '**'
-#    paths:
-#      - .github/workflows/labrinth-docker.yml
-#      - 'apps/labrinth/**'
-#  pull_request:
-#    types: [opened, synchronize]
-#    paths:
-#      - .github/workflows/labrinth-docker.yml
-#      - 'apps/labrinth/**'
-#  merge_group:
-#    types: [checks_requested]
+  # push:
+  #   branches:
+  #     - '**'
+  #   paths:
+  #     - .github/workflows/labrinth-docker.yml
+  #     - 'apps/labrinth/**'
+  #     - Cargo.toml
+  #     - Cargo.lock
+  # pull_request:
+  #   types: [opened, synchronize]
+  #   paths:
+  #     - .github/workflows/labrinth-docker.yml
+  #     - 'apps/labrinth/**'
+  #     - Cargo.toml
+  #     - Cargo.lock
+  # merge_group:
+  #   types: [checks_requested]
   workflow_dispatch:
 
 jobs:

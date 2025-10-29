@@ -3,9 +3,10 @@ use std::time::Duration;
 
 use actix_web::web;
 use database::redis::RedisPool;
+use modrinth_maxmind::MaxMind;
 use queue::{
-    analytics::AnalyticsQueue, payouts::PayoutsQueue, session::AuthQueue,
-    socket::ActiveSockets,
+    analytics::AnalyticsQueue, email::EmailQueue, payouts::PayoutsQueue,
+    session::AuthQueue, socket::ActiveSockets,
 };
 use sqlx::Postgres;
 use tracing::{info, warn};
@@ -13,9 +14,14 @@ use tracing::{info, warn};
 extern crate clickhouse as clickhouse_crate;
 use clickhouse_crate::Client;
 use util::cors::default_cors;
+use util::gotenberg::GotenbergClient;
 
 use crate::background_task::update_versions;
+use crate::database::ReadOnlyPgPool;
+use crate::queue::billing::{index_billing, index_subscriptions};
 use crate::queue::moderation::AutomatedModerationQueue;
+use crate::util::anrok;
+use crate::util::archon::ArchonClient;
 use crate::util::env::{parse_strings_from_var, parse_var};
 use crate::util::ratelimit::{AsyncRateLimiter, GCRAParameters};
 use sync::friends::handle_pubsub;
@@ -42,10 +48,11 @@ pub struct Pepper {
 #[derive(Clone)]
 pub struct LabrinthConfig {
     pub pool: sqlx::Pool<Postgres>,
+    pub ro_pool: ReadOnlyPgPool,
     pub redis_pool: RedisPool,
     pub clickhouse: Client,
     pub file_host: Arc<dyn file_hosting::FileHost + Send + Sync>,
-    pub maxmind: Arc<queue::maxmind::MaxMindIndexer>,
+    pub maxmind: web::Data<MaxMind>,
     pub scheduler: Arc<scheduler::Scheduler>,
     pub ip_salt: Pepper,
     pub search_config: search::SearchConfig,
@@ -56,17 +63,25 @@ pub struct LabrinthConfig {
     pub automated_moderation_queue: web::Data<AutomatedModerationQueue>,
     pub rate_limiter: web::Data<AsyncRateLimiter>,
     pub stripe_client: stripe::Client,
+    pub anrok_client: anrok::Client,
+    pub email_queue: web::Data<EmailQueue>,
+    pub archon_client: web::Data<ArchonClient>,
+    pub gotenberg_client: GotenbergClient,
 }
 
 #[allow(clippy::too_many_arguments)]
 pub fn app_setup(
     pool: sqlx::Pool<Postgres>,
+    ro_pool: ReadOnlyPgPool,
     redis_pool: RedisPool,
     search_config: search::SearchConfig,
     clickhouse: &mut Client,
     file_host: Arc<dyn file_hosting::FileHost + Send + Sync>,
-    maxmind: Arc<queue::maxmind::MaxMindIndexer>,
+    maxmind: MaxMind,
     stripe_client: stripe::Client,
+    anrok_client: anrok::Client,
+    email_queue: EmailQueue,
+    gotenberg_client: GotenbergClient,
     enable_background_tasks: bool,
 ) -> LabrinthConfig {
     info!(
@@ -88,7 +103,7 @@ pub fn app_setup(
         });
     }
 
-    let mut scheduler = scheduler::Scheduler::new();
+    let scheduler = scheduler::Scheduler::new();
 
     let limiter = web::Data::new(AsyncRateLimiter::new(
         redis_pool.clone(),
@@ -143,21 +158,25 @@ pub fn app_setup(
 
         let pool_ref = pool.clone();
         let client_ref = clickhouse.clone();
+        let redis_pool_ref = redis_pool.clone();
         scheduler.run(Duration::from_secs(60 * 60 * 6), move || {
             let pool_ref = pool_ref.clone();
             let client_ref = client_ref.clone();
+            let redis_ref = redis_pool_ref.clone();
             async move {
-                background_task::payouts(pool_ref, client_ref).await;
+                background_task::payouts(pool_ref, client_ref, redis_ref).await;
             }
         });
 
         let pool_ref = pool.clone();
         let redis_ref = redis_pool.clone();
         let stripe_client_ref = stripe_client.clone();
+        let anrok_client_ref = anrok_client.clone();
         actix_rt::spawn(async move {
             loop {
-                routes::internal::billing::index_billing(
+                index_billing(
                     stripe_client_ref.clone(),
+                    anrok_client_ref.clone(),
                     pool_ref.clone(),
                     redis_ref.clone(),
                 )
@@ -168,11 +187,16 @@ pub fn app_setup(
 
         let pool_ref = pool.clone();
         let redis_ref = redis_pool.clone();
+        let stripe_client_ref = stripe_client.clone();
+        let anrok_client_ref = anrok_client.clone();
+
         actix_rt::spawn(async move {
             loop {
-                routes::internal::billing::index_subscriptions(
+                index_subscriptions(
                     pool_ref.clone(),
                     redis_ref.clone(),
+                    stripe_client_ref.clone(),
+                    anrok_client_ref.clone(),
                 )
                 .await;
                 tokio::time::sleep(Duration::from_secs(60 * 5)).await;
@@ -199,27 +223,6 @@ pub fn app_setup(
             info!("Done indexing sessions queue");
         }
     });
-
-    let reader = maxmind.clone();
-    {
-        let reader_ref = reader;
-        scheduler.run(Duration::from_secs(60 * 60 * 24), move || {
-            let reader_ref = reader_ref.clone();
-
-            async move {
-                info!("Downloading MaxMind GeoLite2 country database");
-                let result = reader_ref.index().await;
-                if let Err(e) = result {
-                    warn!(
-                        "Downloading MaxMind GeoLite2 country database failed: {:?}",
-                        e
-                    );
-                }
-                info!("Done downloading MaxMind GeoLite2 country database");
-            }
-        });
-    }
-    info!("Downloading MaxMind GeoLite2 country database");
 
     let analytics_queue = Arc::new(AnalyticsQueue::new());
     {
@@ -265,10 +268,11 @@ pub fn app_setup(
 
     LabrinthConfig {
         pool,
+        ro_pool,
         redis_pool,
         clickhouse: clickhouse.clone(),
         file_host,
-        maxmind,
+        maxmind: web::Data::new(maxmind),
         scheduler: Arc::new(scheduler),
         ip_salt,
         search_config,
@@ -279,6 +283,13 @@ pub fn app_setup(
         automated_moderation_queue,
         rate_limiter: limiter,
         stripe_client,
+        anrok_client,
+        gotenberg_client,
+        archon_client: web::Data::new(
+            ArchonClient::from_env()
+                .expect("ARCHON_URL and PYRO_API_KEY must be set"),
+        ),
+        email_queue: web::Data::new(email_queue),
     }
 }
 
@@ -300,17 +311,22 @@ pub fn app_config(
     }))
     .app_data(web::Data::new(labrinth_config.redis_pool.clone()))
     .app_data(web::Data::new(labrinth_config.pool.clone()))
+    .app_data(web::Data::new(labrinth_config.ro_pool.clone()))
     .app_data(web::Data::new(labrinth_config.file_host.clone()))
     .app_data(web::Data::new(labrinth_config.search_config.clone()))
+    .app_data(web::Data::new(labrinth_config.gotenberg_client.clone()))
     .app_data(labrinth_config.session_queue.clone())
     .app_data(labrinth_config.payouts_queue.clone())
+    .app_data(labrinth_config.email_queue.clone())
+    .app_data(labrinth_config.maxmind.clone())
     .app_data(web::Data::new(labrinth_config.ip_salt.clone()))
     .app_data(web::Data::new(labrinth_config.analytics_queue.clone()))
     .app_data(web::Data::new(labrinth_config.clickhouse.clone()))
-    .app_data(web::Data::new(labrinth_config.maxmind.clone()))
     .app_data(labrinth_config.active_sockets.clone())
     .app_data(labrinth_config.automated_moderation_queue.clone())
+    .app_data(labrinth_config.archon_client.clone())
     .app_data(web::Data::new(labrinth_config.stripe_client.clone()))
+    .app_data(web::Data::new(labrinth_config.anrok_client.clone()))
     .app_data(labrinth_config.rate_limiter.clone())
     .configure({
         #[cfg(target_os = "linux")]
@@ -327,6 +343,13 @@ pub fn app_config(
     .configure(routes::internal::config)
     .configure(routes::root_config)
     .default_service(web::get().wrap(default_cors()).to(routes::not_found));
+}
+
+pub fn utoipa_app_config(
+    cfg: &mut utoipa_actix_web::service_config::ServiceConfig,
+    _labrinth_config: LabrinthConfig,
+) {
+    cfg.configure(routes::v3::utoipa_config);
 }
 
 // This is so that env vars not used immediately don't panic at runtime
@@ -348,6 +371,7 @@ pub fn check_env_vars() -> bool {
     failed |= check_var::<String>("SITE_URL");
     failed |= check_var::<String>("CDN_URL");
     failed |= check_var::<String>("LABRINTH_ADMIN_KEY");
+    failed |= check_var::<String>("LABRINTH_EXTERNAL_NOTIFICATION_KEY");
     failed |= check_var::<String>("RATE_LIMIT_IGNORE_KEY");
     failed |= check_var::<String>("DATABASE_URL");
     failed |= check_var::<String>("MEILISEARCH_ADDR");
@@ -444,6 +468,8 @@ pub fn check_env_vars() -> bool {
     failed |= check_var::<String>("SMTP_HOST");
     failed |= check_var::<u16>("SMTP_PORT");
     failed |= check_var::<String>("SMTP_TLS");
+    failed |= check_var::<String>("SMTP_FROM_NAME");
+    failed |= check_var::<String>("SMTP_FROM_ADDRESS");
 
     failed |= check_var::<String>("SITE_VERIFY_EMAIL_PATH");
     failed |= check_var::<String>("SITE_RESET_PASSWORD_PATH");
@@ -466,9 +492,13 @@ pub fn check_env_vars() -> bool {
     failed |= check_var::<String>("CLICKHOUSE_PASSWORD");
     failed |= check_var::<String>("CLICKHOUSE_DATABASE");
 
+    failed |= check_var::<String>("MAXMIND_ACCOUNT_ID");
     failed |= check_var::<String>("MAXMIND_LICENSE_KEY");
 
     failed |= check_var::<String>("FLAME_ANVIL_URL");
+
+    failed |= check_var::<String>("GOTENBERG_URL");
+    failed |= check_var::<String>("GOTENBERG_CALLBACK_BASE");
 
     failed |= check_var::<String>("STRIPE_API_KEY");
     failed |= check_var::<String>("STRIPE_WEBHOOK_SECRET");
@@ -487,7 +517,12 @@ pub fn check_env_vars() -> bool {
     failed |= check_var::<String>("AVALARA_1099_API_TEAM_ID");
     failed |= check_var::<String>("AVALARA_1099_COMPANY_ID");
 
+    failed |= check_var::<String>("ANROK_API_URL");
+    failed |= check_var::<String>("ANROK_API_KEY");
+
     failed |= check_var::<String>("COMPLIANCE_PAYOUT_THRESHOLD");
+
+    failed |= check_var::<String>("PAYOUT_ALERT_SLACK_WEBHOOK");
 
     failed |= check_var::<String>("ARCHON_URL");
 
