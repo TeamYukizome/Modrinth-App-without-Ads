@@ -1,36 +1,36 @@
 {
-  "version": "0.10.7",
+  "version": "0.10.15",
   "notes": "A new release of the Modrinth App is available!",
-  "pub_date": "2025-08-20T20:36:04Z",
+  "pub_date": "2025-10-27T01:48:51Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SHE0dDdCcUxpY2ZWeFgwbXFTalV2czhibVFVZER1QmNPYlRPcEtRZ3NlV3ovSGxENzk0b2wvSG5OeWx6a1BQVnBIdXFGMEhZWFovd2RsQm0rekRUZGc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzU2OTI3MjY2CWZpbGU6TW9kcmludGggQXBwLmFwcC50YXIuZ3oKNWtPNE96aWV6S1FrU1BlN2FoTUpMZm9kZXNIMElReGFEZXJRY1lHQmJUWmhQV1ZXMkN1bzZVWEZoU3R4VCs3VzFjYWRxT3kvRzFrQ1NjNDlPWmJVQnc9PQo=",
-      "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.9/Modrinth.App.app.tar.gz",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SHRieTE5bVNpVmQvMUs3RjlQT0NidWlHVnpqQnBSLzFDNmI0T3hFQzZ4UXBkKytVWVdrNlp6T3loRWZLZnZRem9sbnljUXlJRXRuWldEWk9sM2REZEEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzYxNzc5Mjc2CWZpbGU6TW9kcmludGggQXBwLmFwcC50YXIuZ3oKZCtQeEJaaXRsaGE5bWNBclVScWtkWm9BVlZFQ3NtamFmSjQvVmRkbk1ndW5GZkRwTkVmQ0tUZHlldEtoSjNVd2kya0I0TEFsUWhkK0JMOXQ5RGJUQnc9PQo=",
+      "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.10/Modrinth.App.app.tar.gz",
       "install_urls": [
-        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.9/Modrinth.App_1.0.8-canary+186.gc6926865_universal.dmg"
+        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.10/Modrinth.App_1.0.9-canary+170.ge4553faf_universal.dmg"
       ]
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SHE0dDdCcUxpY2ZWeFgwbXFTalV2czhibVFVZER1QmNPYlRPcEtRZ3NlV3ovSGxENzk0b2wvSG5OeWx6a1BQVnBIdXFGMEhZWFovd2RsQm0rekRUZGc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzU2OTI3MjY2CWZpbGU6TW9kcmludGggQXBwLmFwcC50YXIuZ3oKNWtPNE96aWV6S1FrU1BlN2FoTUpMZm9kZXNIMElReGFEZXJRY1lHQmJUWmhQV1ZXMkN1bzZVWEZoU3R4VCs3VzFjYWRxT3kvRzFrQ1NjNDlPWmJVQnc9PQo=",
-      "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.9/Modrinth.App.app.tar.gz",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SHRieTE5bVNpVmQvMUs3RjlQT0NidWlHVnpqQnBSLzFDNmI0T3hFQzZ4UXBkKytVWVdrNlp6T3loRWZLZnZRem9sbnljUXlJRXRuWldEWk9sM2REZEEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzYxNzc5Mjc2CWZpbGU6TW9kcmludGggQXBwLmFwcC50YXIuZ3oKZCtQeEJaaXRsaGE5bWNBclVScWtkWm9BVlZFQ3NtamFmSjQvVmRkbk1ndW5GZkRwTkVmQ0tUZHlldEtoSjNVd2kya0I0TEFsUWhkK0JMOXQ5RGJUQnc9PQo=",
+      "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.10/Modrinth.App.app.tar.gz",
       "install_urls": [
-        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.9/Modrinth.App_1.0.8-canary+186.gc6926865_universal.dmg"
+        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.10/Modrinth.App_1.0.9-canary+170.ge4553faf_universal.dmg"
       ]
     },
     "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SGsxM3pCTm9UdkZuM0d0M3FZV1hLWTRjaWRyZVNRUUlFTDVJTlBGc0xLZlh3L1VDZ1prOUVhR0hRM25lOU40eVRDRmF0bElxeXJ1QzAzUVVqYnZOV2c4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzU2OTI3MDY2CWZpbGU6TW9kcmludGggQXBwXzEuMC44LWNhbmFyeSsxODYuZ2M2OTI2ODY1X2FtZDY0LkFwcEltYWdlLnRhci5negpoSldaQzFMbkFuazhMdm5ucUpSaTJWbTJZbFhhV2dybDMyWkJkMi9TQlV0c2pPQlZWVVA0YzlnYmsyU0NMeDNVaHJJeE1SMVZYMlpJMW1tTG1zeUxDUT09Cg==",
-      "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.9/Modrinth.App_1.0.8-canary+186.gc6926865_amd64.AppImage.tar.gz",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SGxBRXM2M0pzOTVWcjVVQ29aZG5ReUJDNkFzVHhXVkNRK2hBWFRVcGJWNVVsSVM5b3RQdy8vdlNrN1RXV1dlbWdVMkVqdUp1akNRYjhhQ2RLU2tvSlE0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzYxNzc4OTM0CWZpbGU6TW9kcmludGggQXBwXzEuMC45LWNhbmFyeSsxNzAuZ2U0NTUzZmFmX2FtZDY0LkFwcEltYWdlLnRhci5negpUTVNtbWQ5OWEzVnlScVcxZnV4Vk9rR3k3bWUvZ1FUZWFrTkprT3dMNHVrb1dyWTFCQ0gwODkxQWJObXQ5Snh4R1J4Y2F5YURSVURhZTI0T0tUMDhBZz09Cg==",
+      "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.10/Modrinth.App_1.0.9-canary+170.ge4553faf_amd64.AppImage.tar.gz",
       "install_urls": [
-        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.9/Modrinth.App_1.0.8-canary+186.gc6926865_amd64.AppImage",
-        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.9/Modrinth.App_1.0.8-canary+186.gc6926865_amd64.deb",
-        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.9/Modrinth.App-1.0.8-canary+186.gc6926865-1.x86_64.rpm"
+        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.10/Modrinth.App_1.0.9-canary+170.ge4553faf_amd64.AppImage",
+        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.10/Modrinth.App_1.0.9-canary+170.ge4553faf_amd64.deb",
+        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.10/Modrinth.App-1.0.9-canary+170.ge4553faf-1.x86_64.rpm"
       ]
     },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SHRSNW5RSnAzUHB2alN0UDBobmRZVzRoVnpSMnJTQURZRGVHZ2wyZzVQaEdZSjlzd3NYeE9HdnZydXFqMFhoU3VWUnlsZkVuOW9UZC9lOFV0VU1qZkFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzU2OTI3MjU2CWZpbGU6TW9kcmludGggQXBwXzEuMC44LWNhbmFyeSsxODYuZ2M2OTI2ODY1X3g2NC1zZXR1cC5uc2lzLnppcApDdmJKbS9qakJKM2ZRMU9WdUw4NjBUazYzTTlQYnk1R2dLU0c3V1ZzYmFNZ0ZrK2U0U0dLWkZ3WFpiM0w4QkJsQlJ5WDRmdTJyNVpLUFlYT3FKaEJBQT09Cg==",
-      "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.9/Modrinth.App_1.0.8-canary+186.gc6926865_x64-setup.nsis.zip",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSNkpqV3VwZm15SHNnbk9nTldJRThEN2h5K0NGVjhVOHRPL25BTXVydi9vMEx5bDhES255Q3UwK3cvVE5GcDNZNWR1eXhhNEtYMVVWK3hqRkloaFQ1cDFVYzI4ZTZ5MlFNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzYxNzc5MDg4CWZpbGU6TW9kcmludGggQXBwXzEuMC45LWNhbmFyeSsxNzAuZ2U0NTUzZmFmX3g2NC1zZXR1cC5uc2lzLnppcApXcmJPb3lhN0hXSDdKSnZqdGpQQ2RFTCtlSUFyRW9pVVJCUjFlaUg2RlhtaXZwc09ubUliWjdhM2tUNkJlY2NKeElFNkpRTDdXRkdBRVhBQi9DL1lBUT09Cg==",
+      "url": "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.10/Modrinth.App_1.0.9-canary+170.ge4553faf_x64-setup.nsis.zip",
       "install_urls": [
-        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.9/Modrinth.App_1.0.8-canary+186.gc6926865_x64-setup.exe"
+        "https://github.com/TeamYukizome/Modrinth-App-without-Ads/releases/download/v1.0.10/Modrinth.App_1.0.9-canary+170.ge4553faf_x64-setup.exe"
       ]
     }
   }
