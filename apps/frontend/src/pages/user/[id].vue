@@ -5,12 +5,7 @@
 		<NewModal ref="editRoleModal" header="Edit role">
 			<div class="flex w-80 flex-col gap-4">
 				<div class="flex flex-col gap-2">
-					<TeleportDropdownMenu
-						v-model="selectedRole"
-						:options="roleOptions"
-						name="edit-role"
-						placeholder="Select a role"
-					/>
+					<Combobox v-model="selectedRole" :options="roleOptions" placeholder="Select a role" />
 				</div>
 				<div class="flex justify-end gap-2">
 					<ButtonStyled>
@@ -37,7 +32,7 @@
 		</NewModal>
 		<NewModal v-if="auth.user && isStaff(auth.user)" ref="userDetailsModal" header="User details">
 			<div class="flex flex-col gap-3">
-				<div class="flex flex-col gap-1">
+				<div v-if="isAdmin(auth.user)" class="flex flex-col gap-1">
 					<span class="text-lg font-bold text-primary">{{
 						formatMessage(messages.emailLabel)
 					}}</span>
@@ -57,14 +52,29 @@
 					</div>
 				</div>
 
-				<div class="flex flex-col gap-1">
+				<div v-if="!isAdmin(auth.user)" class="flex flex-col gap-1">
+					<span class="text-lg font-bold text-primary">{{
+						formatMessage(messages.emailVerifiedLabel)
+					}}</span>
+					<span class="flex w-fit items-center gap-1">
+						<CheckIcon v-if="user.email_verified" class="h-4 w-4 text-brand" />
+						<XIcon v-else class="h-4 w-4 text-red" />
+						{{
+							user.email_verified
+								? formatMessage(messages.yesLabel)
+								: formatMessage(messages.noLabel)
+						}}
+					</span>
+				</div>
+
+				<div v-if="isAdmin(auth.user)" class="flex flex-col gap-1">
 					<span class="text-lg font-bold text-primary">{{
 						formatMessage(messages.authProvidersLabel)
 					}}</span>
 					<span>{{ user.auth_providers.join(', ') }}</span>
 				</div>
 
-				<div class="flex flex-col gap-1">
+				<div v-if="isAdmin(auth.user)" class="flex flex-col gap-1">
 					<span class="text-lg font-bold text-primary">{{
 						formatMessage(messages.paymentMethodsLabel)
 					}}</span>
@@ -109,7 +119,18 @@
 						<Avatar :src="user.avatar_url" :alt="user.username" size="96px" circle />
 					</template>
 					<template #title>
-						{{ user.username }}
+						<span class="flex items-center gap-2">
+							{{ user.username }}
+							<TagItem
+								v-if="isAdminViewing && isAffiliate"
+								:style="{
+									'--_color': 'var(--color-brand)',
+									'--_bg-color': 'var(--color-brand-highlight)',
+								}"
+							>
+								<AffiliateIcon /> Affiliate
+							</TagItem>
+						</span>
 					</template>
 					<template #summary>
 						{{
@@ -192,6 +213,13 @@
 										shown: auth.user && isStaff(auth.user),
 									},
 									{
+										id: 'toggle-affiliate',
+										action: () => toggleAffiliate(user.id),
+										shown: isAdminViewing,
+										remainOnClick: true,
+										color: isAffiliate ? 'red' : 'orange',
+									},
+									{
 										id: 'open-info',
 										action: () => $refs.userDetailsModal.show(),
 										shown: auth.user && isStaff(auth.user),
@@ -203,6 +231,7 @@
 									},
 								]"
 								aria-label="More options"
+								:dropdown-id="`${baseId}-more-options`"
 							>
 								<MoreVerticalIcon aria-hidden="true" />
 								<template #manage-projects>
@@ -229,6 +258,14 @@
 									<InfoIcon aria-hidden="true" />
 									{{ formatMessage(messages.infoButton) }}
 								</template>
+								<template #toggle-affiliate>
+									<AffiliateIcon aria-hidden="true" />
+									{{
+										formatMessage(
+											isAffiliate ? messages.removeAffiliateButton : messages.setAffiliateButton,
+										)
+									}}
+								</template>
 								<template #edit-role>
 									<EditIcon aria-hidden="true" />
 									{{ formatMessage(messages.editRoleButton) }}
@@ -239,7 +276,7 @@
 				</ContentPageHeader>
 			</div>
 			<div class="normal-page__content">
-				<div v-if="navLinks.length >= 2" class="mb-4 max-w-full overflow-x-auto">
+				<div v-if="navLinks.length > 2" class="mb-4 max-w-full overflow-x-auto">
 					<NavTabs :links="navLinks" />
 				</div>
 				<div v-if="projects.length > 0">
@@ -282,7 +319,13 @@
 						/>
 					</div>
 				</div>
-				<div v-else-if="route.params.projectType !== 'collections'" class="error">
+				<div
+					v-else-if="
+						(route.params.projectType && route.params.projectType !== 'collections') ||
+						(!route.params.projectType && collections.length === 0)
+					"
+					class="error"
+				>
 					<UpToDate class="icon" />
 					<br />
 					<span v-if="auth.user && auth.user.id === user.id" class="preserve-lines text">
@@ -296,7 +339,10 @@
 					</span>
 					<span v-else class="text">{{ formatMessage(messages.profileNoProjectsLabel) }}</span>
 				</div>
-				<div v-if="['collections'].includes(route.params.projectType)" class="collections-grid">
+				<div
+					v-if="!route.params.projectType || route.params.projectType === 'collections'"
+					class="collections-grid"
+				>
 					<nuxt-link
 						v-for="collection in collections.sort(
 							(a, b) => new Date(b.created) - new Date(a.created),
@@ -306,7 +352,7 @@
 						class="card collection-item"
 					>
 						<div class="collection">
-							<Avatar :src="collection.icon_url" class="icon" />
+							<Avatar :src="collection.icon_url" size="64px" />
 							<div class="details">
 								<h2 class="title">{{ collection.name }}</h2>
 								<div class="stats">
@@ -411,6 +457,7 @@
 </template>
 <script setup>
 import {
+	AffiliateIcon,
 	BoxIcon,
 	CalendarIcon,
 	CheckIcon,
@@ -432,15 +479,16 @@ import {
 import {
 	Avatar,
 	ButtonStyled,
+	Combobox,
 	commonMessages,
 	ContentPageHeader,
 	injectNotificationManager,
 	NewModal,
 	OverflowMenu,
-	TeleportDropdownMenu,
+	TagItem,
 	useRelativeTime,
 } from '@modrinth/ui'
-import { isAdmin } from '@modrinth/utils'
+import { isAdmin, isStaff, UserBadge } from '@modrinth/utils'
 import { IntlFormatted } from '@vintl/vintl/components'
 
 import TenMClubBadge from '~/assets/images/badges/10m-club.svg?component'
@@ -456,14 +504,13 @@ import CollectionCreateModal from '~/components/ui/create/CollectionCreateModal.
 import ModalCreation from '~/components/ui/create/ProjectCreateModal.vue'
 import NavTabs from '~/components/ui/NavTabs.vue'
 import ProjectCard from '~/components/ui/ProjectCard.vue'
-import { isStaff } from '~/helpers/users.js'
 import { reportUser } from '~/utils/report-helpers.ts'
 
 const data = useNuxtApp()
 const route = useNativeRoute()
 const auth = await useAuth()
 const cosmetics = useCosmetics()
-const tags = useTags()
+const tags = useGeneratedState()
 const config = useRuntimeConfig()
 
 const vintl = useVIntl()
@@ -474,6 +521,8 @@ const formatCompactNumber = useCompactNumber(true)
 const formatRelativeTime = useRelativeTime()
 
 const { addNotification } = injectNotificationManager()
+
+const baseId = useId()
 
 const messages = defineMessages({
 	profileProjectsLabel: {
@@ -495,6 +544,10 @@ const messages = defineMessages({
 	emailLabel: {
 		id: 'profile.details.label.email',
 		defaultMessage: 'Email',
+	},
+	emailVerifiedLabel: {
+		id: 'profile.details.label.email-verified',
+		defaultMessage: 'Email verified',
 	},
 	emailVerifiedTooltip: {
 		id: 'profile.details.tooltip.email-verified',
@@ -599,6 +652,18 @@ const messages = defineMessages({
 		id: 'profile.button.info',
 		defaultMessage: 'View user details',
 	},
+	setAffiliateButton: {
+		id: 'profile.button.set-affiliate',
+		defaultMessage: 'Set as affiliate',
+	},
+	removeAffiliateButton: {
+		id: 'profile.button.remove-affiliate',
+		defaultMessage: 'Remove as affiliate',
+	},
+	affiliateLabel: {
+		id: 'profile.label.affiliate',
+		defaultMessage: 'Affiliate',
+	},
 	editRoleButton: {
 		id: 'profile.button.edit-role',
 		defaultMessage: 'Edit role',
@@ -609,38 +674,42 @@ const messages = defineMessages({
 	},
 })
 
-let user, projects, organizations, collections
+let user, projects, organizations, collections, refreshUser
 try {
-	;[{ data: user }, { data: projects }, { data: organizations }, { data: collections }] =
-		await Promise.all([
-			useAsyncData(`user/${route.params.id}`, () => useBaseFetch(`user/${route.params.id}`)),
-			useAsyncData(
-				`user/${route.params.id}/projects`,
-				() => useBaseFetch(`user/${route.params.id}/projects`),
-				{
-					transform: (projects) => {
-						for (const project of projects) {
-							project.categories = project.categories.concat(project.loaders)
-							project.project_type = data.$getProjectTypeForUrl(
-								project.project_type,
-								project.categories,
-								tags.value,
-							)
-						}
+	;[
+		{ data: user, refresh: refreshUser },
+		{ data: projects },
+		{ data: organizations },
+		{ data: collections },
+	] = await Promise.all([
+		useAsyncData(`user/${route.params.id}`, () => useBaseFetch(`user/${route.params.id}`)),
+		useAsyncData(
+			`user/${route.params.id}/projects`,
+			() => useBaseFetch(`user/${route.params.id}/projects`),
+			{
+				transform: (projects) => {
+					for (const project of projects) {
+						project.categories = project.categories.concat(project.loaders)
+						project.project_type = data.$getProjectTypeForUrl(
+							project.project_type,
+							project.categories,
+							tags.value,
+						)
+					}
 
-						return projects
-					},
+					return projects
 				},
-			),
-			useAsyncData(`user/${route.params.id}/organizations`, () =>
-				useBaseFetch(`user/${route.params.id}/organizations`, {
-					apiVersion: 3,
-				}),
-			),
-			useAsyncData(`user/${route.params.id}/collections`, () =>
-				useBaseFetch(`user/${route.params.id}/collections`, { apiVersion: 3 }),
-			),
-		])
+			},
+		),
+		useAsyncData(`user/${route.params.id}/organizations`, () =>
+			useBaseFetch(`user/${route.params.id}/organizations`, {
+				apiVersion: 3,
+			}),
+		),
+		useAsyncData(`user/${route.params.id}/collections`, () =>
+			useBaseFetch(`user/${route.params.id}/collections`, { apiVersion: 3 }),
+		),
+	])
 } catch {
 	throw createError({
 		fatal: true,
@@ -764,6 +833,17 @@ async function copyPermalink() {
 	await navigator.clipboard.writeText(`${config.public.siteUrl}/user/${user.value.id}`)
 }
 
+const isAffiliate = computed(() => user.value.badges & UserBadge.AFFILIATE)
+const isAdminViewing = computed(() => isAdmin(auth.value.user))
+
+async function toggleAffiliate(id) {
+	await useBaseFetch(`user/${id}`, {
+		method: 'PATCH',
+		body: { badges: user.value.badges ^ (1 << 7) },
+	})
+	refreshUser()
+}
+
 const navLinks = computed(() => [
 	{
 		label: formatMessage(commonMessages.allProjectType),
@@ -783,7 +863,11 @@ const navLinks = computed(() => [
 const selectedRole = ref(user.value.role)
 const isSavingRole = ref(false)
 
-const roleOptions = ['developer', 'moderator', 'admin']
+const roleOptions = [
+	{ value: 'developer', label: 'Developer' },
+	{ value: 'moderator', label: 'Moderator' },
+	{ value: 'admin', label: 'Admin' },
+]
 
 const editRoleModal = useTemplateRef('editRoleModal')
 
@@ -845,6 +929,7 @@ export default defineNuxtComponent({
 	}
 
 	gap: var(--gap-md);
+	margin-bottom: var(--gap-md);
 
 	.collection-item {
 		display: flex;

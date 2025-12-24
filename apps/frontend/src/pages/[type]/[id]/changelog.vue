@@ -47,7 +47,7 @@
 							>
 						</div>
 						<a
-							:href="version.primaryFile.url"
+							:href="version.primaryFile?.url"
 							class="iconified-button download"
 							:title="`Download ${version.name}`"
 						>
@@ -76,8 +76,7 @@
 import { DownloadIcon } from '@modrinth/assets'
 import { Pagination } from '@modrinth/ui'
 import VersionFilterControl from '@modrinth/ui/src/components/version/VersionFilterControl.vue'
-
-import { renderHighlightedString } from '~/helpers/highlight.js'
+import { renderHighlightedString } from '@modrinth/utils'
 
 const props = defineProps({
 	project: {
@@ -112,7 +111,7 @@ useSeoMeta({
 
 const router = useNativeRouter()
 const route = useNativeRoute()
-const tags = useTags()
+const tags = useGeneratedState()
 
 const currentPage = ref(Number(route.query.page ?? 1))
 const filteredVersions = computed(() => {

@@ -19,6 +19,7 @@ const validateValues = <K extends PropertyKey>(flags: Record<K, FlagValue>) => f
 export const DEFAULT_FEATURE_FLAGS = validateValues({
 	// Developer flags
 	developerMode: false,
+	demoMode: false,
 	showVersionFilesInTable: false,
 	showAdsWithPlus: false,
 	alwaysShowChecklistAsPopup: true,
@@ -39,6 +40,7 @@ export const DEFAULT_FEATURE_FLAGS = validateValues({
 	newProjectGeneralSettings: false,
 	newProjectEnvironmentSettings: true,
 	hideRussiaCensorshipBanner: false,
+	serverDiscovery: false,
 	// advancedRendering: true,
 	// externalLinksNewTab: true,
 	// notUsingBlockers: false,

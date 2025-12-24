@@ -357,7 +357,7 @@
     "message": "你現在已加入由創作者與探索者組成的精彩社群，大家都在積極打造、下載並持續掌握優質模組的最新動態。"
   },
   "auth.welcome.label.tos": {
-    "message": "建立帳號即表示您同意 Modrinth 的《<terms-link>使用規定</terms-link>》及《<privacy-policy-link>隱私權政策</privacy-policy-link>》。"
+    "message": "建立帳號即表示您已同意 Modrinth 的《<terms-link>使用規定</terms-link>》及《<privacy-policy-link>隱私權政策</privacy-policy-link>》。"
   },
   "auth.welcome.long-title": {
     "message": "歡迎使用 Modrinth！"
@@ -444,7 +444,7 @@
     "message": "輸入收藏名稱..."
   },
   "create.collection.summary-description": {
-    "message": "用一句話或兩句話描述你的收藏。"
+    "message": "用一兩句話描述你的收藏。"
   },
   "create.collection.summary-label": {
     "message": "簡介"
@@ -456,7 +456,7 @@
     "message": "建立收藏"
   },
   "create.limit-alert.approaching-limit": {
-    "message": "即將達到{type}上限（{current}/{max}）"
+    "message": "即將達到{type}上限 ({current}/{max})"
   },
   "create.limit-alert.approaching-limit-description": {
     "message": "你即將達到{type}上限，如果你需要超過 {max} 個 {typePlural}，請聯絡客服。"
@@ -507,7 +507,7 @@
     "message": "你將是這個組織的擁有者，但你可以隨時邀請其他成員並轉移擁有權。"
   },
   "create.organization.summary-description": {
-    "message": "用一句話或兩句話描述你的組織。"
+    "message": "用一兩句話描述你的組織。"
   },
   "create.organization.summary-label": {
     "message": "簡介"
@@ -537,7 +537,7 @@
     "message": "輸入專案名稱..."
   },
   "create.project.summary-description": {
-    "message": "用一句話或兩句話描述你的專案。"
+    "message": "用一兩句話描述你的專案。"
   },
   "create.project.summary-label": {
     "message": "簡介"
@@ -566,6 +566,27 @@
   "create.project.visibility-unlisted": {
     "message": "不公開"
   },
+  "dashboard.affiliate-links.create.button": {
+    "message": "建立聯盟行銷連結"
+  },
+  "dashboard.affiliate-links.error.title": {
+    "message": "載入聯盟行銷連結時發生錯誤"
+  },
+  "dashboard.affiliate-links.header": {
+    "message": "你的聯盟行銷連結"
+  },
+  "dashboard.affiliate-links.revoke-confirm.body": {
+    "message": "這將永久撤銷聯盟行銷代碼 {id}，並且任何使用這個代碼的現有連結將不再有效。"
+  },
+  "dashboard.affiliate-links.revoke-confirm.button": {
+    "message": "撤銷"
+  },
+  "dashboard.affiliate-links.revoke-confirm.title": {
+    "message": "你確定要撤銷你的「{title}」聯盟行銷連結嗎？"
+  },
+  "dashboard.affiliate-links.search": {
+    "message": "搜尋聯盟行銷連結..."
+  },
   "dashboard.collections.button.create-new": {
     "message": "新增"
   },
@@ -577,6 +598,18 @@
   },
   "dashboard.collections.long-title": {
     "message": "你的收藏"
+  },
+  "dashboard.creator-tax-form-modal.confirmation.download-button": {
+    "message": "下載 {formType}"
+  },
+  "dashboard.creator-tax-form-modal.confirmation.success": {
+    "message": "你的 {formType} 稅表已成功送出！"
+  },
+  "dashboard.creator-tax-form-modal.confirmation.support-text": {
+    "message": "你現在可以自由提領了。如果你有任何疑問，或需要更新你的資料，請<support-link>聯絡客服</support-link>。"
+  },
+  "dashboard.creator-tax-form-modal.confirmation.title": {
+    "message": "一切就緒！🎉"
   },
   "dashboard.creator-tax-form-modal.entity.description": {
     "message": "「外國實體」係指在美國境外設立的商業實體（例如非美國公司、合夥事業或有限責任公司）。"
@@ -601,6 +634,30 @@
   },
   "dashboard.creator-tax-form-modal.us-citizen.question": {
     "message": "您是美國公民嗎？"
+  },
+  "dashboard.creator-withdraw-modal.complete-tax-form": {
+    "message": "填寫稅表"
+  },
+  "dashboard.creator-withdraw-modal.continue-with-limit": {
+    "message": "在有限制的情況下繼續"
+  },
+  "dashboard.creator-withdraw-modal.details-label": {
+    "message": "詳細資訊"
+  },
+  "dashboard.creator-withdraw-modal.fee-breakdown-amount": {
+    "message": "金額"
+  },
+  "dashboard.creator-withdraw-modal.fee-breakdown-exchange-rate": {
+    "message": "匯率"
+  },
+  "dashboard.creator-withdraw-modal.fee-breakdown-fee": {
+    "message": "費用"
+  },
+  "dashboard.creator-withdraw-modal.fee-breakdown-net-amount": {
+    "message": "淨額"
+  },
+  "dashboard.creator-withdraw-modal.paypal-details.paypal-account": {
+    "message": "PayPal 帳號"
   },
   "error.collection.404.list_item.1": {
     "message": "你可能輸錯了該收藏的網址。"
@@ -857,6 +914,9 @@
   "layout.action.lookup-by-email": {
     "message": "依電子郵件查詢"
   },
+  "layout.action.manage-affiliates": {
+    "message": "管理聯盟行銷連結"
+  },
   "layout.action.manage-server-notices": {
     "message": "管理伺服器通知"
   },
@@ -916,6 +976,15 @@
   },
   "layout.banner.tax.title": {
     "message": "需填寫稅表"
+  },
+  "layout.banner.tin-mismatch.action": {
+    "message": "聯絡客服"
+  },
+  "layout.banner.tin-mismatch.description": {
+    "message": "由於您的納稅人識別號碼 (TIN) 或社會安全號碼 (SSN) 與美國國稅局 (IRS) 的紀錄不符，您的提款功能已暫時鎖定。請聯絡客服以重設並重新提交您的稅務表格。"
+  },
+  "layout.banner.tin-mismatch.title": {
+    "message": "稅務表格提交失敗"
   },
   "layout.banner.verify-email.action": {
     "message": "重新傳送驗證電子郵件"
@@ -1091,8 +1160,17 @@
   "moderation.technical.search.placeholder": {
     "message": "搜尋技術審查..."
   },
+  "profile.bio.fallback.creator": {
+    "message": "一位 Modrinth 創作者。"
+  },
+  "profile.bio.fallback.user": {
+    "message": "一位 Modrinth 使用者。"
+  },
   "profile.button.billing": {
     "message": "管理使用者帳務"
+  },
+  "profile.button.edit-role": {
+    "message": "編輯角色"
   },
   "profile.button.info": {
     "message": "檢視使用者詳細資訊"
@@ -1100,17 +1178,56 @@
   "profile.button.manage-projects": {
     "message": "管理專案"
   },
+  "profile.button.remove-affiliate": {
+    "message": "移除聯盟行銷夥伴資格"
+  },
+  "profile.button.set-affiliate": {
+    "message": "設為聯盟行銷夥伴"
+  },
+  "profile.details.label.auth-providers": {
+    "message": "驗證提供者"
+  },
+  "profile.details.label.email": {
+    "message": "電子郵件"
+  },
+  "profile.details.label.has-password": {
+    "message": "是否有密碼"
+  },
+  "profile.details.label.has-totp": {
+    "message": "是否有 TOTP"
+  },
+  "profile.details.label.payment-methods": {
+    "message": "付款方式"
+  },
+  "profile.details.tooltip.email-not-verified": {
+    "message": "電子郵件尚未驗證"
+  },
+  "profile.details.tooltip.email-verified": {
+    "message": "電子郵件已驗證"
+  },
   "profile.error.not-found": {
     "message": "找不到使用者"
   },
-  "profile.joined-at": {
-    "message": "加入於 <date>{ago}</date>"
+  "profile.label.affiliate": {
+    "message": "聯盟行銷"
   },
   "profile.label.badges": {
     "message": "徽章"
   },
+  "profile.label.collection": {
+    "message": "收藏"
+  },
   "profile.label.details": {
-    "message": "詳細資料"
+    "message": "詳細資訊"
+  },
+  "profile.label.downloads": {
+    "message": "{count} 次下載"
+  },
+  "profile.label.joined": {
+    "message": "加入時間"
+  },
+  "profile.label.no": {
+    "message": "否"
   },
   "profile.label.no-collections": {
     "message": "這個使用者沒有任何收藏！"
@@ -1127,17 +1244,20 @@
   "profile.label.organizations": {
     "message": "組織"
   },
+  "profile.label.projects": {
+    "message": "{count} 個專案"
+  },
+  "profile.label.saving": {
+    "message": "儲存中..."
+  },
+  "profile.label.yes": {
+    "message": "是"
+  },
   "profile.meta.description": {
     "message": "前往 Modrinth 下載 {username} 的專案"
   },
   "profile.meta.description-with-bio": {
     "message": "{bio} — 前往 Modrinth 下載 {username} 的專案"
-  },
-  "profile.stats.downloads": {
-    "message": "{count, plural, other {<stat>{count}</stat> 次專案下載}}"
-  },
-  "profile.stats.projects": {
-    "message": "{count, plural, other {<stat>{count}</stat> 個專案}}"
   },
   "profile.stats.projects-followers": {
     "message": "{count, plural, other {<stat>{count}</stat> 位專案追蹤者}}"
@@ -1186,9 +1306,6 @@
   },
   "project-moderation-nags.resubmit-for-review": {
     "message": "重新提交審核"
-  },
-  "project-moderation-nags.resubmit-for-review-desc": {
-    "message": "你的專案已由 Modrinth 的工作人員設為{status}。大部分情況下，在處理了工作人員訊息中提到的問題後，即可重新提交以供審核。"
   },
   "project-moderation-nags.submit-checklist-tooltip": {
     "message": "你必須完成發布檢查清單中的必要步驟！"
@@ -1272,7 +1389,7 @@
     "message": "提交於 {date}"
   },
   "project.about.details.title": {
-    "message": "詳細資料"
+    "message": "詳細資訊"
   },
   "project.about.details.updated": {
     "message": "更新於 {date}"
@@ -1595,18 +1712,6 @@
   "report.submit": {
     "message": "提交檢舉"
   },
-  "revenue.transfers.total": {
-    "message": "你總共提款了 {amount} 美元。"
-  },
-  "revenue.transfers.total.method": {
-    "message": "你透過 {method} 提款了 {amount} 美元。"
-  },
-  "revenue.transfers.total.year": {
-    "message": "你在 {year} 年提款了 {amount} 美元。"
-  },
-  "revenue.transfers.total.year_method": {
-    "message": "你透過 {method} 在 {year} 年提款了 {amount} 美元。"
-  },
   "scopes.analytics.description": {
     "message": "存取你的分析資料"
   },
@@ -1865,9 +1970,6 @@
   "servers.backup.restore.in-progress.tooltip": {
     "message": "正在還原備份"
   },
-  "servers.backups.item.already-preparing": {
-    "message": "備份已經在準備下載"
-  },
   "servers.backups.item.automated": {
     "message": "自動"
   },
@@ -1877,9 +1979,6 @@
   "servers.backups.item.failed-to-create-backup": {
     "message": "無法建立備份"
   },
-  "servers.backups.item.failed-to-prepare-backup": {
-    "message": "無法準備下載"
-  },
   "servers.backups.item.failed-to-restore-backup": {
     "message": "無法從備份還原"
   },
@@ -1888,15 +1987,6 @@
   },
   "servers.backups.item.locked": {
     "message": "已鎖定"
-  },
-  "servers.backups.item.prepare-download": {
-    "message": "準備下載"
-  },
-  "servers.backups.item.prepare-download-again": {
-    "message": "再試一次準備下載"
-  },
-  "servers.backups.item.preparing-download": {
-    "message": "正在準備下載..."
   },
   "servers.backups.item.queued-for-backup": {
     "message": "已排入備份佇列"

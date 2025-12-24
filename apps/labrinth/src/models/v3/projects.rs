@@ -5,7 +5,7 @@ use crate::database::models::loader_fields::VersionField;
 use crate::database::models::project_item::{LinkUrl, ProjectQueryResult};
 use crate::database::models::version_item::VersionQueryResult;
 use crate::models::ids::{
-    OrganizationId, ProjectId, TeamId, ThreadId, VersionId,
+    FileId, OrganizationId, ProjectId, TeamId, ThreadId, VersionId,
 };
 use ariadne::ids::UserId;
 use chrono::{DateTime, Utc};
@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 /// A project returned from the API
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct Project {
     /// The ID of the project, encoded as a base62 string.
     pub id: ProjectId,
@@ -370,7 +370,7 @@ impl Project {
     //     })
     // }
 }
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, utoipa::ToSchema)]
 pub struct GalleryItem {
     pub url: String,
     pub raw_url: String,
@@ -381,7 +381,7 @@ pub struct GalleryItem {
     pub ordering: i64,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, utoipa::ToSchema)]
 pub struct ModeratorMessage {
     pub message: String,
     pub body: Option<String>,
@@ -389,14 +389,23 @@ pub struct ModeratorMessage {
 
 pub const DEFAULT_LICENSE_ID: &str = "LicenseRef-All-Rights-Reserved";
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct License {
     pub id: String,
     pub name: String,
     pub url: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Validate, Clone, Eq, PartialEq)]
+#[derive(
+    Debug,
+    Clone,
+    Serialize,
+    Deserialize,
+    Validate,
+    Eq,
+    PartialEq,
+    utoipa::ToSchema,
+)]
 pub struct Link {
     pub platform: String,
     pub donation: bool,
@@ -425,7 +434,9 @@ impl From<LinkUrl> for Link {
 /// Processing - Project is not displayed on search, and not accessible by URL (Temporary state, project under review)
 /// Scheduled - Project is scheduled to be released in the future
 /// Private - Project is approved, but is not viewable to the public
-#[derive(Serialize, Deserialize, Copy, Clone, Eq, PartialEq, Debug)]
+#[derive(
+    Serialize, Deserialize, Copy, Clone, Eq, PartialEq, Debug, utoipa::ToSchema,
+)]
 #[serde(rename_all = "lowercase")]
 pub enum ProjectStatus {
     Approved,
@@ -564,7 +575,9 @@ impl ProjectStatus {
     }
 }
 
-#[derive(Serialize, Deserialize, Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(
+    Serialize, Deserialize, Copy, Clone, Debug, Eq, PartialEq, utoipa::ToSchema,
+)]
 #[serde(rename_all = "kebab-case")]
 pub enum MonetizationStatus {
     ForceDemonetized,
@@ -599,7 +612,9 @@ impl MonetizationStatus {
 
 /// Represents the status of the manual review of the migration of side types of this
 /// project to the new environment field.
-#[derive(Serialize, Deserialize, Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(
+    Serialize, Deserialize, Copy, Clone, Debug, Eq, PartialEq, utoipa::ToSchema,
+)]
 #[serde(rename_all = "kebab-case")]
 pub enum SideTypesMigrationReviewStatus {
     /// The project has been reviewed to use the new environment side types appropriately.
@@ -716,6 +731,7 @@ impl From<VersionQueryResult> for Version {
                 .files
                 .into_iter()
                 .map(|f| VersionFile {
+                    id: Some(FileId(f.id.0 as u64)),
                     url: f.url,
                     filename: f.filename,
                     hashes: f.hashes,
@@ -840,6 +856,10 @@ impl VersionStatus {
 /// A single project file, with a url for the file and the file's hash
 #[derive(Serialize, Deserialize, Clone)]
 pub struct VersionFile {
+    /// The ID of the file. Every file has an ID once created, but it
+    /// is not known until it indeed has been created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<FileId>,
     /// A map of hashes of the file.  The key is the hashing algorithm
     /// and the value is the string version of the hash.
     pub hashes: std::collections::HashMap<String, String>,
@@ -935,6 +955,10 @@ impl DependencyType {
 pub enum FileType {
     RequiredResourcePack,
     OptionalResourcePack,
+    SourcesJar,
+    DevJar,
+    JavadocJar,
+    Signature,
     Unknown,
 }
 
@@ -950,7 +974,11 @@ impl FileType {
         match self {
             FileType::RequiredResourcePack => "required-resource-pack",
             FileType::OptionalResourcePack => "optional-resource-pack",
+            FileType::SourcesJar => "sources-jar",
+            FileType::DevJar => "dev-jar",
+            FileType::JavadocJar => "javadoc-jar",
             FileType::Unknown => "unknown",
+            FileType::Signature => "signature",
         }
     }
 
@@ -958,7 +986,11 @@ impl FileType {
         match string {
             "required-resource-pack" => FileType::RequiredResourcePack,
             "optional-resource-pack" => FileType::OptionalResourcePack,
+            "sources-jar" => FileType::SourcesJar,
+            "dev-jar" => FileType::DevJar,
+            "javadoc-jar" => FileType::JavadocJar,
             "unknown" => FileType::Unknown,
+            "signature" => FileType::Signature,
             _ => FileType::Unknown,
         }
     }

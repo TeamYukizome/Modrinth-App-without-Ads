@@ -4,6 +4,7 @@ pub mod affiliate_code_item;
 pub mod categories;
 pub mod charge_item;
 pub mod collection_item;
+pub mod delphi_report_item;
 pub mod flow_item;
 pub mod friend_item;
 pub mod ids;
@@ -35,6 +36,7 @@ pub mod user_subscription_item;
 pub mod users_compliance;
 pub mod users_notifications_preferences_item;
 pub mod users_redeemals;
+pub mod users_subscriptions_affiliations;
 pub mod users_subscriptions_credits;
 pub mod version_item;
 

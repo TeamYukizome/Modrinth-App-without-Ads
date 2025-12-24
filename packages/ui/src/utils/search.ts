@@ -1,3 +1,4 @@
+import type { Labrinth } from '@modrinth/api-client'
 import { ClientIcon, ServerIcon } from '@modrinth/assets'
 import { formatCategory, formatCategoryHeader, sortByNameOrNumber } from '@modrinth/utils'
 import { defineMessage, useVIntl } from '@vintl/vintl'
@@ -67,31 +68,18 @@ const ALL_PROJECT_TYPES: ProjectType[] = [
 	'plugin',
 ]
 
-export interface Platform {
-	name: string
-	icon: string
-	supported_project_types: ProjectType[]
-	default: boolean
-	formatted_name: string
-}
-
-export interface Category {
-	icon: string
-	name: string
-	project_type: ProjectType
-	header: string
-}
-
 export interface Tags {
-	gameVersions: GameVersion[]
-	loaders: Platform[]
-	categories: Category[]
+	gameVersions: Labrinth.Tags.v2.GameVersion[]
+	loaders: Labrinth.Tags.v2.Loader[]
+	categories: Labrinth.Tags.v2.Category[]
 }
 
 export interface SortType {
 	display: string
 	name: string
 }
+
+const PLUGIN_PLATFORMS = ['bungeecord', 'waterfall', 'velocity', 'geyser']
 
 export function useSearch(
 	projectTypes: Ref<ProjectType[]>,
@@ -298,7 +286,7 @@ export function useSearch(
 					.filter(
 						(loader) =>
 							loader.supported_project_types.includes('plugin') &&
-							!['bungeecord', 'waterfall', 'velocity'].includes(loader.name),
+							!PLUGIN_PLATFORMS.includes(loader.name),
 					)
 					.map((loader) => {
 						return {
@@ -324,7 +312,7 @@ export function useSearch(
 				supports_negative_filter: true,
 				searchable: false,
 				options: tags.value.loaders
-					.filter((loader) => ['bungeecord', 'waterfall', 'velocity'].includes(loader.name))
+					.filter((loader) => PLUGIN_PLATFORMS.includes(loader.name))
 					.map((loader) => {
 						return {
 							id: loader.name,

@@ -27,7 +27,7 @@
     "message": "Linux"
   },
   "app-marketing.download.linux-disclaimer": {
-    "message": "На версії Modrinth для Linux <issues-link>проблеми</issues-link> на певних системах та налаштуваннях. Якщо Modrinth робить нестабільно на вашому пристрої, ми рекомендуємо спробувати інші додатки, такі як <prism-link>Prism Launcher</prism-link>, щоб легко встановлювати контент Modrinth."
+    "message": "На версії Modrinth App для Linux є <issues-link>відомі проблеми</issues-link> на деяких системах та конфігураціях. Якщо Modrinth App нестабільно працює на вашій системі, ми радимо вам спробувати інші програми, як наприклад <prism-link>Prism Launcher</prism-link> щоб легко встановлювати контент від Modrinth."
   },
   "app-marketing.download.mac": {
     "message": "Mac"
@@ -36,7 +36,7 @@
     "message": "Налаштування завантаження"
   },
   "app-marketing.download.terms": {
-    "message": "Завантажуючи Modrinth, ви погоджуєтеся з <terms-link>Умовами користування</terms-link> та <privacy-link>Політикою конфіденційности</privacy-link>."
+    "message": "Встановлюючи Modrinth, ви погоджуєтесь з <terms-link>Умовами користування</terms-link> та <privacy-link>Політикою конфіденційності</privacy-link>."
   },
   "app-marketing.download.third-party-packages": {
     "message": "Сторонні пакети"
@@ -48,7 +48,7 @@
     "message": "Windows"
   },
   "app-marketing.features.follow.description": {
-    "message": "Зберігайте контент, який вам до вподоби та отримуйте оновлення лише за один клік."
+    "message": "Зберігайте вміст, який вам подобається, та отримуйте оновлення за одне натискання."
   },
   "app-marketing.features.follow.title": {
     "message": "Відстежувати проєкти"
@@ -566,6 +566,27 @@
   "create.project.visibility-unlisted": {
     "message": "Поза списком"
   },
+  "dashboard.affiliate-links.create.button": {
+    "message": "Створити партнерське посилання"
+  },
+  "dashboard.affiliate-links.error.title": {
+    "message": "Помилка під час завантаження партнерських посилань"
+  },
+  "dashboard.affiliate-links.header": {
+    "message": "Ваші партнерські посилання"
+  },
+  "dashboard.affiliate-links.revoke-confirm.body": {
+    "message": "Це незворотно відкличе код партнера «{id}» та будь-які наявні посилання з цим кодом, які було оприлюднено, більше не будуть доступні."
+  },
+  "dashboard.affiliate-links.revoke-confirm.button": {
+    "message": "Відкликати"
+  },
+  "dashboard.affiliate-links.revoke-confirm.title": {
+    "message": "Ви впевнені, що хочете відкликати своє партнерське посилання «{title}»?"
+  },
+  "dashboard.affiliate-links.search": {
+    "message": "Шукати партнерські посилання…"
+  },
   "dashboard.collections.button.create-new": {
     "message": "Створити нову"
   },
@@ -577,6 +598,18 @@
   },
   "dashboard.collections.long-title": {
     "message": "Ваші добірки"
+  },
+  "dashboard.creator-tax-form-modal.confirmation.download-button": {
+    "message": "Завантажити {formType}"
+  },
+  "dashboard.creator-tax-form-modal.confirmation.success": {
+    "message": "Ваша податкова форма {formType} була успішно надіслана!"
+  },
+  "dashboard.creator-tax-form-modal.confirmation.support-text": {
+    "message": "Ви можете вивести кошти вже зараз. Якщо у вас залишилися питання або вам треба оновити свої дані, <support-link>зв'яжіться з підтримкою</support-link>."
+  },
+  "dashboard.creator-tax-form-modal.confirmation.title": {
+    "message": "Все готово! 🎉"
   },
   "dashboard.creator-tax-form-modal.entity.description": {
     "message": "Закордонна організація означає ділову організацію, організовану за межами США (наприклад, неамериканську корпорацію, партнерство, або ТОВ)."
@@ -601,6 +634,93 @@
   },
   "dashboard.creator-tax-form-modal.us-citizen.question": {
     "message": "Чи ви громадянин США?"
+  },
+  "dashboard.creator-withdraw-modal.complete-tax-form": {
+    "message": "Заповнити податкову форму"
+  },
+  "dashboard.creator-withdraw-modal.continue-with-limit": {
+    "message": "Продовжити з лімітом"
+  },
+  "dashboard.creator-withdraw-modal.details-label": {
+    "message": "Деталі"
+  },
+  "dashboard.creator-withdraw-modal.fee-breakdown-amount": {
+    "message": "Кількість"
+  },
+  "dashboard.creator-withdraw-modal.fee-breakdown-fee": {
+    "message": "Комісія"
+  },
+  "dashboard.creator-withdraw-modal.fee-breakdown-net-amount": {
+    "message": "Чиста кількість"
+  },
+  "dashboard.creator-withdraw-modal.kyc.business-entity": {
+    "message": "Юридична особа"
+  },
+  "dashboard.creator-withdraw-modal.kyc.entity-description": {
+    "message": "Юридичною особою є зареєстрована організація, як-от корпорація, товариство або ТОВ."
+  },
+  "dashboard.creator-withdraw-modal.kyc.private-individual": {
+    "message": "Фізична особа"
+  },
+  "dashboard.creator-withdraw-modal.method-selection.country-placeholder": {
+    "message": "Виберіть свою країну"
+  },
+  "dashboard.creator-withdraw-modal.method-selection.country-search-placeholder": {
+    "message": "Шукати країни…"
+  },
+  "dashboard.creator-withdraw-modal.method-selection.error-text": {
+    "message": "Неможливо отримати доступні способи оплати. Будь ласка, спробуйте знову пізніше."
+  },
+  "dashboard.creator-withdraw-modal.method-selection.error-title": {
+    "message": "Не вдалося завантажити способи оплати"
+  },
+  "dashboard.creator-withdraw-modal.method-selection.region": {
+    "message": "Регіон"
+  },
+  "dashboard.creator-withdraw-modal.method-selection.region-tooltip": {
+    "message": "Деякі способи оплати недоступні в певних регіонах."
+  },
+  "dashboard.creator-withdraw-modal.muralpay-details.account-owner": {
+    "message": "Власник рахунка"
+  },
+  "dashboard.creator-withdraw-modal.muralpay-details.coin": {
+    "message": "Монета"
+  },
+  "dashboard.creator-withdraw-modal.muralpay-details.crypto-warning-header": {
+    "message": "Підтвердьте адресу свого гаманця"
+  },
+  "dashboard.creator-withdraw-modal.paypal-details.account": {
+    "message": "Рахунок"
+  },
+  "dashboard.creator-withdraw-modal.paypal-details.disconnect-account": {
+    "message": "Від’єднати рахунок"
+  },
+  "dashboard.creator-withdraw-modal.paypal-details.paypal-account": {
+    "message": "Рахунок PayPal"
+  },
+  "dashboard.creator-withdraw-modal.paypal-details.paypal-auth-description": {
+    "message": "З’єднайте свій рахунок PayPal, щоб отримувати платежі напряму."
+  },
+  "dashboard.creator-withdraw-modal.stage.muralpay-details": {
+    "message": "Деталі рахунка"
+  },
+  "dashboard.revenue.transactions.header": {
+    "message": "Транзакції"
+  },
+  "dashboard.withdraw.completion.account": {
+    "message": "Рахунок"
+  },
+  "dashboard.withdraw.completion.amount": {
+    "message": "Кількість"
+  },
+  "dashboard.withdraw.completion.close-button": {
+    "message": "Закрити"
+  },
+  "dashboard.withdraw.completion.date": {
+    "message": "Дата"
+  },
+  "dashboard.withdraw.completion.wallet": {
+    "message": "Гаманець"
   },
   "error.collection.404.list_item.1": {
     "message": "Ви, можливо, помилилися під час написання URL добірки."
@@ -857,6 +977,9 @@
   "layout.action.lookup-by-email": {
     "message": "Пошук електронною поштою"
   },
+  "layout.action.manage-affiliates": {
+    "message": "Керувати партнерськими посиланнями"
+  },
   "layout.action.manage-server-notices": {
     "message": "Керування сповіщеннями сервера"
   },
@@ -912,10 +1035,19 @@
     "message": "Заповніть податкову форму"
   },
   "layout.banner.tax.description": {
-    "message": "Ви вже вивели більше ніж $600 з Modrinth цього року. Щоб дотримуватися податкових форм, ви маєте заповнити податкову форму. Ваші виведення затримані до поки ця форма не буде заповнена."
+    "message": "Ви вже вивели більше ніж $600 з Modrinth цього року. Щоб дотримуватися податкових зобов’язань, ви маєте заповнити податкову форму. Ваші виведення затримані, доки ця форма не буде заповнена."
   },
   "layout.banner.tax.title": {
     "message": "Вимагано податкову форму"
+  },
+  "layout.banner.tin-mismatch.action": {
+    "message": "Звернутися до підтримки"
+  },
+  "layout.banner.tin-mismatch.description": {
+    "message": "Виведення коштів тимчасово заблоковано, оскільки вказаний TIN або SSN не збігається з IRS. Зверніться до служби підтримки для повторного подання форми."
+  },
+  "layout.banner.tin-mismatch.title": {
+    "message": "Податкову форму відхилено"
   },
   "layout.banner.verify-email.action": {
     "message": "Повторно надіслати електронний лист для підтвердження"
@@ -940,6 +1072,9 @@
   },
   "layout.footer.about.status": {
     "message": "Статус"
+  },
+  "layout.footer.copyright": {
+    "message": "© {year} Rinth, Inc."
   },
   "layout.footer.legal": {
     "message": "Угоди"
@@ -1019,6 +1154,12 @@
   "layout.meta.og-description": {
     "message": "Досліджуйте інший та публікуйте свій уміст для Minecraft!"
   },
+  "layout.mobile.close-menu": {
+    "message": "Закрити меню"
+  },
+  "layout.mobile.open-menu": {
+    "message": "Відкрити меню"
+  },
   "layout.nav.analytics": {
     "message": "Аналітика"
   },
@@ -1045,6 +1186,9 @@
   },
   "layout.nav.modrinth-home-page": {
     "message": "Головна сторінка Modrinth"
+  },
+  "layout.nav.my-servers": {
+    "message": "Мої сервери"
   },
   "layout.nav.organizations": {
     "message": "Організації"
@@ -1091,8 +1235,77 @@
   "moderation.technical.search.placeholder": {
     "message": "Пошук технічних оглядів…"
   },
+  "muralpay.account-type.savings": {
+    "message": "Заощадження"
+  },
+  "muralpay.country.at": {
+    "message": "Австрія"
+  },
+  "muralpay.country.be": {
+    "message": "Бельгія"
+  },
+  "muralpay.country.cy": {
+    "message": "Кіпр"
+  },
+  "muralpay.country.de": {
+    "message": "Німеччина"
+  },
+  "muralpay.country.ee": {
+    "message": "Естонія"
+  },
+  "muralpay.country.es": {
+    "message": "Іспанія"
+  },
+  "muralpay.country.fi": {
+    "message": "Фінляндія"
+  },
+  "muralpay.country.fr": {
+    "message": "Франція"
+  },
+  "muralpay.country.gr": {
+    "message": "Греція"
+  },
+  "muralpay.country.ie": {
+    "message": "Ірландія"
+  },
+  "muralpay.country.it": {
+    "message": "Італія"
+  },
+  "muralpay.country.lt": {
+    "message": "Литва"
+  },
+  "muralpay.country.lu": {
+    "message": "Люксембург"
+  },
+  "muralpay.country.lv": {
+    "message": "Латвія"
+  },
+  "muralpay.country.mt": {
+    "message": "Мальта"
+  },
+  "muralpay.country.nl": {
+    "message": "Нідерланди"
+  },
+  "muralpay.country.pt": {
+    "message": "Португалія"
+  },
+  "muralpay.country.sk": {
+    "message": "Словаччина"
+  },
+  "muralpay.document-type.passport": {
+    "message": "Паспорт"
+  },
+  "profile.bio.fallback.creator": {
+    "message": "Творець Modrinth."
+  },
+  "profile.bio.fallback.user": {
+    "message": "Користувач Modrinth."
+  },
   "profile.button.billing": {
     "message": "Керувати розрахунками користувача"
+  },
+  "profile.button.edit-role": {
+    "message": "Редагувати роль"
   },
   "profile.button.info": {
     "message": "Переглянути дані користувача"
@@ -1100,17 +1313,56 @@
   "profile.button.manage-projects": {
     "message": "Керувати проєктами"
   },
+  "profile.button.remove-affiliate": {
+    "message": "Усунути як партнера"
+  },
+  "profile.button.set-affiliate": {
+    "message": "Установити як партнера"
+  },
+  "profile.details.label.auth-providers": {
+    "message": "Провайдери автентифікації"
+  },
+  "profile.details.label.email": {
+    "message": "Електронна пошта"
+  },
+  "profile.details.label.has-password": {
+    "message": "Має пароль"
+  },
+  "profile.details.label.has-totp": {
+    "message": "Має TOTP"
+  },
+  "profile.details.label.payment-methods": {
+    "message": "Способи оплати"
+  },
+  "profile.details.tooltip.email-not-verified": {
+    "message": "Електронна пошта не перевірена"
+  },
+  "profile.details.tooltip.email-verified": {
+    "message": "Електронна пошта перевірена"
+  },
   "profile.error.not-found": {
     "message": "Користувача не знайдено"
   },
-  "profile.joined-at": {
-    "message": "Приєднався <date>{ago}</date>"
+  "profile.label.affiliate": {
+    "message": "Партнер"
   },
   "profile.label.badges": {
     "message": "Значки"
   },
+  "profile.label.collection": {
+    "message": "Добірка"
+  },
   "profile.label.details": {
     "message": "Деталі"
+  },
+  "profile.label.downloads": {
+    "message": "{count} завантажен{count, plural, one {ня} few {ня} many {ь} other {ня}}"
+  },
+  "profile.label.joined": {
+    "message": "Приєднався"
+  },
+  "profile.label.no": {
+    "message": "Ні"
   },
   "profile.label.no-collections": {
     "message": "У цього користувача немає добірок!"
@@ -1127,17 +1379,20 @@
   "profile.label.organizations": {
     "message": "Організації"
   },
+  "profile.label.projects": {
+    "message": "{count} проєкт{count, plural, one {} few {и} many {ів} other {у}}"
+  },
+  "profile.label.saving": {
+    "message": "Збереження…"
+  },
+  "profile.label.yes": {
+    "message": "Так"
+  },
   "profile.meta.description": {
     "message": "Завантажте проєкти {username} на Modrinth"
   },
   "profile.meta.description-with-bio": {
     "message": "{bio} — Завантажуйте проєкти {username} на Modrinth"
-  },
-  "profile.stats.downloads": {
-    "message": "{count, plural, one {<stat>{count}</stat> завантаження} few {<stat>{count}</stat> завантаження} other {<stat>{count}</stat> завантажень}}"
-  },
-  "profile.stats.projects": {
-    "message": "{count, plural,one {<stat>{count}</stat> проєкт}other {<stat>{count}</stat> проєкти(-ів)}}"
   },
   "profile.stats.projects-followers": {
     "message": "{count, plural, one {<stat>{count}</stat> підписника} other\n {<stat>{count}</stat> підписника (-ів)}}"
@@ -1186,9 +1441,6 @@
   },
   "project-moderation-nags.resubmit-for-review": {
     "message": "Надіслати на повторний розгляд"
-  },
-  "project-moderation-nags.resubmit-for-review-desc": {
-    "message": "Ваш проєкт був {status} персоналом Modrinth. У більшості випадків ви можете повторно подати проєкт на розгляд після врахування повідомлення персоналу."
   },
   "project-moderation-nags.submit-checklist-tooltip": {
     "message": "Ви повинні завершити всі обов’язкові кроки в контрольному списку для публікації!"
@@ -1473,7 +1725,7 @@
     "message": "Підсумуйте свій проєкт одним реченням."
   },
   "project.settings.general.tagline.placeholder.1": {
-    "message": "наприклад, Змінено ігровий процес щоб він був зациклений навколо Нижнього світу."
+    "message": "наприклад, Змінено ігровий процес, щоб він був зациклений навколо Незеру."
   },
   "project.settings.general.tagline.placeholder.2": {
     "message": "наприклад, Додає будівельне спорядження, що можна носити."
@@ -1594,18 +1846,6 @@
   },
   "report.submit": {
     "message": "Відправити скаргу"
-  },
-  "revenue.transfers.total": {
-    "message": "Ви вивели {amount} загалом."
-  },
-  "revenue.transfers.total.method": {
-    "message": "Ви вивели {amount} за допомогою {method}."
-  },
-  "revenue.transfers.total.year": {
-    "message": "Ви вивели {amount} протягом {year}."
-  },
-  "revenue.transfers.total.year_method": {
-    "message": "Ви вивели {amount} протягом {year} за допомогою {method}."
   },
   "scopes.analytics.description": {
     "message": "Доступ до ваших даних аналітики"
@@ -1860,13 +2100,10 @@
     "message": "Синхронізувати з сервером"
   },
   "servers.backup.create.in-progress.tooltip": {
-    "message": "Створення резервної копії в процесі"
+    "message": "Створення резервної копії триває"
   },
   "servers.backup.restore.in-progress.tooltip": {
-    "message": "Відновлення резервної копії в процесі"
-  },
-  "servers.backups.item.already-preparing": {
-    "message": "Вже іде підготовка до завантаження резервної копії"
+    "message": "Відновлення резервної копії триває"
   },
   "servers.backups.item.automated": {
     "message": "Автоматично"
@@ -1875,10 +2112,7 @@
     "message": "Створення резервної копії…"
   },
   "servers.backups.item.failed-to-create-backup": {
-    "message": "Помилка в створенні резервної копії"
-  },
-  "servers.backups.item.failed-to-prepare-backup": {
-    "message": "Помилка в підготовці до завантаження"
+    "message": "Не вдалося створити резервну копію"
   },
   "servers.backups.item.failed-to-restore-backup": {
     "message": "Помилка в відновленні з резервної копії"
@@ -1888,15 +2122,6 @@
   },
   "servers.backups.item.locked": {
     "message": "Замкнено"
-  },
-  "servers.backups.item.prepare-download": {
-    "message": "Підготувати завантаження"
-  },
-  "servers.backups.item.prepare-download-again": {
-    "message": "Спробувати підготувати знову"
-  },
-  "servers.backups.item.preparing-download": {
-    "message": "Підготовка завантаження…"
   },
   "servers.backups.item.queued-for-backup": {
     "message": "В черзі на створення резервної копії"
@@ -2253,7 +2478,7 @@
     "message": "Завершити сеанс"
   },
   "settings.sessions.created-ago": {
-    "message": "Створенно {ago}"
+    "message": "Створено {ago}"
   },
   "settings.sessions.current-session": {
     "message": "Поточний сеанс"

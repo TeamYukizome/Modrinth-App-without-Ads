@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-export type Product = 'web' | 'servers' | 'api' | 'app'
+export type Product = 'web' | 'hosting' | 'api' | 'app'
 
 export type VersionEntry = {
 	date: dayjs.Dayjs
@@ -10,6 +10,234 @@ export type VersionEntry = {
 }
 
 const VERSIONS: VersionEntry[] = [
+	{
+		date: `2025-12-22T14:20:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Fixed error when withdrawing in certain circumstances.`,
+	},
+	{
+		date: `2025-12-22T12:55:00-08:00`,
+		product: 'app',
+		version: '0.10.24',
+		body: `## Improvements
+- Fixed issue with modpack export not working with certain projects.`,
+	},
+	{
+		date: `2025-12-19T13:45:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Improved the version creation and editing from feedback we have received:
+	- Made it easier to edit exactly what you want to about a version.
+	- Restored the ability to create and edit versions and gallery images from the public pages.
+	- Changelog stage is now larger.
+	- Fixed modpack uploading.
+	- Fixed version subtitle being limited to 32 characters.
+	- Fixed version links after editing.
+	- Fixed dependency search only showing mod projects.`,
+	},
+	{
+		date: `2025-12-18T13:40:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Fixed non-members being informed of version and gallery editing having moved.
+- Fixed being able to de-select the project type in version settings, and then getting stuck.
+- Fixed some issues with non-USD gift card withdrawal.`,
+	},
+	{
+		date: `2025-12-18T12:30:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- [Overhauled version creation](/news/article/streamlined-version-creation) to be more intelligent and easier to use.
+- Versions and gallery images are now created and edited in project settings.`,
+	},
+	{
+		date: `2025-12-18T11:20:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Added support for non-USD gift cards.
+- Fixed issue with gift cards with lots of denominations.
+- Fixed issue with subregions for crypto & bank withdrawals.`,
+	},
+	{
+		date: `2025-12-16T13:15:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Fixed collection pages requiring auth.`,
+	},
+	{
+		date: `2025-12-16T13:15:00-08:00`,
+		product: 'app',
+		version: '0.10.23',
+		body: `## Improvements
+- Fixed installation of newer NeoForge versions.
+- Added Java 25 support to settings for Minecraft 26.1.`,
+	},
+	{
+		date: `2025-12-11T17:00:00-08:00`,
+		product: 'app',
+		version: '0.10.22',
+		body: `## Improvements
+- Updated Modrinth Servers branding to new Modrinth Hosting branding.
+- Fixed server pinging blocking the app from loading.
+- Fixed instance overrides for window and Java settings not being able to be disabled.`,
+	},
+	{
+		date: `2025-12-11T16:15:00-08:00`,
+		product: 'hosting',
+		body: `## Improvements
+- Fixed some issues with the content list when disabling content.
+- Improved the design of server notices.`,
+	},
+	{
+		date: `2025-12-11T16:15:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Moved search pages to /discover/<type>.
+- Updated collections page design to be more modern.
+- Fixed some inconsistencies with collection icons around the site.
+- Fixed some issues with the revenue balance bar.
+- Fixed the width of news articles on the landing page.
+- Made game versions automatically update.`,
+	},
+	{
+		date: `2025-12-08T10:30:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Fixed license URL being unable to remove from projects.`,
+	},
+	{
+		date: `2025-12-05T12:00:00-08:00`,
+		product: 'hosting',
+		body: `## Improvements
+- Implemented some feedback from the new backups page.
+- Improved node error handling.`,
+	},
+	{
+		date: `2025-12-03T18:40:00-08:00`,
+		product: 'hosting',
+		body: `## Improvements
+- Overhauled the backups page to be clearer and significantly more reliable.`,
+	},
+	{
+		date: `2025-12-03T14:45:00-08:00`,
+		product: 'web',
+		body: `## Changes
+- Updated Modrinth Servers branding to new Modrinth Hosting branding.`,
+	},
+	{
+		date: `2025-11-28T11:45:00-08:00`,
+		product: 'app',
+		version: '0.10.21',
+		body: `## Improvements
+- Install dependencies added in an update automatically.
+- Fixed auth server check.`,
+	},
+	{
+		date: `2025-11-19T15:15:00-08:00`,
+		product: 'app',
+		version: '0.10.20',
+		body: `## Improvements
+- Improved contrast, visibility, and consistency of UI elements, especially in light mode.
+- Fixed ads showing up in the loading screen, even when you have Modrinth+.
+- Added a warning banner when Minecraft's authentication servers are detected to be down.
+- Fixed icon when creating an instance not being saved.`,
+	},
+	{
+		date: `2025-11-14T12:15:00-08:00`,
+		product: 'hosting',
+		body: `## Improvements
+- Improved the performance of the servers list.
+- Fixed startup commands not being updated properly.
+- Fixed autocomplete on pardon-ip and ban-ip commands.`,
+	},
+	{
+		date: `2025-11-14T12:15:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Improved contrast, visibility, and consistency of UI elements, especially in light mode.
+- Fixed the chargest page not working properly.
+- Fixed certain icons showing above the mobile navbar.`,
+	},
+	{
+		date: `2025-11-11T12:50:00-08:00`,
+		product: 'app',
+		version: '0.10.19',
+		body: `## Improvements
+- Fixed automatic dependency resolution ignoring the selected mod loader.`,
+	},
+	{
+		date: `2025-11-10T11:20:00-08:00`,
+		product: 'app',
+		version: '0.10.18',
+		body: `No changes.`,
+	},
+	{
+		date: `2025-11-07T21:10:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Enhanced syntax highlighting support for skript, mcfunction, and kubejs code blocks in Markdown descriptions.`,
+	},
+	{
+		date: `2025-11-07T15:45:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Fixed download button pop-up on Resource Pack projects.`,
+	},
+	{
+		date: `2025-11-07T09:30:00-08:00`,
+		product: 'app',
+		version: '0.10.17',
+		body: `## Improvements
+- Sorting and grouping options in the Library page are now persistent.
+- Instance content filters are now remembered until you close the app.
+- Improved performance when 'Advanced rendering' is disabled, especially on Linux.
+- Fixed account list not being scrollable.
+- Fixed glitchy text selection in Logs page.`,
+	},
+	{
+		date: `2025-11-07T09:30:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Fixed 'Advanced rendering' toggle not working properly on many popups.`,
+	},
+	{
+		date: `2025-11-07T08:05:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Fixed some further issues with the new withdrawal experience.`,
+	},
+	{
+		date: `2025-11-04T18:20:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Fixed an issue with PayPal International fees.`,
+	},
+	{
+		date: `2025-11-04T16:20:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Some bugfixes to the new withdrawal experience.`,
+	},
+	{
+		date: `2025-11-03T15:30:00-08:00`,
+		product: 'web',
+		body: `## Improvements
+- Revamped creator revenue page and withdrawal experience.`,
+	},
+	{
+		date: `2025-10-30T16:30:00-07:00`,
+		product: 'app',
+		version: '0.10.16',
+		body: `## Security fixes
+- Fixed a security vulnerability with .mrpack import zip parsing.
+
+## Improvements
+- Fixed stacking multiple instance wrapper commands.
+- Fixed instance-provided filters still showing as locked in the filters bar even when the filter is unlocked.
+- Fixed "Friends" title showing up in the sidebar twice when you have no friends.
+- Fixed the "Add friends" button not working properly.`,
+	},
 	{
 		date: `2025-10-26T18:30:00-07:00`,
 		product: 'app',
@@ -59,7 +287,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-10-14T18:45:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Removed 'Prepare download' step for downloading backups, you can now just download them directly.`,
 	},
@@ -145,7 +373,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-09-08T14:45:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Fixed world seed being rounded in options.`,
 	},
@@ -225,7 +453,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-08-28T16:50:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Fixed issue with Files page not showing files in the correct order sometimes.
 - Fixed Medal servers showing a confusing cancellation/suspension notice.`,
@@ -247,7 +475,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-08-19T11:10:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Improved upgrading experience.`,
 	},
@@ -260,7 +488,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-08-18T09:10:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Fixed various dropdowns not appearing.`,
 	},
@@ -343,7 +571,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-08-01T21:30:00-04:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Server status information is now correctly displayed in the 'My Servers' page. ([#4071](https://github.com/modrinth/code/pull/4071))
 - Fixed an error with displaying startup settings.
@@ -397,19 +625,19 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-07-08T11:10:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Reapplied error handling improvements, with more improvements.`,
 	},
 	{
 		date: `2025-07-07T22:20:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Fixed issue with Servers panel failing to load.`,
 	},
 	{
 		date: `2025-07-07T17:45:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Reverted error handling improvements.`,
 	},
@@ -491,7 +719,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-06-30T19:15:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Progress will now show when installing Modrinth Pack (.mrpack) files.
 - Fixed storage stats not linking to Files page.
@@ -506,7 +734,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-06-26T11:00:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Fixed support bubble overlapping notifications sometimes.
 - Fixed race condition when creating backups.`,
@@ -530,21 +758,21 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-06-16T11:00:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Improved error handling.
 - Rolled out hotfixes with the previous days' updates.'`,
 	},
 	{
 		date: `2025-06-15T16:25:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Fixed installing modpacks from search.
 - Fixed setting subdomains.`,
 	},
 	{
 		date: `2025-06-15T14:30:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Fixed various issues with the panel loading improperly in certain cases.
 - Fixed CPU icon being smaller than the rest.
@@ -561,7 +789,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-06-03T14:35:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Added
 - Added support for servers in Europe.
 - Added server setup for new servers upon opening the panel for the first time.`,
@@ -575,7 +803,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-05-08T09:00:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Added
 - Added the ability to extract .zip files in the Files page.
 - Added the ability to extract a remote .zip file from a URL, or from a CurseForge modpack version URL.
@@ -630,7 +858,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-04-28T19:45:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Added
 - Added support for installing snapshot versions of Minecraft.
 
@@ -683,7 +911,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-04-17T02:25:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Completely overhauled the Backups interface and fixed them being non-functional.
   - Backups will now show progress when creating and restoring.
@@ -695,7 +923,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-04-15T16:35:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Added
 - Added ability to send surveys to customers in the panel via notices.
 
@@ -704,7 +932,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-04-12T22:10:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Added
 - Added ability to notify customers in the panel with notices concerning their servers.`,
 	},
@@ -748,7 +976,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-03-24T22:30:00-07:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Fixed server plugin loaders not being populated when browsing for plugins
 - Fixed modpack search being filtered by Minecraft version when browsing for modpacks.`,
@@ -806,7 +1034,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-02-25T10:20:00-08:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Fixed server upgrades being allowed when out of stock, despite warning.`,
 	},
@@ -847,7 +1075,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-02-18T14:30:00-08:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Added
 - Links will now be detected in console line viewer modal.
 
@@ -867,7 +1095,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-02-16T19:10:00-08:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Improvements
 - Check for availability before allowing a server upgrade.`,
 	},
@@ -879,7 +1107,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-02-12T19:10:00-08:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Added
 - Added server upgrades to switch to a larger plan as an option in billing settings.`,
 	},
@@ -916,7 +1144,7 @@ const VERSIONS: VersionEntry[] = [
 	},
 	{
 		date: `2025-02-10T08:00:00-08:00`,
-		product: 'servers',
+		product: 'hosting',
 		version: `February Release`,
 		body: `### Added
 - You can now search and filter through your server's console in the Overview tab, jump to specific results to see the log in context, select them, and copy them.
@@ -967,7 +1195,7 @@ Contributed by [IMB11](https://github.com/modrinth/code/pull/1301).`,
 	},
 	{
 		date: `2025-01-10T09:00:00-08:00`,
-		product: 'servers',
+		product: 'hosting',
 		version: 'January Release',
 		body: `### Added
 - Added drag & drop upload support for mod and plugin files on the content page.
@@ -997,7 +1225,7 @@ Contributed by [IMB11](https://github.com/modrinth/code/pull/1301).`,
 	},
 	{
 		date: `2024-12-26T22:05:00-08:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Added
 - Added ability for users to clean install modpacks when switching versions.
 
@@ -1046,7 +1274,7 @@ Contributed by [IMB11](https://github.com/modrinth/code/pull/1301).`,
 	},
 	{
 		date: `2024-12-21T16:00:00-08:00`,
-		product: 'servers',
+		product: 'hosting',
 		body: `### Added
 - Drag and drop anything in the file manager.
 - Added file upload queue status bar.
@@ -1067,7 +1295,7 @@ Contributed by [IMB11](https://github.com/modrinth/code/pull/1301).`,
 	},
 	{
 		date: `2024-12-11T22:18:45-08:00`,
-		product: 'servers',
+		product: 'hosting',
 		version: `December Release`,
 		body: `### Added
 - Expanded loader support to include **Paper** and **Purpur** servers, offering fully native plugin compatibility.

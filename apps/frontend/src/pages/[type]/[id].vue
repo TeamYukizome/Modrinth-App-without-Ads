@@ -32,10 +32,7 @@
 				:versions="versions"
 				:current-member="currentMember"
 				:is-settings="route.name.startsWith('type-id-settings')"
-				:route-name="route.name"
 				:set-processing="setProcessing"
-				:collapsed="collapsedChecklist"
-				:toggle-collapsed="() => (collapsedChecklist = !collapsedChecklist)"
 				:all-members="allMembers"
 				:update-members="updateMembers"
 				:auth="auth"
@@ -55,6 +52,7 @@
 				:patch-project="patchProject"
 				:patch-icon="patchIcon"
 				:reset-project="resetProject"
+				:reset-versions="resetVersions"
 				:reset-organization="resetOrganization"
 				:reset-members="resetMembers"
 				:route="route"
@@ -418,7 +416,7 @@
 					</AutomaticAccordion>
 					<ServersPromo
 						v-if="flags.showProjectPageDownloadModalServersPromo"
-						:link="`/servers#plan`"
+						:link="`/hosting#plan`"
 						@close="
 							() => {
 								flags.showProjectPageDownloadModalServersPromo = false
@@ -447,14 +445,34 @@
 			<div class="normal-page__header relative my-4">
 				<ProjectHeader :project="project" :member="!!currentMember">
 					<template #actions>
+						<ButtonStyled v-if="auth.user && currentMember" size="large" color="brand">
+							<nuxt-link
+								:to="`/${project.project_type}/${project.slug ? project.slug : project.id}/settings`"
+								class="!font-bold"
+							>
+								<SettingsIcon aria-hidden="true" />
+								Edit project
+							</nuxt-link>
+						</ButtonStyled>
+
 						<div class="hidden sm:contents">
 							<ButtonStyled
+								v-tooltip="
+									auth.user && currentMember ? formatMessage(commonMessages.downloadButton) : ''
+								"
 								size="large"
-								:color="route.name === 'type-id-version-version' ? `standard` : `brand`"
+								:color="
+									(auth.user && currentMember) || route.name === 'type-id-version-version'
+										? `standard`
+										: `brand`
+								"
+								:circular="auth.user && currentMember"
 							>
 								<button @click="(event) => downloadModal.show(event)">
 									<DownloadIcon aria-hidden="true" />
-									{{ formatMessage(commonMessages.downloadButton) }}
+									{{
+										auth.user && currentMember ? '' : formatMessage(commonMessages.downloadButton)
+									}}
 								</button>
 							</ButtonStyled>
 						</div>
@@ -485,7 +503,7 @@
 							<ButtonStyled size="large" circular>
 								<nuxt-link
 									v-tooltip="formatMessage(messages.createServerTooltip)"
-									:to="`/servers?project=${project.id}#plan`"
+									:to="`/hosting?project=${project.id}#plan`"
 									@click="
 										() => {
 											flags.showProjectPageCreateServersTooltip = false
@@ -547,14 +565,8 @@
 								</div>
 							</template>
 						</Tooltip>
-						<ClientOnly>
-							<ButtonStyled
-								size="large"
-								circular
-								:color="following ? 'red' : 'standard'"
-								color-fill="none"
-								hover-color-fill="background"
-							>
+						<ButtonStyled size="large" circular>
+							<ClientOnly>
 								<button
 									v-if="auth.user"
 									v-tooltip="
@@ -579,102 +591,75 @@
 								>
 									<HeartIcon aria-hidden="true" />
 								</nuxt-link>
-							</ButtonStyled>
-							<ButtonStyled size="large" circular>
-								<PopoutMenu
-									v-if="auth.user"
-									:tooltip="
-										collections.some((x) => x.projects.includes(project.id))
-											? formatMessage(commonMessages.savedLabel)
-											: formatMessage(commonMessages.saveButton)
-									"
-									from="top-right"
-									:aria-label="formatMessage(commonMessages.saveButton)"
-									:dropdown-id="`${baseId}-save`"
-								>
-									<BookmarkIcon
-										aria-hidden="true"
-										:fill="
-											collections.some((x) => x.projects.includes(project.id))
-												? 'currentColor'
-												: 'none'
-										"
-									/>
-									<template #menu>
-										<input
-											v-model="displayCollectionsSearch"
-											type="text"
-											:placeholder="formatMessage(commonMessages.searchPlaceholder)"
-											class="search-input menu-search"
-										/>
-										<div v-if="collections.length > 0" class="collections-list text-primary">
-											<Checkbox
-												v-for="option in collections
-													.slice()
-													.sort((a, b) => a.name.localeCompare(b.name))"
-												:key="option.id"
-												:model-value="option.projects.includes(project.id)"
-												class="popout-checkbox"
-												@update:model-value="() => onUserCollectProject(option, project.id)"
-											>
-												{{ option.name }}
-											</Checkbox>
-										</div>
-
-										<div v-else class="menu-text">
-											<p class="popout-text">{{ formatMessage(messages.noCollectionsFound) }}</p>
-										</div>
-										<button
-											class="btn collection-button"
-											@click="(event) => $refs.modal_collection.show(event)"
-										>
-											<PlusIcon aria-hidden="true" />
-											{{ formatMessage(messages.createNewCollection) }}
-										</button>
-									</template>
-								</PopoutMenu>
-								<nuxt-link v-else v-tooltip="'Save'" to="/auth/sign-in" aria-label="Save">
-									<BookmarkIcon aria-hidden="true" />
-								</nuxt-link>
-							</ButtonStyled>
-							<template #fallback>
-								<ButtonStyled size="large" circular>
-									<button
-										v-if="auth.user"
-										:v-tooltip="formatMessage(commonMessages.followButton)"
-										:aria-label="formatMessage(commonMessages.followButton)"
-										@click="userFollowProject(project)"
-									>
-										<HeartIcon aria-hidden="true" />
-									</button>
+								<template #fallback>
 									<nuxt-link
-										v-else
 										v-tooltip="formatMessage(commonMessages.followButton)"
 										to="/auth/sign-in"
 										:aria-label="formatMessage(commonMessages.followButton)"
 									>
 										<HeartIcon aria-hidden="true" />
 									</nuxt-link>
-								</ButtonStyled>
-								<ButtonStyled size="large" circular>
-									<nuxt-link
-										v-tooltip="formatMessage(commonMessages.saveButton)"
-										to="/auth/sign-in"
-										:aria-label="formatMessage(commonMessages.saveButton)"
-									>
-										<BookmarkIcon aria-hidden="true" />
-									</nuxt-link>
-								</ButtonStyled>
-							</template>
-						</ClientOnly>
-						<ButtonStyled v-if="auth.user && currentMember" size="large" circular>
-							<nuxt-link
-								v-tooltip="formatMessage(commonMessages.settingsLabel)"
-								:to="`/${project.project_type}/${project.slug ? project.slug : project.id}/settings`"
+								</template>
+							</ClientOnly>
+						</ButtonStyled>
+						<ButtonStyled size="large" circular>
+							<PopoutMenu
+								v-if="auth.user"
+								:tooltip="
+									collections.some((x) => x.projects.includes(project.id))
+										? formatMessage(commonMessages.savedLabel)
+										: formatMessage(commonMessages.saveButton)
+								"
+								from="top-right"
+								:aria-label="formatMessage(commonMessages.saveButton)"
+								:dropdown-id="`${baseId}-save`"
 							>
-								<SettingsIcon aria-hidden="true" />
+								<BookmarkIcon
+									aria-hidden="true"
+									:fill="
+										collections.some((x) => x.projects.includes(project.id))
+											? 'currentColor'
+											: 'none'
+									"
+								/>
+								<template #menu>
+									<input
+										v-model="displayCollectionsSearch"
+										type="text"
+										:placeholder="formatMessage(commonMessages.searchPlaceholder)"
+										class="search-input menu-search"
+									/>
+									<div v-if="collections.length > 0" class="collections-list text-primary">
+										<Checkbox
+											v-for="option in collections
+												.slice()
+												.sort((a, b) => a.name.localeCompare(b.name))"
+											:key="option.id"
+											:model-value="option.projects.includes(project.id)"
+											class="popout-checkbox"
+											@update:model-value="() => onUserCollectProject(option, project.id)"
+										>
+											{{ option.name }}
+										</Checkbox>
+									</div>
+
+									<div v-else class="menu-text">
+										<p class="popout-text">{{ formatMessage(messages.noCollectionsFound) }}</p>
+									</div>
+									<button
+										class="btn collection-button"
+										@click="(event) => $refs.modal_collection.show(event)"
+									>
+										<PlusIcon aria-hidden="true" />
+										{{ formatMessage(messages.createNewCollection) }}
+									</button>
+								</template>
+							</PopoutMenu>
+							<nuxt-link v-else v-tooltip="'Save'" to="/auth/sign-in" aria-label="Save">
+								<BookmarkIcon aria-hidden="true" />
 							</nuxt-link>
 						</ButtonStyled>
+
 						<ButtonStyled size="large" circular type="transparent">
 							<OverflowMenu
 								:tooltip="formatMessage(commonMessages.moreOptionsButton)"
@@ -929,6 +914,7 @@
 					v-model:organization="organization"
 					:current-member="currentMember"
 					:reset-project="resetProject"
+					:reset-versions="resetVersions"
 					:reset-organization="resetOrganization"
 					:reset-members="resetMembers"
 					:route="route"
@@ -944,7 +930,6 @@
 		class="moderation-checklist"
 	>
 		<ModerationChecklist
-			:project="project"
 			:collapsed="collapsedModerationChecklist"
 			@exit="showModerationChecklist = false"
 			@toggle-collapsed="collapsedModerationChecklist = !collapsedModerationChecklist"
@@ -1032,7 +1017,7 @@ const { addNotification } = notifications
 const auth = await useAuth()
 const user = await useUser()
 
-const tags = useTags()
+const tags = useGeneratedState()
 const flags = useFeatureFlags()
 const cosmetics = useCosmetics()
 
@@ -1340,7 +1325,7 @@ const messages = defineMessages({
 	},
 	serversPromoDescription: {
 		id: 'project.actions.servers-promo.description',
-		defaultMessage: 'Modrinth Servers is the easiest way to play with your friends without hassle!',
+		defaultMessage: 'Modrinth Hosting is the easiest way to play with your friends without hassle!',
 	},
 	serversPromoPricing: {
 		id: 'project.actions.servers-promo.pricing',
@@ -1411,7 +1396,7 @@ const filteredVersions = computed(() => {
 	return versions.value.filter(
 		(x) =>
 			x.game_versions.includes(currentGameVersion.value) &&
-			x.loaders.includes(currentPlatform.value),
+			(x.loaders.includes(currentPlatform.value) || project.value.project_type === 'resourcepack'),
 	)
 })
 
@@ -1472,6 +1457,7 @@ let project,
 	resetMembers,
 	dependencies,
 	versions,
+	resetVersions,
 	organization,
 	resetOrganization,
 	projectV2Error,
@@ -1485,7 +1471,7 @@ try {
 		{ data: projectV3, error: projectV3Error, refresh: resetProjectV3 },
 		{ data: allMembers, error: membersError, refresh: resetMembers },
 		{ data: dependencies, error: dependenciesError },
-		{ data: versions, error: versionsError },
+		{ data: versions, error: versionsError, refresh: resetVersions },
 		{ data: organization, refresh: resetOrganization },
 	] = await Promise.all([
 		useAsyncData(`project/${projectId.value}`, () => useBaseFetch(`project/${projectId.value}`), {
@@ -1672,10 +1658,12 @@ const projectTypeDisplay = computed(() =>
 	),
 )
 
-const following = computed(
-	() =>
-		user.value && user.value.follows && user.value.follows.find((x) => x.id === project.value.id),
-)
+const following = computed(() => {
+	if (!user.value?.follows) {
+		return false
+	}
+	return !!user.value.follows.find((x) => x.id === project.value.id)
+})
 
 const title = computed(() => `${project.value.title} - Minecraft ${projectTypeDisplay.value}`)
 const description = computed(
@@ -1770,10 +1758,10 @@ async function patchProject(resData, quiet = false) {
 
 		await updateProjectRoute()
 
-		if (resData.license_id) {
+		if ('license_id' in resData) {
 			project.value.license.id = resData.license_id
 		}
-		if (resData.license_url) {
+		if ('license_url' in resData) {
 			project.value.license.url = resData.license_url
 		}
 
@@ -1941,6 +1929,7 @@ provideProjectPageContext({
 	projectV2: project,
 	projectV3,
 	refreshProject: resetProject,
+	refreshVersions: resetVersions,
 	currentMember,
 })
 </script>

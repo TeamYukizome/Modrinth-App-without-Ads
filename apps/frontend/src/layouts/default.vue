@@ -26,7 +26,14 @@
 			</div>
 		</div>
 	</div>
-	<div ref="main_page" class="layout" :class="{ 'expanded-mobile-nav': isBrowseMenuOpen }">
+	<div
+		ref="main_page"
+		class="layout"
+		:class="{
+			'expanded-mobile-nav': isBrowseMenuOpen,
+			'modrinth-parent__no-modal-blurs': !cosmetics.advancedRendering,
+		}"
+	>
 		<PagewideBanner v-if="isRussia && !flags.hideRussiaCensorshipBanner" variant="error">
 			<template #title>
 				<div class="flex flex-col gap-1 text-contrast">
@@ -197,7 +204,7 @@
 			<template #description>
 				{{
 					formatMessage(failedToBuildBannerMessages.description, {
-						errors: generatedStateErrors,
+						errors: JSON.stringify(generatedStateErrors),
 						url: config.public.apiBaseUrl,
 					})
 				}}
@@ -213,8 +220,15 @@
 			class="experimental-styles-within desktop-only relative z-[5] mx-auto grid max-w-[1280px] grid-cols-[1fr_auto] items-center gap-2 px-6 py-4 lg:grid-cols-[auto_1fr_auto]"
 		>
 			<div>
-				<NuxtLink to="/" :aria-label="formatMessage(messages.modrinthHomePage)">
-					<TextLogo aria-hidden="true" class="h-7 w-auto text-contrast" />
+				<NuxtLink
+					to="/"
+					:aria-label="formatMessage(messages.modrinthHomePage)"
+					class="group hover:brightness-[--hover-brightness] focus-visible:brightness-[--hover-brightness]"
+				>
+					<TextLogo
+						aria-hidden="true"
+						class="h-7 w-auto text-contrast transition-transform group-active:scale-[0.98]"
+					/>
 				</NuxtLink>
 			</div>
 			<div
@@ -223,12 +237,12 @@
 				<template v-if="flags.projectTypesPrimaryNav">
 					<ButtonStyled
 						type="transparent"
-						:highlighted="route.name === 'search-mods' || route.path.startsWith('/mod/')"
+						:highlighted="route.name === 'discover-mods' || route.path.startsWith('/mod/')"
 						:highlighted-style="
-							route.name === 'search-mods' ? 'main-nav-primary' : 'main-nav-secondary'
+							route.name === 'discover-mods' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/mods">
+						<nuxt-link to="/discover/mods">
 							<BoxIcon aria-hidden="true" />
 							{{ formatMessage(commonProjectTypeCategoryMessages.mod) }}
 						</nuxt-link>
@@ -236,61 +250,63 @@
 					<ButtonStyled
 						type="transparent"
 						:highlighted="
-							route.name === 'search-resourcepacks' || route.path.startsWith('/resourcepack/')
+							route.name === 'discover-resourcepacks' || route.path.startsWith('/resourcepack/')
 						"
 						:highlighted-style="
-							route.name === 'search-resourcepacks' ? 'main-nav-primary' : 'main-nav-secondary'
+							route.name === 'discover-resourcepacks' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/resourcepacks">
+						<nuxt-link to="/discover/resourcepacks">
 							<PaintbrushIcon aria-hidden="true" />
 							{{ formatMessage(commonProjectTypeCategoryMessages.resourcepack) }}
 						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled
 						type="transparent"
-						:highlighted="route.name === 'search-datapacks' || route.path.startsWith('/datapack/')"
+						:highlighted="
+							route.name === 'discover-datapacks' || route.path.startsWith('/datapack/')
+						"
 						:highlighted-style="
-							route.name === 'search-datapacks' ? 'main-nav-primary' : 'main-nav-secondary'
+							route.name === 'discover-datapacks' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/datapacks">
+						<nuxt-link to="/discover/datapacks">
 							<BracesIcon aria-hidden="true" />
 							{{ formatMessage(commonProjectTypeCategoryMessages.datapack) }}
 						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled
 						type="transparent"
-						:highlighted="route.name === 'search-modpacks' || route.path.startsWith('/modpack/')"
+						:highlighted="route.name === 'discover-modpacks' || route.path.startsWith('/modpack/')"
 						:highlighted-style="
-							route.name === 'search-modpacks' ? 'main-nav-primary' : 'main-nav-secondary'
+							route.name === 'discover-modpacks' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/modpacks">
+						<nuxt-link to="/discover/modpacks">
 							<PackageOpenIcon aria-hidden="true" />
 							{{ formatMessage(commonProjectTypeCategoryMessages.modpack) }}
 						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled
 						type="transparent"
-						:highlighted="route.name === 'search-shaders' || route.path.startsWith('/shader/')"
+						:highlighted="route.name === 'discover-shaders' || route.path.startsWith('/shader/')"
 						:highlighted-style="
-							route.name === 'search-shaders' ? 'main-nav-primary' : 'main-nav-secondary'
+							route.name === 'discover-shaders' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/shaders">
+						<nuxt-link to="/discover/shaders">
 							<GlassesIcon aria-hidden="true" />
 							{{ formatMessage(commonProjectTypeCategoryMessages.shader) }}
 						</nuxt-link>
 					</ButtonStyled>
 					<ButtonStyled
 						type="transparent"
-						:highlighted="route.name === 'search-plugins' || route.path.startsWith('/plugin/')"
+						:highlighted="route.name === 'discover-plugins' || route.path.startsWith('/plugin/')"
 						:highlighted-style="
-							route.name === 'search-plugins' ? 'main-nav-primary' : 'main-nav-secondary'
+							route.name === 'discover-plugins' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/plugins">
+						<nuxt-link to="/discover/plugins">
 							<PlugIcon aria-hidden="true" />
 							{{ formatMessage(commonProjectTypeCategoryMessages.plugin) }}
 						</nuxt-link>
@@ -306,55 +322,66 @@
 							:options="[
 								{
 									id: 'mods',
-									action: '/mods',
+									action: '/discover/mods',
 								},
 								{
 									id: 'resourcepacks',
-									action: '/resourcepacks',
+									action: '/discover/resourcepacks',
 								},
 								{
 									id: 'datapacks',
-									action: '/datapacks',
+									action: '/discover/datapacks',
 								},
 								{
 									id: 'shaders',
-									action: '/shaders',
+									action: '/discover/shaders',
 								},
 								{
 									id: 'modpacks',
-									action: '/modpacks',
+									action: '/discover/modpacks',
 								},
 								{
 									id: 'plugins',
-									action: '/plugins',
+									action: '/discover/plugins',
+								},
+								{
+									id: 'servers',
+									action: '/discover/servers',
+									shown: flags.serverDiscovery,
 								},
 							]"
 							hoverable
 						>
 							<BoxIcon
-								v-if="route.name === 'search-mods' || route.path.startsWith('/mod/')"
+								v-if="route.name === 'discover-mods' || route.path.startsWith('/mod/')"
 								aria-hidden="true"
 							/>
 							<PaintbrushIcon
 								v-else-if="
-									route.name === 'search-resourcepacks' || route.path.startsWith('/resourcepack/')
+									route.name === 'discover-resourcepacks' || route.path.startsWith('/resourcepack/')
 								"
 								aria-hidden="true"
 							/>
 							<BracesIcon
-								v-else-if="route.name === 'search-datapacks' || route.path.startsWith('/datapack/')"
+								v-else-if="
+									route.name === 'discover-datapacks' || route.path.startsWith('/datapack/')
+								"
 								aria-hidden="true"
 							/>
 							<PackageOpenIcon
-								v-else-if="route.name === 'search-modpacks' || route.path.startsWith('/modpack/')"
+								v-else-if="route.name === 'discover-modpacks' || route.path.startsWith('/modpack/')"
 								aria-hidden="true"
 							/>
 							<GlassesIcon
-								v-else-if="route.name === 'search-shaders' || route.path.startsWith('/shader/')"
+								v-else-if="route.name === 'discover-shaders' || route.path.startsWith('/shader/')"
 								aria-hidden="true"
 							/>
 							<PlugIcon
-								v-else-if="route.name === 'search-plugins' || route.path.startsWith('/plugin/')"
+								v-else-if="route.name === 'discover-plugins' || route.path.startsWith('/plugin/')"
+								aria-hidden="true"
+							/>
+							<ServerIcon
+								v-else-if="route.name === 'discover-servers' || route.path.startsWith('/server/')"
 								aria-hidden="true"
 							/>
 							<CompassIcon v-else aria-hidden="true" />
@@ -362,7 +389,7 @@
 								formatMessage(navMenuMessages.discoverContent)
 							}}</span>
 							<span class="contents md:hidden">{{ formatMessage(navMenuMessages.discover) }}</span>
-							<DropdownIcon aria-hidden="true" class="h-5 w-5 text-secondary" />
+							<DropdownIcon aria-hidden="true" class="h-5 w-5" />
 
 							<template #mods>
 								<BoxIcon aria-hidden="true" />
@@ -388,19 +415,23 @@
 								<PackageOpenIcon aria-hidden="true" />
 								{{ formatMessage(commonProjectTypeCategoryMessages.modpack) }}
 							</template>
+							<template #servers>
+								<ServerIcon aria-hidden="true" />
+								{{ formatMessage(commonProjectTypeCategoryMessages.server) }}
+							</template>
 						</TeleportOverflowMenu>
 					</ButtonStyled>
 					<ButtonStyled
 						type="transparent"
 						:highlighted="
-							route.name?.startsWith('servers') ||
-							(route.name?.startsWith('search-') && route.query.sid)
+							route.name?.startsWith('hosting') ||
+							(route.name?.startsWith('discover-') && !!route.query.sid)
 						"
 						:highlighted-style="
-							route.name === 'servers' ? 'main-nav-primary' : 'main-nav-secondary'
+							route.name === 'hosting' ? 'main-nav-primary' : 'main-nav-secondary'
 						"
 					>
-						<nuxt-link to="/servers">
+						<nuxt-link to="/hosting">
 							<ServerIcon aria-hidden="true" />
 							{{ formatMessage(navMenuMessages.hostAServer) }}
 						</nuxt-link>
@@ -434,6 +465,11 @@
 								link: '/moderation/',
 							},
 							{
+								id: 'tech-review',
+								color: 'orange',
+								link: '/moderation/technical-review',
+							},
+							{
 								id: 'review-reports',
 								color: 'orange',
 								link: '/moderation/reports',
@@ -456,6 +492,12 @@
 								shown: isAdmin(auth.user),
 							},
 							{
+								id: 'affiliates',
+								color: 'primary',
+								link: '/admin/affiliates',
+								shown: isAdmin(auth.user),
+							},
+							{
 								id: 'servers-notices',
 								color: 'primary',
 								link: '/admin/servers/notices',
@@ -464,7 +506,7 @@
 							{
 								id: 'servers-nodes',
 								color: 'primary',
-								link: '/admin/servers/nodes',
+								action: (event) => $refs.modal_batch_credit.show(event),
 								shown: isAdmin(auth.user),
 							},
 						]"
@@ -474,11 +516,14 @@
 						<template #review-projects>
 							<ScaleIcon aria-hidden="true" /> {{ formatMessage(messages.reviewProjects) }}
 						</template>
+						<template #tech-review>
+							<ShieldAlertIcon aria-hidden="true" /> {{ formatMessage(messages.techReview) }}
+						</template>
 						<template #review-reports>
 							<ReportIcon aria-hidden="true" /> {{ formatMessage(messages.reports) }}
 						</template>
 						<template #user-lookup>
-							<UserIcon aria-hidden="true" /> {{ formatMessage(messages.lookupByEmail) }}
+							<UserSearchIcon aria-hidden="true" /> {{ formatMessage(messages.lookupByEmail) }}
 						</template>
 						<template #file-lookup>
 							<FileIcon aria-hidden="true" /> {{ formatMessage(messages.fileLookup) }}
@@ -486,7 +531,12 @@
 						<template #servers-notices>
 							<IssuesIcon aria-hidden="true" /> {{ formatMessage(messages.manageServerNotices) }}
 						</template>
-						<template #servers-nodes> <ServerIcon aria-hidden="true" /> Server Nodes </template>
+						<template #affiliates>
+							<AffiliateIcon aria-hidden="true" /> {{ formatMessage(messages.manageAffiliates) }}
+						</template>
+						<template #servers-nodes>
+							<ServerIcon aria-hidden="true" /> Credit server nodes
+						</template>
 					</OverflowMenu>
 				</ButtonStyled>
 				<ButtonStyled type="transparent">
@@ -541,11 +591,14 @@
 					<template #notifications>
 						<BellIcon aria-hidden="true" /> {{ formatMessage(commonMessages.notificationsLabel) }}
 					</template>
+					<template #reports>
+						<ReportIcon aria-hidden="true" /> {{ formatMessage(messages.activeReports) }}
+					</template>
 					<template #saved>
-						<BookmarkIcon aria-hidden="true" /> {{ formatMessage(messages.savedProjects) }}
+						<LibraryIcon aria-hidden="true" /> {{ formatMessage(commonMessages.collectionsLabel) }}
 					</template>
 					<template #servers>
-						<ServerIcon aria-hidden="true" /> {{ formatMessage(commonMessages.serversLabel) }}
+						<ServerIcon aria-hidden="true" /> {{ formatMessage(messages.myServers) }}
 					</template>
 					<template #plus>
 						<ArrowBigUpDashIcon aria-hidden="true" />
@@ -562,6 +615,10 @@
 					</template>
 					<template #organizations>
 						<OrganizationIcon aria-hidden="true" /> {{ formatMessage(messages.organizations) }}
+					</template>
+					<template #affiliate-links>
+						<AffiliateIcon aria-hidden="true" />
+						{{ formatMessage(commonMessages.affiliateLinksButton) }}
 					</template>
 					<template #revenue>
 						<CurrencyIcon aria-hidden="true" /> {{ formatMessage(messages.revenue) }}
@@ -651,7 +708,7 @@
 							<LibraryIcon class="icon" />
 							{{ formatMessage(commonMessages.collectionsLabel) }}
 						</NuxtLink>
-						<NuxtLink class="iconified-button" to="/servers/manage">
+						<NuxtLink class="iconified-button" to="/hosting/manage">
 							<ServerIcon class="icon" />
 							{{ formatMessage(commonMessages.serversLabel) }}
 						</NuxtLink>
@@ -735,7 +792,9 @@
 				<button
 					class="tab button-animation"
 					:title="formatMessage(messages.toggleMenu)"
-					:aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
+					:aria-label="
+						isMobileMenuOpen ? formatMessage(messages.closeMenu) : formatMessage(messages.openMenu)
+					"
 					@click="toggleMobileMenu()"
 				>
 					<template v-if="!auth.user">
@@ -759,6 +818,7 @@
 			<ProjectCreateModal v-if="auth.user" ref="modal_creation" />
 			<CollectionCreateModal ref="modal_collection_creation" />
 			<OrganizationCreateModal ref="modal_organization_creation" />
+			<BatchCreditModal v-if="auth.user && isAdmin(auth.user)" ref="modal_batch_credit" />
 			<slot id="main" />
 		</main>
 		<footer
@@ -810,7 +870,9 @@
 									</template>
 								</IntlFormatted>
 							</p>
-							<p class="m-0">© 2025 Rinth, Inc.</p>
+							<p class="m-0">
+								{{ formatMessage(footerMessages.copyright, { year: currentYear }) }}
+							</p>
 						</div>
 					</div>
 					<div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:contents">
@@ -850,10 +912,10 @@
 </template>
 <script setup>
 import {
+	AffiliateIcon,
 	ArrowBigUpDashIcon,
 	BellIcon,
 	BlueskyIcon,
-	BookmarkIcon,
 	BookTextIcon,
 	BoxIcon,
 	BracesIcon,
@@ -888,9 +950,11 @@ import {
 	SearchIcon,
 	ServerIcon,
 	SettingsIcon,
+	ShieldAlertIcon,
 	SunIcon,
 	TwitterIcon,
 	UserIcon,
+	UserSearchIcon,
 	XIcon,
 } from '@modrinth/assets'
 import {
@@ -903,10 +967,11 @@ import {
 	OverflowMenu,
 	PagewideBanner,
 } from '@modrinth/ui'
-import { isAdmin, isStaff } from '@modrinth/utils'
+import { isAdmin, isStaff, UserBadge } from '@modrinth/utils'
 import { IntlFormatted } from '@vintl/vintl/components'
 
 import TextLogo from '~/components/brand/TextLogo.vue'
+import BatchCreditModal from '~/components/ui/admin/BatchCreditModal.vue'
 import CollectionCreateModal from '~/components/ui/create/CollectionCreateModal.vue'
 import OrganizationCreateModal from '~/components/ui/create/OrganizationCreateModal.vue'
 import ProjectCreateModal from '~/components/ui/create/ProjectCreateModal.vue'
@@ -1141,11 +1206,15 @@ const messages = defineMessages({
 	},
 	reviewProjects: {
 		id: 'layout.action.review-projects',
-		defaultMessage: 'Review projects',
+		defaultMessage: 'Project review',
+	},
+	techReview: {
+		id: 'layout.action.tech-review',
+		defaultMessage: 'Tech review',
 	},
 	reports: {
 		id: 'layout.action.reports',
-		defaultMessage: 'Reports',
+		defaultMessage: 'Review reports',
 	},
 	lookupByEmail: {
 		id: 'layout.action.lookup-by-email',
@@ -1158,6 +1227,10 @@ const messages = defineMessages({
 	manageServerNotices: {
 		id: 'layout.action.manage-server-notices',
 		defaultMessage: 'Manage server notices',
+	},
+	manageAffiliates: {
+		id: 'layout.action.manage-affiliates',
+		defaultMessage: 'Manage affiliate links',
 	},
 	newProject: {
 		id: 'layout.action.new-project',
@@ -1203,6 +1276,22 @@ const messages = defineMessages({
 		id: 'layout.nav.analytics',
 		defaultMessage: 'Analytics',
 	},
+	activeReports: {
+		id: 'layout.nav.active-reports',
+		defaultMessage: 'Active reports',
+	},
+	myServers: {
+		id: 'layout.nav.my-servers',
+		defaultMessage: 'My servers',
+	},
+	openMenu: {
+		id: 'layout.mobile.open-menu',
+		defaultMessage: 'Open menu',
+	},
+	closeMenu: {
+		id: 'layout.mobile.close-menu',
+		defaultMessage: 'Close menu',
+	},
 })
 
 const footerMessages = defineMessages({
@@ -1214,6 +1303,10 @@ const footerMessages = defineMessages({
 		id: 'layout.footer.legal-disclaimer',
 		defaultMessage:
 			'NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.',
+	},
+	copyright: {
+		id: 'layout.footer.copyright',
+		defaultMessage: '© {year} Rinth, Inc.',
 	},
 })
 
@@ -1257,33 +1350,35 @@ useSeoMeta({
 
 const developerModeCounter = ref(0)
 
+const currentYear = new Date().getFullYear()
+
 const isMobileMenuOpen = ref(false)
 const isBrowseMenuOpen = ref(false)
 const navRoutes = computed(() => [
 	{
 		id: 'mods',
 		label: formatMessage(getProjectTypeMessage('mod', true)),
-		href: '/mods',
+		href: '/discover/mods',
 	},
 	{
 		label: formatMessage(getProjectTypeMessage('plugin', true)),
-		href: '/plugins',
+		href: '/discover/plugins',
 	},
 	{
 		label: formatMessage(getProjectTypeMessage('datapack', true)),
-		href: '/datapacks',
+		href: '/discover/datapacks',
 	},
 	{
 		label: formatMessage(getProjectTypeMessage('shader', true)),
-		href: '/shaders',
+		href: '/discover/shaders',
 	},
 	{
 		label: formatMessage(getProjectTypeMessage('resourcepack', true)),
-		href: '/resourcepacks',
+		href: '/discover/resourcepacks',
 	},
 	{
 		label: formatMessage(getProjectTypeMessage('modpack', true)),
-		href: '/modpacks',
+		href: '/discover/modpacks',
 	},
 ])
 
@@ -1300,16 +1395,8 @@ const userMenuOptions = computed(() => {
 			shown: !flags.value.hidePlusPromoInUserMenu && !isPermission(auth.value.user.badges, 1 << 0),
 		},
 		{
-			id: 'notifications',
-			link: '/dashboard/notifications',
-		},
-		{
-			id: 'saved',
-			link: '/dashboard/collections',
-		},
-		{
 			id: 'servers',
-			link: '/servers/manage',
+			link: '/hosting/manage',
 		},
 		{
 			id: 'flags',
@@ -1329,6 +1416,21 @@ const userMenuOptions = computed(() => {
 			divider: true,
 		},
 		{
+			id: 'notifications',
+			link: '/dashboard/notifications',
+		},
+		{
+			id: 'reports',
+			link: '/dashboard/reports',
+		},
+		{
+			id: 'saved',
+			link: '/dashboard/collections',
+		},
+		{
+			divider: true,
+		},
+		{
 			id: 'projects',
 			link: '/dashboard/projects',
 		},
@@ -1337,12 +1439,17 @@ const userMenuOptions = computed(() => {
 			link: '/dashboard/organizations',
 		},
 		{
-			id: 'revenue',
-			link: '/dashboard/revenue',
-		},
-		{
 			id: 'analytics',
 			link: '/dashboard/analytics',
+		},
+		{
+			id: 'affiliate-links',
+			link: '/dashboard/affiliate-links',
+			shown: auth.value.user.badges & UserBadge.AFFILIATE,
+		},
+		{
+			id: 'revenue',
+			link: '/dashboard/revenue',
 		},
 	]
 
@@ -1362,7 +1469,7 @@ const userMenuOptions = computed(() => {
 })
 
 const isDiscovering = computed(
-	() => route.name && route.name.startsWith('search-') && !route.query.sid,
+	() => route.name && route.name.startsWith('discover-') && !route.query.sid,
 )
 
 const isDiscoveringSubpage = computed(
@@ -1378,7 +1485,7 @@ const disableRandomProjects = ref(false)
 
 const disableRandomProjectsForRoute = computed(
 	() =>
-		route.name.startsWith('servers') ||
+		route.name.startsWith('hosting') ||
 		route.name.includes('settings') ||
 		route.name.includes('admin'),
 )
@@ -1608,11 +1715,11 @@ const footerLinks = [
 				),
 			},
 			{
-				href: '/servers',
+				href: '/hosting',
 				label: formatMessage(
 					defineMessage({
 						id: 'layout.footer.products.servers',
-						defaultMessage: 'Modrinth Servers',
+						defaultMessage: 'Modrinth Hosting',
 					}),
 				),
 			},
@@ -1752,7 +1859,7 @@ const footerLinks = [
 		padding-bottom: var(--size-rounded-card);
 		left: 0;
 		background-color: var(--color-raised-bg);
-		z-index: 6;
+		z-index: 11; // 20 = modals, 10 = svg icons
 		transform: translateY(100%);
 		transition: transform 0.4s cubic-bezier(0.54, 0.84, 0.42, 1);
 		border-radius: var(--size-rounded-card) var(--size-rounded-card) 0 0;
@@ -1833,7 +1940,7 @@ const footerLinks = [
 		bottom: 0;
 		background-color: var(--color-raised-bg);
 		box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.3);
-		z-index: 7;
+		z-index: 11; // 20 = modals, 10 = svg icons
 		width: 100%;
 		align-items: center;
 		justify-content: space-between;

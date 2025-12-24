@@ -81,7 +81,7 @@ impl NotificationBuilder {
                 'amount', to_jsonb(sum)
               ) body
             FROM period_payouts
-            WHERE sum > 0
+            WHERE sum >= 100
             ",
             &notification_ids[..],
             &users_raw_ids[..],
@@ -160,7 +160,7 @@ impl NotificationBuilder {
         Ok(())
     }
 
-    async fn insert_many_deliveries(
+    pub async fn insert_many_deliveries(
         transaction: &mut sqlx::Transaction<'_, sqlx::Postgres>,
         redis: &RedisPool,
         notification_ids: &[i64],

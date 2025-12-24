@@ -510,9 +510,7 @@
 				class="universal-card recessed !mb-0 flex items-center justify-between"
 			>
 				<div class="flex gap-2">
-					<CardIcon v-if="method.type === 'card'" class="h-8 w-8" />
-					<CurrencyIcon v-else-if="method.type === 'cashapp'" class="h-8 w-8" />
-					<PayPalIcon v-else-if="method.type === 'paypal'" class="h-8 w-8" />
+					<component :is="getPaymentMethodIcon(method.type)" class="h-8 w-8" />
 					<div class="flex flex-col">
 						<div class="flex items-center gap-2">
 							<div class="font-bold text-contrast">
@@ -599,14 +597,11 @@
 <script setup>
 import {
 	ArrowBigUpDashIcon,
-	CardIcon,
 	CheckCircleIcon,
-	CurrencyIcon,
 	EditIcon,
 	HistoryIcon,
 	ModrinthPlusIcon,
 	MoreVerticalIcon,
-	PayPalIcon,
 	PlusIcon,
 	RightArrowIcon,
 	SpinnerIcon,
@@ -622,16 +617,17 @@ import {
 	commonMessages,
 	ConfirmModal,
 	CopyCode,
+	getPaymentMethodIcon,
 	injectNotificationManager,
 	OverflowMenu,
 	PurchaseModal,
+	ServerListing,
 } from '@modrinth/ui'
 import { calculateSavings, formatPrice, getCurrency } from '@modrinth/utils'
 import { computed, ref } from 'vue'
 
 import { useBaseFetch } from '@/composables/fetch.js'
 import ModrinthServersIcon from '~/components/ui/servers/ModrinthServersIcon.vue'
-import ServerListing from '~/components/ui/servers/ServerListing.vue'
 import ServersUpgradeModalWrapper from '~/components/ui/servers/ServersUpgradeModalWrapper.vue'
 import { useServersFetch } from '~/composables/servers/servers-fetch.ts'
 import { products } from '~/generated/state.json'

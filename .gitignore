@@ -66,3 +66,6 @@ app-playground-data/*
 .astro
 .claude
 package-lock.json
+
+# labrinth demo fixtures
+apps/labrinth/fixtures/demo
